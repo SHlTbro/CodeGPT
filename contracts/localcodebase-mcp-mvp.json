@@ -1,0 +1,1024 @@
+{
+  "planId": "localcodebase-mcp-mvp",
+  "version": "1.7.0",
+  "status": "FROZEN",
+  "frozenAt": "2026-09-29",
+  "frozenBy": "owner（2026-09-29 指令「解决无法写入 docs,pdf,Excel,ZIP 等格式文件的问题」= 执行令即批准；v1.7 执行令「项目灵感需写 30-cards/、sources/、wiki/ 等多目录」= 项目级 write_roots 白名单）",
+  "changePolicy": "Coding Agent 禁止自行改契约；owner 可批准小修，只重验受影响部分（v1.1: list_files 双视图；v1.2: 受控写 write_file；v1.3: LSP 智能增强 4 工具）。提案: contracts/proposal-v1.1-v1.2.md + contracts/proposal-v1.3.md（v1.4: workspace 重构 rename_preview/apply_workspace_edit 两段式）（v1.5: read_batch 批量取证 + list_files 批量 paths + 检索策略进 description）（v1.6: write_binary_file 受控二进制写入）（v1.7: write_roots 项目级可写目录白名单，默认 [docs]）",
+  "sourceOfTruth": [
+    "docs/PRD-v3.1-MVP.md",
+    "docs/yy-dev-plan.md",
+    "docs/PRD-corrections.md"
+  ],
+  "transport": {
+    "protocol": "MCP over Streamable HTTP",
+    "bind": "127.0.0.1",
+    "port": 8000,
+    "path": "/mcp",
+    "forbiddenDefaults": [
+      "0.0.0.0",
+      "非 loopback 绑定"
+    ]
+  },
+  "configSchema": {
+    "file": "config.yaml",
+    "shape": {
+      "projects": [
+        {
+          "id": "string(必填,唯一)",
+          "name": "string(必填)",
+          "path": "string(必填,本机存在的绝对路径)",
+          "write_roots": "[\"docs\", ...]（可选，项目级可写目录白名单，默认 [\"docs\"]）"
+        }
+      ],
+      "server": {
+        "host": "127.0.0.1",
+        "port": 8000,
+        "path": "/mcp"
+      },
+      "limits": {
+        "max_file_size_bytes": 5242880,
+        "max_chars": 50000,
+        "max_search_results": 100,
+        "list_files_max_entries": 2000
+      },
+      "security": {
+        "sensitive_patterns": [
+          ".env",
+          "*.key",
+          "*.pem",
+          "credentials*",
+          ".ssh/**",
+          ".aws/**"
+        ],
+        "default_excluded_dirs": [
+          ".git",
+          "node_modules",
+          "dist",
+          "build",
+          "__pycache__"
+        ],
+        "write_paths": [
+          "docs/**"
+        ]
+      },
+      "projects_note": "projects[] 每项可加 write_enabled: bool（默认 false）——允许 write_file/write_binary_file 写该项目 write_roots 声明的可写目录（v1.7，默认 docs/**）",
+      "intel": {
+        "servers": "{<语言>: {command:[argv]}} 可选覆盖",
+        "auto_detect": "pyproject|requirements→pyright-langserver；package.json→typescript-language-server(npx)；go.mod→gopls；Cargo.toml→rust-analyzer"
+      }
+    }
+  },
+  "responseRules": "不设全局强制 Response Envelope。按需原则：project-bound 工具的响应带 project_id；只有可能截断的工带 truncated/next_hint。错误统一为 {error:{code,message,recoverable,hint}}；禁止裸 traceback 出现在任何响应。",
+  "errorCodes": [
+    {
+      "code": "PROJECT_NOT_FOUND",
+      "meaning": "project_id 未在 config.yaml 登记",
+      "recoverable": true,
+      "hint": "调用 list_projects 查看可用项目",
+      "modelHandling": "换正确 project_id 重试"
+    },
+    {
+      "code": "INVALID_ARGUMENT",
+      "meaning": "参数缺失/类型错误/区间非法（如 start_line<1）",
+      "recoverable": true,
+      "hint": "按 schema 修正参数后重试",
+      "modelHandling": "修正参数重试"
+    },
+    {
+      "code": "PATH_OUTSIDE_WORKSPACE",
+      "meaning": "路径解析后逃逸项目根（../、绝对路径、盘符、UNC、~、symlink/junction 逃逸）",
+      "recoverable": true,
+      "hint": "改用项目内相对路径",
+      "modelHandling": "换相对路径重试"
+    },
+    {
+      "code": "FILE_NOT_VISIBLE",
+      "meaning": "命中敏感文件过滤或默认排除目录",
+      "recoverable": false,
+      "hint": "该文件对 AI 不可见",
+      "modelHandling": "放弃该文件，不重试"
+    },
+    {
+      "code": "FILE_NOT_FOUND",
+      "meaning": "项目内路径不存在",
+      "recoverable": true,
+      "hint": "先用 list_files 确认路径",
+      "modelHandling": "先列目录再重试"
+    },
+    {
+      "code": "FILE_TOO_LARGE",
+      "meaning": "文件超过 max_file_size(5MB)",
+      "recoverable": false,
+      "hint": "文件过大无法读取，考虑搜索定位片段",
+      "modelHandling": "放弃整读，改用 search_code"
+    },
+    {
+      "code": "BINARY_FILE_UNSUPPORTED",
+      "meaning": "二进制文件不支持文本读取",
+      "recoverable": false,
+      "hint": "仅支持 UTF-8 文本",
+      "modelHandling": "放弃该文件"
+    },
+    {
+      "code": "SEARCH_BACKEND_ERROR",
+      "meaning": "ripgrep 缺失或执行失败",
+      "recoverable": false,
+      "hint": "安装 ripgrep 后重启 server",
+      "modelHandling": "告知用户装 ripgrep"
+    },
+    {
+      "code": "GIT_ERROR",
+      "meaning": "git 缺失或命令失败（非 git 仓库不是错误，见 git_info 降级）",
+      "recoverable": false,
+      "hint": "确认 git 可用",
+      "modelHandling": "告知用户环境问题"
+    },
+    {
+      "code": "CONFIG_ERROR",
+      "meaning": "config.yaml 缺失/语法错误/路径不存在/id 重复（启动期 fail-fast）",
+      "recoverable": true,
+      "hint": "按提示修复 config.yaml",
+      "modelHandling": "告知用户修配置"
+    },
+    {
+      "code": "INTERNAL_ERROR",
+      "meaning": "未归类内部错误",
+      "recoverable": false,
+      "hint": "查看 server 日志",
+      "modelHandling": "告知用户查日志"
+    },
+    {
+      "code": "WRITE_PATH_FORBIDDEN",
+      "meaning": "目标不在 docs/** 白名单（基于 final resolved path 判定，白名单锚定 root/docs）",
+      "recoverable": false,
+      "hint": "放弃该写操作；可建议用户手动移动",
+      "modelHandling": "放弃写入"
+    },
+    {
+      "code": "REVISION_CONFLICT",
+      "meaning": "文件在 read 之后被修改（content_sha256 不匹配）",
+      "recoverable": true,
+      "hint": "重新 read_file 获取新 content_sha256 后重试",
+      "modelHandling": "重读再写"
+    },
+    {
+      "code": "FILE_ALREADY_EXISTS",
+      "meaning": "新建但文件已存在（expected_absent=true 而文件在）",
+      "recoverable": true,
+      "hint": "改为更新流程：read_file 取 content_sha256 后重写",
+      "modelHandling": "转更新流程"
+    },
+    {
+      "code": "WRITE_DISABLED",
+      "meaning": "项目配置 write_enabled=false（默认 false）",
+      "recoverable": false,
+      "hint": "告知用户在 config.yaml 该项目下加 write_enabled: true",
+      "modelHandling": "告知用户开启方法"
+    },
+    {
+      "code": "PAYLOAD_TOO_LARGE",
+      "meaning": "content 超 1MB",
+      "recoverable": false,
+      "hint": "缩小或拆分文档",
+      "modelHandling": "拆分内容"
+    },
+    {
+      "code": "LSP_UNAVAILABLE",
+      "meaning": "项目语言服务器未安装或启动失败",
+      "recoverable": false,
+      "hint": "安装对应 language server（如 pyright-langserver / typescript-language-server）或改用 search_code",
+      "modelHandling": "降级用 search_code 定位"
+    },
+    {
+      "code": "EXTENSION_NOT_ALLOWED",
+      "meaning": "目标扩展名不在二进制白名单内",
+      "recoverable": false,
+      "hint": "仅支持 .docx/.pdf/.xlsx/.zip/.pptx/.doc/.xls；文本文件请用 write_file",
+      "modelHandling": "改用 write_file 或放弃"
+    }
+  ],
+  "tools": [
+    {
+      "name": "list_projects",
+      "description": "列出 config.yaml 登记的全部可用项目。ChatGPT 首次连接时调用，用于发现有哪些项目可分析。",
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false
+      },
+      "input": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      },
+      "output": {
+        "projects": [
+          {
+            "id": "string",
+            "name": "string"
+          }
+        ]
+      },
+      "responseFields": {
+        "project_id": false,
+        "truncated": false
+      },
+      "errors": [
+        "CONFIG_ERROR"
+      ],
+      "notes": "顺序按 config.yaml 声明序"
+    },
+    {
+      "name": "project_info",
+      "description": "返回指定项目的基础事实：顶层目录、文件数、标志性文件（README/package.json/pyproject.toml/go.mod/Cargo.toml 等）存在性。只报事实，不做架构判断。 新项目分析第一步建议：本工具 + list_files(depth=2) + read_batch(README/清单文件) 一次建立架构索引。",
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false
+      },
+      "input": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "project_id"
+        ]
+      },
+      "output": {
+        "name": "string",
+        "root_dirs": [
+          "string(顶层目录名，经默认排除+敏感过滤)"
+        ],
+        "files_count": "int(可见文件总数，一次 rg --files 遍历)",
+        "detected_files": [
+          "string(存在的标志性文件，相对路径)"
+        ]
+      },
+      "responseFields": {
+        "project_id": true,
+        "truncated": false
+      },
+      "errors": [
+        "PROJECT_NOT_FOUND",
+        "CONFIG_ERROR"
+      ],
+      "notes": "空项目返回空数组与 0，不报错（EMPTY 态）"
+    },
+    {
+      "name": "list_files",
+      "description": "列出项目内某目录或多个目录的内容（ls 风格分组或限深树）。默认过滤 .git/node_modules/dist/build/__pycache__ 与敏感文件。分析新项目时建议：先用 depth=2 树建立结构全貌，再定向读文件，避免逐目录多轮往返。",
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false
+      },
+      "input": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string",
+            "default": "."
+          },
+          "depth": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 5,
+            "default": 0,
+            "description": "0=直接子项分组；≥1=限深树形"
+          },
+          "paths": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "type": "string"
+            },
+            "description": "批量模式：多个目录一次列出；与 path 二选一（paths 优先）"
+          }
+        },
+        "required": [
+          "project_id"
+        ]
+      },
+      "output": {
+        "depth>=1": {
+          "tree": "{name, dirs[嵌套同构,至 depth 层], files}"
+        },
+        "depth=0 单目录": {
+          "dirs": "直接子目录名",
+          "files": "直接文件名"
+        },
+        "paths 批量": {
+          "groups": [
+            {
+              "path": "string",
+              "dirs": "[]",
+              "files": "[]",
+              "error": "可选,单路径错误不整体失败"
+            }
+          ]
+        }
+      },
+      "responseFields": {
+        "project_id": true,
+        "truncated": "全树条目总数超 2000 时 true"
+      },
+      "errors": [
+        "PROJECT_NOT_FOUND",
+        "INVALID_ARGUMENT",
+        "PATH_OUTSIDE_WORKSPACE",
+        "FILE_NOT_VISIBLE",
+        "SEARCH_BACKEND_ERROR"
+      ],
+      "notes": "实现基于 rg --files 一次遍历后内存组装两视图（禁逐目录递归 stat）；输出纯数据结构无装饰字段；敏感/排除过滤在视图组装前生效；批量模式每组独立预算与独立错误（单路径失败不影响其余）。"
+    },
+    {
+      "name": "search_code",
+      "description": "在项目内用 ripgrep 搜索代码，返回 {file, line, text} 匹配列表。",
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false
+      },
+      "input": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string"
+          },
+          "query": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string",
+            "default": "."
+          }
+        },
+        "required": [
+          "project_id",
+          "query"
+        ]
+      },
+      "output": {
+        "matches": [
+          {
+            "file": "string",
+            "line": "int(1-based)",
+            "text": "string(该行内容,截断至500字符)"
+          }
+        ]
+      },
+      "responseFields": {
+        "project_id": true,
+        "truncated": "结果>100 时 true + next_hint='缩小 query 或限定 path'"
+      },
+      "errors": [
+        "PROJECT_NOT_FOUND",
+        "INVALID_ARGUMENT",
+        "PATH_OUTSIDE_WORKSPACE",
+        "SEARCH_BACKEND_ERROR"
+      ],
+      "notes": "argv 直传禁 shell；rg 返回码 1（无匹配）= 空 matches 非错误"
+    },
+    {
+      "name": "read_file",
+      "description": "按行区间读取项目内 UTF-8 文本文件。 批量读多个文件请改用 read_batch。",
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false
+      },
+      "input": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "start_line": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "end_line": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "含端点；缺省=到 max_chars 截断为止"
+          }
+        },
+        "required": [
+          "project_id",
+          "path"
+        ]
+      },
+      "output": {
+        "path": "string(回显相对路径)",
+        "start_line": "int",
+        "end_line": "int(实际末行)",
+        "content": "string",
+        "encoding": "utf-8",
+        "content_sha256": "string(全文 hash；write_file 更新冲突检测的必要凭据)"
+      },
+      "responseFields": {
+        "project_id": true,
+        "truncated": "内容超 max_chars=50000 时 true"
+      },
+      "errors": [
+        "PROJECT_NOT_FOUND",
+        "INVALID_ARGUMENT",
+        "PATH_OUTSIDE_WORKSPACE",
+        "FILE_NOT_VISIBLE",
+        "FILE_NOT_FOUND",
+        "FILE_TOO_LARGE",
+        "BINARY_FILE_UNSUPPORTED"
+      ],
+      "notes": "content_sha256 为 v1.2 恢复字段（owner 批准）；禁止静默扩大区间；越界请求按截断返回不报错；二进制文件返回 BINARY_FILE_UNSUPPORTED（不含 sha），更新二进制用 write_binary_file 的 expected_absent 或先调 get_binary_sha（如有）"
+    },
+    {
+      "name": "git_info",
+      "description": "返回项目 Git 上下文事实：分支、改动文件（路径+状态）、最近提交、per-file diff stat。非 git 项目返回 is_git_repo=false 降级而非报错。",
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false
+      },
+      "input": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "project_id"
+        ]
+      },
+      "output": {
+        "is_git_repo": "boolean",
+        "branch": "string|null",
+        "changed_files": [
+          {
+            "path": "string",
+            "status": "modified|added|deleted|renamed|untracked"
+          }
+        ],
+        "recent_commits": [
+          {
+            "hash": "string(短)",
+            "subject": "string",
+            "date": "string(ISO)"
+          }
+        ],
+        "diff_stat": [
+          {
+            "file": "string",
+            "additions": "int",
+            "deletions": "int"
+          }
+        ]
+      },
+      "responseFields": {
+        "project_id": true,
+        "truncated": "diff_stat 超 50 文件时 true"
+      },
+      "errors": [
+        "PROJECT_NOT_FOUND",
+        "GIT_ERROR"
+      ],
+      "notes": "不返回全文 diff（owner 2026-09-21 裁定）；但 changed_files 必须是路径+状态明细，diff_stat 必须是 per-file 增删行数，不得只有聚合一句话；全部 git 调用 argv 直传"
+    },
+    {
+      "name": "write_file",
+      "description": "创建或更新项目声明的可写目录（默认 docs/，可在 config.yaml 项目级 write_roots 扩展）下的 UTF-8 文本文件（文档维护专用）。新建文件必须 expected_absent=true；更新已有文件必须传入最近一次 read_file 返回的 content_sha256（防覆盖他人/用户新改动）。禁止写可写目录之外路径。",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "openWorldHint": false
+      },
+      "input": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string",
+            "description": "docs/ 下相对路径，如 docs/design/xx.md"
+          },
+          "content": {
+            "type": "string",
+            "maxBytes": 1048576
+          },
+          "expected_absent": {
+            "type": "boolean",
+            "description": "新建时必须为 true"
+          },
+          "content_sha256": {
+            "type": "string",
+            "description": "更新已有文件时必填=写入前最近一次 read_file 返回值"
+          }
+        },
+        "required": [
+          "project_id",
+          "path",
+          "content"
+        ]
+      },
+      "output": {
+        "path": "string(final relative path)",
+        "bytes_written": "int",
+        "sha256": "string(写入后全文 hash)",
+        "created": "boolean",
+        "write_seq": "int(项目级写序号，自 1 递增)"
+      },
+      "responseFields": {
+        "project_id": true,
+        "truncated": false
+      },
+      "errors": [
+        "PROJECT_NOT_FOUND",
+        "INVALID_ARGUMENT",
+        "PATH_OUTSIDE_WORKSPACE",
+        "FILE_NOT_VISIBLE",
+        "WRITE_PATH_FORBIDDEN",
+        "REVISION_CONFLICT",
+        "FILE_ALREADY_EXISTS",
+        "WRITE_DISABLED",
+        "PAYLOAD_TOO_LARGE"
+      ],
+      "notes": "安全链固定顺序：project_id→registry→write_enabled?→root.resolve()→normalize→resolve symlink/junction→final∈root(casefold)→final relative∈项目 write_roots 白名单(默认 docs/**，config.yaml 项目级 write_roots 可扩展，v1.7；前缀逐段匹配，多 root 交叠取最先命中)→非敏感→冲突检查→per-project lock→原子写(tmp+rename)→审计。write_seq 内存态重启归零可接受。多会话并发：sha 预检在锁内，恰好一胜。"
+    },
+    {
+      "name": "find_definition",
+      "description": "跳转到光标处符号的定义位置（基于项目语言服务器）。语言服务器未安装时返回 LSP_UNAVAILABLE 并建议 search_code。",
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false
+      },
+      "input": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "line": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "character": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "project_id",
+          "path",
+          "line",
+          "character"
+        ]
+      },
+      "output": {
+        "locations": [
+          {
+            "path": "string(相对项目根)",
+            "line": "int(1-based)",
+            "character": "int(1-based)"
+          }
+        ]
+      },
+      "responseFields": {
+        "project_id": true,
+        "truncated": "结果超 100 时 true（find_references/workspace_symbols/get_diagnostics）"
+      },
+      "errors": [
+        "PROJECT_NOT_FOUND",
+        "INVALID_ARGUMENT",
+        "PATH_OUTSIDE_WORKSPACE",
+        "FILE_NOT_VISIBLE",
+        "LSP_UNAVAILABLE"
+      ],
+      "notes": "行号对外 1-based（内部转 LSP 0-based）"
+    },
+    {
+      "name": "find_references",
+      "description": "查找光标处符号的全部引用位置（含/不含声明可选）。",
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false
+      },
+      "input": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "line": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "character": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "include_declaration": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": [
+          "project_id",
+          "path",
+          "line",
+          "character"
+        ]
+      },
+      "output": {
+        "locations": [
+          {
+            "path": "string",
+            "line": "int(1-based)",
+            "character": "int(1-based)"
+          }
+        ]
+      },
+      "responseFields": {
+        "project_id": true,
+        "truncated": "结果超 100 时 true（find_references/workspace_symbols/get_diagnostics）"
+      },
+      "errors": [
+        "PROJECT_NOT_FOUND",
+        "INVALID_ARGUMENT",
+        "PATH_OUTSIDE_WORKSPACE",
+        "FILE_NOT_VISIBLE",
+        "LSP_UNAVAILABLE"
+      ],
+      "notes": "行号对外 1-based（内部转 LSP 0-based）；max_results=100"
+    },
+    {
+      "name": "workspace_symbols",
+      "description": "按名称模糊搜索项目工作区符号（类/函数/变量等，基于语言服务器）。",
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false
+      },
+      "input": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string"
+          },
+          "query": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "project_id",
+          "query"
+        ]
+      },
+      "output": {
+        "symbols": [
+          {
+            "name": "string",
+            "kind": "string",
+            "path": "string",
+            "line": "int(1-based)",
+            "character": "int(1-based)"
+          }
+        ]
+      },
+      "responseFields": {
+        "project_id": true,
+        "truncated": "结果超 100 时 true（find_references/workspace_symbols/get_diagnostics）"
+      },
+      "errors": [
+        "PROJECT_NOT_FOUND",
+        "INVALID_ARGUMENT",
+        "PATH_OUTSIDE_WORKSPACE",
+        "FILE_NOT_VISIBLE",
+        "LSP_UNAVAILABLE"
+      ],
+      "notes": "行号对外 1-based（内部转 LSP 0-based）；max_results=100"
+    },
+    {
+      "name": "get_diagnostics",
+      "description": "获取项目（或指定文件）的诊断信息（编译错误/警告，基于语言服务器推送+拉取）。",
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false
+      },
+      "input": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string",
+            "description": "可选，限定单文件"
+          }
+        },
+        "required": [
+          "project_id"
+        ]
+      },
+      "output": {
+        "diagnostics": [
+          {
+            "path": "string",
+            "severity": "error|warning|info|hint",
+            "line": "int(1-based)",
+            "message": "string",
+            "source": "string"
+          }
+        ]
+      },
+      "responseFields": {
+        "project_id": true,
+        "truncated": "结果超 100 时 true（find_references/workspace_symbols/get_diagnostics）"
+      },
+      "errors": [
+        "PROJECT_NOT_FOUND",
+        "INVALID_ARGUMENT",
+        "PATH_OUTSIDE_WORKSPACE",
+        "FILE_NOT_VISIBLE",
+        "LSP_UNAVAILABLE"
+      ],
+      "notes": "行号对外 1-based（内部转 LSP 0-based）；max_results=100"
+    },
+    {
+      "name": "rename_preview",
+      "description": "预览工作区级符号重命名的全部改动（基于语言服务器 rename），只读不写：返回每个受影响文件的逐处编辑计划（1-based 位置 + 新文本）。应用需再调 apply_workspace_edit 并附各文件最新 content_sha256。",
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false
+      },
+      "input": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "line": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "character": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "new_name": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "project_id",
+          "path",
+          "line",
+          "character",
+          "new_name"
+        ]
+      },
+      "output": {
+        "files": [
+          {
+            "path": "string(相对项目根)",
+            "edits": [
+              {
+                "line": "int(1-based 起)",
+                "character": "int(1-based 起)",
+                "end_line": "int(1-based 止,含)",
+                "end_character": "int(1-based 止,含)",
+                "new_text": "string"
+              }
+            ]
+          }
+        ],
+        "file_count": "int",
+        "edit_count": "int"
+      },
+      "responseFields": {
+        "project_id": true,
+        "truncated": false
+      },
+      "errors": [
+        "PROJECT_NOT_FOUND",
+        "INVALID_ARGUMENT",
+        "PATH_OUTSIDE_WORKSPACE",
+        "FILE_NOT_VISIBLE",
+        "LSP_UNAVAILABLE"
+      ],
+      "notes": "纯只读（LSP textDocument/rename 结果结构化）；new_name 空/含空白 → INVALID_ARGUMENT；无改动结果 = files 空（EMPTY 态）"
+    },
+    {
+      "name": "apply_workspace_edit",
+      "description": "应用 rename_preview 返回的工作区编辑（多文件源码重构写）。必须提供每个受影响文件最近一次 read_file 的 content_sha256（全部校验通过才写，任一不匹配整体拒绝）。需项目 write_enabled=true；绕过 docs/** 白名单（workspace 重构语义），但仍受路径逃逸防护与敏感文件硬过滤约束。",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "openWorldHint": false
+      },
+      "input": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string"
+          },
+          "files": [
+            {
+              "path": "string(相对项目根)",
+              "edits": [
+                {
+                  "line": "int(1-based 起)",
+                  "character": "int(1-based 起)",
+                  "end_line": "int(1-based 止,含)",
+                  "end_character": "int(1-based 止,含)",
+                  "new_text": "string"
+                }
+              ]
+            }
+          ],
+          "expected_shas": {
+            "type": "object",
+            "description": "{path: content_sha256}，必须覆盖 files 中全部文件"
+          }
+        },
+        "required": [
+          "project_id",
+          "files",
+          "expected_shas"
+        ]
+      },
+      "output": {
+        "applied": [
+          {
+            "path": "string",
+            "bytes_written": "int",
+            "sha256": "string(写后)"
+          }
+        ],
+        "files_changed": "int"
+      },
+      "responseFields": {
+        "project_id": true,
+        "truncated": false
+      },
+      "errors": [
+        "PROJECT_NOT_FOUND",
+        "INVALID_ARGUMENT",
+        "PATH_OUTSIDE_WORKSPACE",
+        "FILE_NOT_VISIBLE",
+        "WRITE_DISABLED",
+        "REVISION_CONFLICT",
+        "PAYLOAD_TOO_LARGE"
+      ],
+      "notes": "安全链：write_enabled?→全文件 PathGuard(resolve/junction/casefold)→敏感过滤→全部 sha 预检(任一不匹配→REVISION_CONFLICT 整体拒绝,不部分写)→per-project lock→逐文件 tmp+rename 原子写→审计。多文件非事务：预检全过后逐文件落盘，中途失败由 git 等外部手段恢复（审计含每文件前后 sha）"
+    },
+    {
+      "name": "read_batch",
+      "description": "批量读取多个文件建立项目认知（一次调用替代多轮 read_file）。推荐第一轮取证即用：README、package.json/pyproject.toml、入口文件、配置文件一次读完。paths 支持通配符（如 packages/*/package.json、**/*.patch.yml，命中上限 50 个文件）。每文件独立截断，总额度兜底，防打爆上下文。",
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false
+      },
+      "input": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string"
+          },
+          "paths": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 20,
+            "items": {
+              "type": "string"
+            },
+            "description": "文件相对路径或 glob（含 * ? ** 即按 glob 展开，上限 50 个命中）"
+          },
+          "max_chars_per_file": {
+            "type": "integer",
+            "minimum": 1000,
+            "default": 50000
+          },
+          "max_chars_total": {
+            "type": "integer",
+            "minimum": 10000,
+            "default": 200000
+          }
+        },
+        "required": [
+          "project_id",
+          "paths"
+        ]
+      },
+      "output": {
+        "files": [
+          {
+            "path": "string",
+            "content": "string",
+            "content_sha256": "string",
+            "truncated": "boolean",
+            "error": "可选{code,message}（单文件失败不整体失败）"
+          }
+        ],
+        "total_chars": "int",
+        "truncated": "boolean(总额度耗尽)",
+        "next_hint": "string|null"
+      },
+      "responseFields": {
+        "project_id": true,
+        "truncated": "总额度耗尽时 true"
+      },
+      "errors": [
+        "PROJECT_NOT_FOUND",
+        "INVALID_ARGUMENT"
+      ],
+      "notes": "顺序按输入展开序；每文件经 VisibilityPolicy（敏感/排除不出现，glob 命中同样过滤）；error 文件不占用内容额度；content_sha256 供 write_file/apply_workspace_edit 更新流使用"
+    },
+    {
+      "name": "write_binary_file",
+      "description": "将 base64 编码的二进制内容写入项目声明的可写目录（默认 docs/，可在 config.yaml 项目级 write_roots 扩展）下的文件（支持 .docx/.pdf/.xlsx/.zip/.pptx/.doc/.xls）。新建文件必须 expected_absent=true；更新已有文件必须传入最近一次 read_file 或 write_binary_file 返回的 content_sha256。禁止写可写目录之外路径及非白名单扩展名。",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "openWorldHint": false
+      },
+      "input": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string",
+            "description": "docs/ 下相对路径，如 docs/秋招岗位/09-29-JD雷达.docx"
+          },
+          "content_b64": {
+            "type": "string",
+            "description": "base64 编码的二进制文件内容"
+          },
+          "expected_absent": {
+            "type": "boolean",
+            "description": "新建时必须为 true"
+          },
+          "content_sha256": {
+            "type": "string",
+            "description": "更新已有文件时必填=写入前最近一次读取返回值"
+          }
+        },
+        "required": [
+          "project_id",
+          "path",
+          "content_b64"
+        ]
+      },
+      "output": {
+        "path": "string(final relative path)",
+        "bytes_written": "int(解码后字节数)",
+        "sha256": "string(写入后二进制 hash)",
+        "created": "boolean",
+        "write_seq": "int"
+      },
+      "responseFields": {
+        "project_id": true,
+        "truncated": false
+      },
+      "errors": [
+        "PROJECT_NOT_FOUND",
+        "INVALID_ARGUMENT",
+        "PATH_OUTSIDE_WORKSPACE",
+        "FILE_NOT_VISIBLE",
+        "WRITE_PATH_FORBIDDEN",
+        "REVISION_CONFLICT",
+        "FILE_ALREADY_EXISTS",
+        "WRITE_DISABLED",
+        "PAYLOAD_TOO_LARGE"
+      ],
+      "notes": "安全链同 write_file（write_enabled→root/write_roots 锚定（默认 docs，v1.7 可在 config.yaml 项目级 write_roots 扩展）→敏感过滤→sha预检→lock→tmp+rename原子写→审计）；扩展名白名单：.docx .pdf .xlsx .zip .pptx .doc .xls（大小写不敏感）；content_b64 解码后上限 10MB；read_file 对二进制文件返回 BINARY_FILE_UNSUPPORTED 时可改用本工具读取 sha256 做更新预检"
+    }
+  ],
+  "acceptanceScenarios": [
+    "场景A(首次连接)：ChatGPT 连接后调 list_projects → 看到全部登记项目 → 选 starmind 调 project_info → 拿到技术栈事实基础",
+    "场景B(架构分析)：list_files('src') → search_code('login') → read_file 命中文件 → 回答『认证流程在哪里』",
+    "场景C(进度理解)：git_info → changed_files + recent_commits + diff_stat → 回答『最近修改了什么』",
+    "场景D(安全)：read_file('.env') → FILE_NOT_VISIBLE；read_file('../../etc/passwd') → PATH_OUTSIDE_WORKSPACE",
+    "场景E(降级)：非 git 项目 git_info → is_git_repo=false 正常返回；rg 未装 search_code → SEARCH_BACKEND_ERROR+安装指引",
+    "场景F(受控写,Phase4)：开 write_enabled 的项目 → read_file 取 content_sha256 → write_file 更新 docs 文档 → 并发第二会话写同文件 → REVISION_CONFLICT → 重读重试成功",
+    "场景G(LSP,Phase3)：已装语言服务器时 find_definition 跳转定义；未装时 LSP_UNAVAILABLE + hint 指引安装或 search_code 降级",
+    "场景H(工作区重构,Phase3扩展)：rename_preview 预览重命名全部改动 → read 受影响文件取 sha → apply_workspace_edit 全文件新鲜度校验后原子应用 → git diff 可见",
+    "场景I(二进制写入,v1.6)：ChatGPT 生成 DOCX/PDF/XLSX → base64 → write_binary_file 落地 docs/ → 本地可直接打开"
+  ]
+}
