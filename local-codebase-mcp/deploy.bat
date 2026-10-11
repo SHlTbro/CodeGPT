@@ -1,6 +1,7 @@
 @echo off
-rem One-click deploy for Local Codebase MCP: starts server + tunnel, prints the public URL for ChatGPT.
-rem NOTE: keep this file ASCII-only (Chinese comments here get shredded by cmd under wrong codepage, C-023).
+rem CodeGPT compatibility entry point; delegates to the same Setup lifecycle.
 chcp 65001 >nul
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0deploy.ps1" %*
-pause
+set "deploy_exit_code=%errorlevel%"
+if not "%deploy_exit_code%"=="0" pause
+exit /b %deploy_exit_code%

@@ -1,9 +1,9 @@
-"""P2 服务层：5 个只读工具的纯函数实现（task03/04/05）。
+"""MCP project, file, search, Git and language-server services.
 
-复用 P1 地基：security.resolve_path/is_sensitive/truncate_search_line/is_too_large，
-errors 的错误码常量与 McpError，config.Config，projects.ProjectRegistry。
-只返回事实，不做架构判断；错误统一 raise McpError（注册层转 error_payload 信封）。
-所有 rg 调用 argv 数组直传，禁止 shell 拼接。
+Reuse Config, ProjectRegistry and shared path/visibility guards. Return facts;
+raise McpError for the registration layer to encode. ripgrep argv is passed
+directly without shell interpolation. Controlled workspace edits verify hashes
+before writing and share writer's per-project lock.
 """
 from __future__ import annotations
 
@@ -13,6 +13,7 @@ import hashlib
 import logging
 import os
 import subprocess
+import threading
 from fnmatch import fnmatch
 from pathlib import Path
 from urllib.parse import unquote, urlparse
@@ -29,6 +30,7 @@ from security import (
     MAX_FILE_SIZE_BYTES,
     MAX_SEARCH_RESULTS,
     is_sensitive,
+    sensitive_globs,
     is_too_large,
     resolve_path,
     truncate_search_line,
@@ -58,7 +60,7 @@ def _project(config: Config, project_id: str) -> Project:
         ids = ", ".join(pr.id for pr in config.registry)
         raise McpError(
             errors.PROJECT_NOT_FOUND,
-            f"project_id 未在 config.yaml 登记: {project_id!r}。可用项目: {ids or '（无）'}.{_suggest(project_id, config)}",
+            f"project_id 未在 config.toml 登记: {project_id!r}。可用项目: {ids or '（无）'}.{_suggest(project_id, config)}",
             "调用 list_projects 查看可用项目，换正确 project_id 重试",
         )
     return p
@@ -85,21 +87,23 @@ def _ensure_visible(rel: str, patterns, excluded) -> None:
         raise McpError(errors.FILE_NOT_VISIBLE, f"该路径对 AI 不可见: {rel!r}（命中敏感过滤或默认排除目录）", "该文件对 AI 不可见")
 
 
-def _rg_globs(excluded) -> list[str]:
+def _rg_globs(excluded, patterns=()) -> list[str]:
     """把默认排除目录转成 rg --glob 排除参数（**/ 前缀：任意层级生效）。"""
     globs: list[str] = []
     for d in excluded:
         globs += ["--glob", f"!**/{d}/**"]
+    for pattern in sensitive_globs(patterns):
+        globs += ["--glob", "!" + pattern, "--glob", "!**/" + pattern]
     return globs
 
 
 def _norm(p: str) -> str:
-    return p.replace("\\", "/")
+    return p.replace("\\", "/").removeprefix("./")
 
 
 def _run_rg_files(project: Project, rel: str, security: dict) -> list[str]:
     """rg --files 一次遍历（cwd=项目根），返回相对路径列表；rg 缺失/失败 → SEARCH_BACKEND_ERROR。"""
-    argv = ["rg", "--files", "--hidden", "--no-messages", *_rg_globs(security.get("default_excluded_dirs", DEFAULT_EXCLUDED_DIRS))]
+    argv = ["rg", "--files", "--hidden", *_rg_globs(security.get("default_excluded_dirs", DEFAULT_EXCLUDED_DIRS), security.get("sensitive_patterns", ()))]
     if rel:
         argv.append(rel)
     try:
@@ -107,7 +111,7 @@ def _run_rg_files(project: Project, rel: str, security: dict) -> list[str]:
     except FileNotFoundError:
         raise McpError(errors.SEARCH_BACKEND_ERROR, "ripgrep 未安装或不可执行", _RG_HINT)
     if proc.returncode not in (0, 1):
-        raise McpError(errors.SEARCH_BACKEND_ERROR, f"ripgrep 执行失败（退出码 {proc.returncode}）: {proc.stderr.strip()}", _RG_HINT)
+        raise McpError(errors.SEARCH_BACKEND_ERROR, f"ripgrep 执行失败（退出码 {proc.returncode}）: {proc.stderr.strip()[:1000]}", "检查报错路径是否存在、是否被其他程序占用；可限定 path 后重试")
     return [_norm(ln) for ln in proc.stdout.splitlines() if ln]
 
 
@@ -125,7 +129,7 @@ def _limits(config: Config, key: str, default: int) -> int:
 
 # ---------------------------------------------------------------- Tool 1
 def list_projects(config: Config) -> dict:
-    """列出 config.yaml 登记的全部可用项目。顺序按声明序；响应不带 project_id（契约 responseFields）。"""
+    """列出 config.toml 登记的全部可用项目。顺序按声明序；响应不带 project_id（契约 responseFields）。"""
     return {"projects": [{"id": p.id, "name": p.name} for p in config.registry]}
 
 
@@ -429,10 +433,9 @@ async def search_code(config: Config, project_id: str, query: str, path: str = "
     rel = _rel_of(root, resolve_path(p, path))
     patterns = tuple(config.security["sensitive_patterns"])
     excluded = tuple(config.security["default_excluded_dirs"])
-    argv = ["rg", "--line-number", "--with-filename", "--no-heading", "--fixed-strings", "--hidden", "--no-messages",
-            *_rg_globs(excluded), "--", query]
-    if rel:
-        argv.append(rel)
+    _ensure_visible(rel, patterns, excluded)
+    argv = ["rg", "--line-number", "--with-filename", "--no-heading", "--fixed-strings", "--hidden",
+            *_rg_globs(excluded, patterns), "--", query, rel or "."]
     try:
         proc = await asyncio.create_subprocess_exec(
             *argv, cwd=str(root), stdin=asyncio.subprocess.DEVNULL,
@@ -442,7 +445,7 @@ async def search_code(config: Config, project_id: str, query: str, path: str = "
         raise McpError(errors.SEARCH_BACKEND_ERROR, "ripgrep 未安装或不可执行", _RG_HINT)
     out, err = await proc.communicate()
     if proc.returncode not in (0, 1):
-        raise McpError(errors.SEARCH_BACKEND_ERROR, f"ripgrep 执行失败（退出码 {proc.returncode}）: {err.decode('utf-8', 'replace').strip()}", _RG_HINT)
+        raise McpError(errors.SEARCH_BACKEND_ERROR, f"ripgrep 执行失败（退出码 {proc.returncode}）: {err.decode('utf-8', 'replace').strip()[:1000]}", "检查报错路径是否存在、是否被其他程序占用；可限定 path 后重试")
     max_results = _limits(config, "max_search_results", MAX_SEARCH_RESULTS)
     matches: list[dict] = []
     truncated = False
@@ -564,14 +567,17 @@ def git_info(config: Config, project_id: str) -> dict:
 # ---------------------------------------------------------------- v1.3 LSP 智能工具（task18）
 # IntelManager 单例：按 config 对象身份缓存（热重载整体替换 config → 旧会话关闭重建）
 _INTEL: list = [None, None]
+_INTEL_LOCK = threading.Lock()
 
 
 def _intel_mgr(config: Config) -> intel.IntelManager:
-    if _INTEL[0] is not config or _INTEL[1] is None:
-        if _INTEL[1] is not None:
-            _INTEL[1].close_all()
-        _INTEL[0], _INTEL[1] = config, intel.IntelManager(config)
-    return _INTEL[1]
+    with _INTEL_LOCK:
+        if _INTEL[0] is not config or _INTEL[1] is None:
+            if _INTEL[1] is not None:
+                _INTEL[1].close_all()
+            _INTEL[0], _INTEL[1] = config, intel.IntelManager(config)
+        return _INTEL[1]
+
 
 
 def _pos_arg(line, character) -> None:
@@ -637,6 +643,16 @@ def workspace_symbols(config: Config, project_id: str, query: str) -> dict:
     p = _project(config, project_id)
     _arg(isinstance(query, str) and bool(query), "query 必填且为非空字符串")
     sess = _intel_mgr(config).get_session(p)
+    # tsserver creates projects after didOpen; all visible source files also cover
+    # inferred projects without tsconfig, rather than relying on earlier tool calls.
+    sources = _visible_files(_run_rg_files(p, "", config.security),
+                             tuple(config.security["sensitive_patterns"]),
+                             tuple(config.security["default_excluded_dirs"]))
+    for rel in sources:
+        if Path(rel).suffix.lower() in intel.SOURCE_LANGUAGES:
+            final = resolve_path(p, rel)
+            if not is_too_large(final.stat().st_size):
+                sess.ensure_open(final)
     res = sess.request("workspace/symbol", {"query": query}) or []
     syms = [s for s in (intel.normalize_symbol(p.path, r) for r in res if isinstance(r, dict)) if s]
     return _trim({"project_id": p.id}, "symbols", syms,
@@ -664,8 +680,12 @@ def get_diagnostics(config: Config, project_id: str, path: str | None = None) ->
             pulled = sess.request("textDocument/diagnostic", {"textDocument": {"uri": final.as_uri()}})
             if isinstance(pulled, dict) and isinstance(pulled.get("items"), list):
                 sess.diagnostics[final.as_uri()] = pulled["items"]
-        except McpError:
-            pass  # 拉模式服务器不支持/失败 → 退回 push 暂存
+        except McpError as error:
+            if getattr(error, "lsp_code", None) != -32601:
+                raise
+            # Servers such as tsls publish diagnostics asynchronously.
+            # An empty cache does not establish that a file has no errors.
+            sess.wait_diagnostics(final.as_uri())
     else:
         sess = _intel_mgr(config).get_session(p)
     diags: list[dict] = []
@@ -746,7 +766,15 @@ def rename_preview(config: Config, project_id: str, path: str, line: int,
         "textDocument": {"uri": final.as_uri()},
         "position": intel.to_lsp_position(line, character),
         "newName": new_name})
-    changes = res.get("changes") if isinstance(res, dict) else None
+    changes = dict(res.get("changes") or {}) if isinstance(res, dict) else {}
+    # Pyright returns TextDocumentEdit[]; tsls returns changes. Both are LSP.
+    for document in (res.get("documentChanges") or []) if isinstance(res, dict) else []:
+        if not isinstance(document, dict) or "textDocument" not in document:
+            raise McpError(errors.INVALID_ARGUMENT, "语言服务器返回了文件创建、删除或移动操作。",
+                           "当前仅支持已有文件的文本重命名，请在编辑器中处理文件操作。")
+        uri = document["textDocument"].get("uri")
+        _uri_rel_guarded(p.path.resolve(), uri)
+        changes.setdefault(uri, []).extend(document.get("edits") or [])
     patterns = tuple(config.security["sensitive_patterns"])
     files_out: list[dict] = []
     edit_count = 0
@@ -787,7 +815,7 @@ def apply_workspace_edit(config: Config, project_id: str, files, expected_shas) 
         raise McpError(
             errors.WRITE_DISABLED,
             f"项目 '{p.id}' 未开启受控写（write_enabled=false，默认关闭）",
-            "告知用户在 config.yaml 该项目下加 write_enabled: true",
+            "告知用户在 config.toml 该项目下加 write_enabled: true",
         )
     _arg(isinstance(files, list) and bool(files), "files 必填且为非空数组")
     _arg(isinstance(expected_shas, dict), "expected_shas 必须是 {path: content_sha256} 对象")

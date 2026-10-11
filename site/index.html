@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="CodeGPT Core V1.2.0 RC2：真实本机配置页面与可交互配置流程图。">
+<title>CodeGPT · 本机项目，连接 ChatGPT</title>
+<style>
+:root { color-scheme: light; --ink: #1d1d1f; --muted: #62626a; --paper: #fafafa; --surface: #f0f0f3; --accent: #0066cc; --line: #dddddf; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif; }
+a { color: var(--accent); text-underline-offset: .2em; }
+a:focus-visible { outline: 3px solid var(--accent); outline-offset: 5px; border-radius: 4px; }
+header, main, footer { max-width: 1120px; margin: auto; padding: 0 24px; }
+header { min-height: 88px; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+.brand { font-weight: 650; font-size: 21px; color: var(--ink); text-decoration: none; }
+nav { display: flex; flex-wrap: wrap; gap: 20px; font-size: 15px; }
+.intro { padding: 68px 0 52px; max-width: 780px; }
+.eyebrow { color: var(--muted); font-size: 14px; margin: 0 0 16px; }
+h1 { font-size: clamp(34px, 6vw, 62px); line-height: 1.12; letter-spacing: -.045em; margin: 0 0 24px; font-weight: 650; }
+.intro p:not(.eyebrow) { max-width: 650px; color: var(--muted); font-size: 20px; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px; margin-top: 28px; }
+.primary { display: inline-block; padding: 11px 20px; border-radius: 24px; background: var(--accent); color: var(--paper); text-decoration: none; }
+section { padding: 42px 0; }
+h2 { font-size: 29px; letter-spacing: -.025em; line-height: 1.25; margin: 0 0 14px; font-weight: 650; }
+p { margin: 12px 0; }
+.note { color: var(--muted); font-size: 15px; }
+figure { margin: 24px 0 0; }
+figure a { display: block; background: var(--surface); border: 1px solid var(--line); padding: 12px; border-radius: 18px; }
+img { display: block; width: 100%; height: auto; border-radius: 9px; }
+figcaption { margin-top: 12px; color: var(--muted); font-size: 14px; }
+.workflow { background: var(--surface); border-radius: 18px; padding: 30px; }
+.workflow .actions { margin-top: 20px; }
+code { padding: 2px 5px; border-radius: 4px; background: var(--surface); font-size: .92em; }
+ol { padding-left: 22px; }
+li { margin: 10px 0; }
+footer { padding-top: 28px; padding-bottom: 36px; color: var(--muted); font-size: 14px; }
+@media (min-width: 760px) { .workflow { padding: 42px; } }
+</style>
+</head>
+<body>
+<header><a class="brand" href="./">CodeGPT</a><nav aria-label="主要导航"><a href="#setup">配置页面</a><a href="diagrams/configuration-workflow.html">交互流程图</a><a href="https://github.com/SHlTbro/CodeGPT">GitHub</a></nav></header>
+<main>
+<div class="intro"><p class="eyebrow">Core V1.2.0 RC2</p><h1>你的本机项目。<br>连接 ChatGPT。</h1><p>添加目录、设置权限、保存并生效。Python + FastMCP，保留 15 个工具，Agent 默认关闭。</p><div class="actions"><a class="primary" href="https://github.com/SHlTbro/CodeGPT/archive/refs/heads/main.zip">下载源码</a><a href="https://github.com/SHlTbro/CodeGPT#先在本机使用">安装说明 ↗</a></div></div>
+<section id="setup" aria-labelledby="setup-heading"><h2 id="setup-heading">最新本机配置页面</h2><p class="note">来自真实浏览器联调：合成只读项目，TOML 保存后已核对 MCP 项目列表。点击图片查看完整尺寸。</p><figure><a href="assets/setup-current.png" aria-label="查看配置页面原始截图"><img src="assets/setup-current.png" width="1280" height="2143" alt="CodeGPT 真实配置页：ngrok 操作指引、连接状态、本地项目与默认关闭的可选 Codex。"></a><figcaption>这是页面展示。配置操作请在本机运行 <code>local-codebase-mcp/setup.bat</code>；此网站不会保存 Token 或读取你的文件。</figcaption></figure></section>
+<section aria-labelledby="workflow-heading"><div class="workflow"><h2 id="workflow-heading">配置怎样真正生效？</h2><p>查看从页面提交、版本校验、原子写入到 MCP 验证的完整链路，以及失败后的恢复分支。</p><p class="note">点击节点查看源码依据；支持搜索、路径聚焦、主题切换与导出。下载 HTML 后也能离线使用。</p><div class="actions"><a class="primary" href="diagrams/configuration-workflow.html">打开交互流程图</a><a href="diagrams/configuration-workflow.html" download>下载离线 HTML</a><a href="https://github.com/SHlTbro/CodeGPT/blob/main/docs/architecture.md">阅读架构说明 ↗</a></div></div></section>
+<section aria-labelledby="start-heading"><h2 id="start-heading">从本机开始</h2><ol><li>安装 Python 3.12+，解压源码到短路径。</li><li>双击 <code>local-codebase-mcp/setup.bat</code>，添加项目并保持只读。</li><li>连接 ChatGPT 时，按页面教程配置 ngrok；Cloudflare 临时地址为备选。</li></ol><p class="note">现有公网 MCP 没有用户身份认证。私人源码和写权限应先落实可信访问限制，固定地址不能代替身份验证。<a href="https://github.com/SHlTbro/CodeGPT/blob/main/docs/security.md">安全边界 ↗</a></p></section>
+</main>
+<footer>源码来源：RC2 <code>55a608c</code> · MIT · <a href="https://github.com/SHlTbro/CodeGPT/blob/main/docs/verification.md">验证范围</a></footer>
+</body>
+</html>

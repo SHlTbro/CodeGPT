@@ -1,0 +1,480 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "CodeGPT 配置保存与失败恢复",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "output": "config-workflow.html",
+    "repository": {
+      "url": "https://github.com/SHlTbro/CodeGPT",
+      "revision": "3f8abbb42719a804d03f285e0fa4f414ded1d0c5",
+      "link_mode": "local-only"
+    },
+    "views": [
+      {
+        "id": "save",
+        "label": "保存成功",
+        "focus": [
+          "draft",
+          "validate",
+          "cas",
+          "pending",
+          "verify",
+          "commit"
+        ]
+      },
+      {
+        "id": "recovery",
+        "label": "失败与恢复",
+        "focus": [
+          "invalid",
+          "conflict",
+          "rollback",
+          "recovered",
+          "manual",
+          "reload",
+          "fix",
+          "restart"
+        ]
+      }
+    ]
+  },
+  "lanes": [
+    {
+      "id": "ui",
+      "label": "本机页面 · 请求携带版本"
+    },
+    {
+      "id": "store",
+      "label": "配置事务 · 文件锁与版本校验"
+    },
+    {
+      "id": "runtime",
+      "label": "受控运行 · 同步验证后确认"
+    },
+    {
+      "id": "failure",
+      "label": "失败处理 · 保留输入与有效配置",
+      "variant": "exception"
+    },
+    {
+      "id": "retry",
+      "label": "用户恢复 · 确认真实状态后重新提交",
+      "variant": "exception"
+    }
+  ],
+  "mainPath": [
+    "draft",
+    "validate",
+    "cas",
+    "pending",
+    "verify",
+    "commit"
+  ],
+  "nodes": [
+    {
+      "id": "draft",
+      "lane": "ui",
+      "col": 0,
+      "type": "frontend",
+      "label": "修改并提交",
+      "sublabel": "PUT /api/config + revision",
+      "width": 142,
+      "sources": [
+        {
+          "path": "web/app.js",
+          "line": 367,
+          "end_line": 379,
+          "label": "修改并提交"
+        }
+      ]
+    },
+    {
+      "id": "validate",
+      "lane": "store",
+      "col": 1,
+      "type": "security",
+      "label": "检查请求字段",
+      "sublabel": "对象、版本格式、端口",
+      "width": 142,
+      "sources": [
+        {
+          "path": "setup.py",
+          "line": 179,
+          "end_line": 199,
+          "label": "检查请求与配置"
+        }
+      ]
+    },
+    {
+      "id": "cas",
+      "lane": "store",
+      "col": 2,
+      "type": "security",
+      "label": "核对版本与配置",
+      "sublabel": "先 CAS，再完整校验",
+      "width": 142,
+      "sources": [
+        {
+          "path": "config.py",
+          "line": 581,
+          "end_line": 590,
+          "label": "核对当前版本"
+        },
+        {
+          "path": "config.py",
+          "line": 163,
+          "end_line": 188,
+          "label": "目录与监听配置校验"
+        }
+      ]
+    },
+    {
+      "id": "pending",
+      "lane": "store",
+      "col": 3,
+      "type": "database",
+      "label": "原子替换 TOML",
+      "sublabel": "保存 last-good 与 pending",
+      "width": 142,
+      "sources": [
+        {
+          "path": "config.py",
+          "line": 591,
+          "end_line": 603,
+          "label": "原子替换 TOML"
+        }
+      ]
+    },
+    {
+      "id": "verify",
+      "lane": "runtime",
+      "col": 3,
+      "type": "backend",
+      "label": "应用并验证 MCP",
+      "sublabel": "进程归属、版本与项目列表",
+      "width": 142,
+      "sources": [
+        {
+          "path": "runtime.py",
+          "line": 465,
+          "end_line": 486,
+          "label": "应用并验证 MCP"
+        }
+      ]
+    },
+    {
+      "id": "commit",
+      "lane": "runtime",
+      "col": 4,
+      "type": "database",
+      "label": "确认保存成功",
+      "sublabel": "更新备份，清除 pending",
+      "width": 142,
+      "sources": [
+        {
+          "path": "config.py",
+          "line": 604,
+          "end_line": 630,
+          "label": "确认保存成功"
+        }
+      ]
+    },
+    {
+      "id": "invalid",
+      "lane": "failure",
+      "col": 1,
+      "type": "security",
+      "label": "校验拒绝",
+      "sublabel": "返回原因，修正后再保存",
+      "width": 142,
+      "sources": [
+        {
+          "path": "setup.py",
+          "line": 179,
+          "end_line": 194,
+          "label": "校验拒绝"
+        }
+      ]
+    },
+    {
+      "id": "conflict",
+      "lane": "failure",
+      "col": 2,
+      "type": "security",
+      "label": "版本冲突",
+      "sublabel": "保留当前输入，重读合并",
+      "width": 142,
+      "sources": [
+        {
+          "path": "web/app.js",
+          "line": 370,
+          "end_line": 392,
+          "label": "版本冲突"
+        }
+      ]
+    },
+    {
+      "id": "rollback",
+      "lane": "failure",
+      "col": 3,
+      "type": "database",
+      "label": "恢复 last-good",
+      "sublabel": "恢复文件并重新应用后端",
+      "width": 142,
+      "sources": [
+        {
+          "path": "config.py",
+          "line": 611,
+          "end_line": 624,
+          "label": "恢复 last-good"
+        }
+      ]
+    },
+    {
+      "id": "recovered",
+      "lane": "failure",
+      "col": 4,
+      "type": "backend",
+      "label": "回退已验证",
+      "sublabel": "本次保存仍返回失败",
+      "width": 142,
+      "sources": [
+        {
+          "path": "config.py",
+          "line": 620,
+          "end_line": 628,
+          "label": "回退已验证"
+        }
+      ]
+    },
+    {
+      "id": "manual",
+      "lane": "failure",
+      "col": 5,
+      "type": "security",
+      "label": "后端恢复失败",
+      "sublabel": "检查端口、进程与权限",
+      "width": 142,
+      "sources": [
+        {
+          "path": "config.py",
+          "line": 625,
+          "end_line": 628,
+          "label": "后端恢复失败"
+        }
+      ]
+    },
+    {
+      "id": "fix",
+      "lane": "retry",
+      "col": 0,
+      "type": "frontend",
+      "label": "修正输入",
+      "sublabel": "保留草稿，纠正无效字段",
+      "width": 142,
+      "sources": [
+        {
+          "path": "web/app.js",
+          "line": 389,
+          "end_line": 395,
+          "label": "修正输入"
+        }
+      ]
+    },
+    {
+      "id": "reload",
+      "lane": "retry",
+      "col": 2,
+      "type": "frontend",
+      "label": "重读并合并",
+      "sublabel": "先核对配置与 MCP 状态",
+      "width": 142,
+      "sources": [
+        {
+          "path": "web/app.js",
+          "line": 380,
+          "end_line": 392,
+          "label": "重读并合并"
+        }
+      ]
+    },
+    {
+      "id": "restart",
+      "lane": "retry",
+      "col": 5,
+      "type": "external",
+      "label": "修复并重启 Setup",
+      "sublabel": "人工排障后重读配置",
+      "width": 142,
+      "sources": [
+        {
+          "path": "config.py",
+          "line": 625,
+          "end_line": 628,
+          "label": "修复并重启 Setup"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "submit",
+      "to": "validate",
+      "role": "main",
+      "from": "draft",
+      "label": "请求"
+    },
+    {
+      "id": "validated",
+      "to": "cas",
+      "role": "main",
+      "from": "validate",
+      "label": "有效"
+    },
+    {
+      "id": "revision-match",
+      "to": "pending",
+      "role": "main",
+      "from": "cas",
+      "label": "版本一致"
+    },
+    {
+      "id": "apply",
+      "to": "verify",
+      "role": "main",
+      "from": "pending"
+    },
+    {
+      "id": "verified",
+      "to": "commit",
+      "role": "main",
+      "from": "verify",
+      "label": "验证成功"
+    },
+    {
+      "id": "invalid-request",
+      "to": "invalid",
+      "role": "error",
+      "variant": "security",
+      "from": "validate",
+      "label": "无效",
+      "fromSide": "bottom"
+    },
+    {
+      "id": "stale-version",
+      "to": "conflict",
+      "role": "error",
+      "variant": "security",
+      "from": "cas",
+      "label": "冲突"
+    },
+    {
+      "id": "apply-failure",
+      "to": "rollback",
+      "role": "error",
+      "variant": "security",
+      "from": "verify",
+      "label": "应用失败"
+    },
+    {
+      "id": "restored",
+      "to": "recovered",
+      "from": "rollback",
+      "label": "验证成功"
+    },
+    {
+      "id": "restore-failure",
+      "to": "manual",
+      "role": "error",
+      "variant": "security",
+      "from": "rollback",
+      "label": "恢复失败",
+      "fromSide": "top",
+      "toSide": "top"
+    },
+    {
+      "id": "correct",
+      "to": "fix",
+      "role": "branch",
+      "from": "invalid",
+      "label": "修正",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "corrected-submit",
+      "to": "draft",
+      "role": "return",
+      "fromSide": "left",
+      "toSide": "left",
+      "from": "fix",
+      "label": "重新提交",
+      "labelSegment": 1,
+      "labelDx": 70
+    },
+    {
+      "id": "refresh-conflict",
+      "to": "reload",
+      "role": "branch",
+      "from": "conflict",
+      "label": "读取最新"
+    },
+    {
+      "id": "review-rollback",
+      "to": "reload",
+      "role": "branch",
+      "from": "recovered",
+      "label": "确认状态"
+    },
+    {
+      "id": "manual-repair",
+      "to": "restart",
+      "role": "branch",
+      "from": "manual",
+      "label": "人工修复"
+    },
+    {
+      "id": "after-restart",
+      "to": "reload",
+      "role": "branch",
+      "from": "restart",
+      "label": "修复后重读"
+    },
+    {
+      "id": "merge-submit",
+      "to": "fix",
+      "role": "return",
+      "from": "reload",
+      "label": "合并后重试"
+    },
+    {
+      "id": "invalid-config",
+      "from": "cas",
+      "to": "invalid",
+      "label": "配置无效",
+      "role": "error",
+      "variant": "security"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "成功条件",
+      "items": [
+        "普通保存需要真实 MCP 验证，Startup 与 Tunnel 的生命周期操作必须成功；此流程不承诺公网或 ChatGPT 会话已连接。",
+        "源码基线 HEAD 3f8abbb；上述运行文件与发行基线 RC2 55a608c 相同。点击节点查看源码位置、上下游和深链接。",
+        "完整配置和目录校验在 CAS 版本核对后、事务落盘前执行。"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "恢复语义",
+      "items": [
+        "应用或验证失败会尝试恢复 last-good，并重新验证后端；恢复成功也不会把失败保存伪装为成功。",
+        "校验拒绝需修正；冲突需重读合并；回退需确认状态；恢复失败需人工修复后重读。所有重试都由用户重新提交。"
+      ]
+    }
+  ]
+}

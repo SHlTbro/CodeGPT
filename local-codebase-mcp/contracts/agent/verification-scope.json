@@ -1,0 +1,425 @@
+{
+  "CT01": {
+    "fixtures": [],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T06/T15/T21",
+    "boundary": "Request shape only; registered-project and current ACL resolution are runtime checks."
+  },
+  "CT02": {
+    "fixtures": [
+      "FX01",
+      "FX11",
+      "FX34"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T08/T15/T21",
+    "boundary": "Request ID structure; durable replay/conflict and tombstones require storage."
+  },
+  "CT03": {
+    "fixtures": [
+      "FX01",
+      "FX02",
+      "FX27",
+      "FX29",
+      "FX30",
+      "FX42"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T15",
+    "boundary": "Intent/question shape and text bounds; intent execution is runtime."
+  },
+  "CT04": {
+    "fixtures": [
+      "FX02",
+      "FX13"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T04/T15",
+    "boundary": "Profile shape; allowed profile lookup and configuration admission are runtime."
+  },
+  "CT05": {
+    "fixtures": [
+      "FX03"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T13/T15",
+    "boundary": "Report reference shape; parent/project/access binding is runtime."
+  },
+  "CT06": {
+    "fixtures": [
+      "FX08",
+      "FX09",
+      "FX31",
+      "FX32",
+      "FX33",
+      "FX36",
+      "FX37"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T13",
+    "boundary": "Input bytes, compact response Unicode counts and output caps; transport overhead is runtime."
+  },
+  "CT07": {
+    "fixtures": [
+      "FX04",
+      "FX05",
+      "FX09",
+      "FX23",
+      "FX24",
+      "FX26"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T08/T13",
+    "boundary": "ID XOR and report/task response variants; persistent historical lookup is runtime."
+  },
+  "CT08": {
+    "fixtures": [
+      "FX05"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T13",
+    "boundary": "Section shape; membership lookup is runtime."
+  },
+  "CT09": {
+    "fixtures": [
+      "FX09",
+      "FX37",
+      "FX38"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T13",
+    "boundary": "Page counts and terminal cursor consistency; signed stable cursor binding is runtime."
+  },
+  "CT10": {
+    "fixtures": [
+      "FX04",
+      "FX25"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T09",
+    "boundary": "Wait bounds and report-mode zero wait; disconnect and condition-wait behavior are runtime."
+  },
+  "CT11": {
+    "fixtures": [
+      "FX27",
+      "FX28"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T06/T14",
+    "boundary": "Caller cannot inject identity; secret-field exclusion; real revocation/ACL is runtime."
+  },
+  "CT12": {
+    "fixtures": [
+      "FX08",
+      "FX13",
+      "FX35",
+      "FX46"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T11",
+    "boundary": "Requested model nonblank and actual model nullable; event provenance is runtime."
+  },
+  "CT13": {
+    "fixtures": [
+      "FX14",
+      "FX17",
+      "FX43"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T04/T05/T08",
+    "boundary": "Separate revision shapes; actual frozen configuration binding is runtime."
+  },
+  "CT14": {
+    "fixtures": [
+      "FX06",
+      "FX10",
+      "FX39"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T09/T10",
+    "boundary": "Terminal timestamps and finish reasons; race/process cleanup is runtime."
+  },
+  "CT15": {
+    "fixtures": [
+      "FX10",
+      "FX11"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T10/T11",
+    "boundary": "Error schema and documented retry policy; protocol and cleanup failures are runtime."
+  },
+  "CT16": {
+    "fixtures": [
+      "FX09"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T13/T15",
+    "boundary": "Report/task completion and verification independent fields; actual publication is runtime."
+  },
+  "CT17": {
+    "fixtures": [],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T11",
+    "boundary": "No native session request field; safe internal resume requires runtime validation."
+  },
+  "CT18": {
+    "fixtures": [
+      "FX08"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T11",
+    "boundary": "Nullable usage/cost and separate billing_source/cost_basis; cumulative metering is runtime."
+  },
+  "CT19": {
+    "fixtures": [],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T05/T13",
+    "boundary": "Schema version constants; migration and unsupported stored object handling are runtime."
+  },
+  "CT20": {
+    "fixtures": [
+      "FX03"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T12/T13",
+    "boundary": "Freshness metadata shape; Git/non-Git fingerprinting is runtime."
+  },
+  "CT21": {
+    "fixtures": [],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T12/T13",
+    "boundary": "Evidence relative paths and line ordering; hash/snapshot verification is runtime."
+  },
+  "CT22": {
+    "fixtures": [
+      "FX12",
+      "FX13",
+      "FX14",
+      "FX15",
+      "FX16",
+      "FX35",
+      "FX40",
+      "FX46"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T04/T05/T18/T22",
+    "boundary": "Raw config omission and additive Setup overlays; preservation merge and no-CLI regression are runtime."
+  },
+  "CT23": {
+    "fixtures": [
+      "FX07",
+      "FX20",
+      "FX41",
+      "FX47"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T02/T11",
+    "boundary": "Probe request shape and verified enforcement evidence fields; installed Windows enforcement is runtime."
+  },
+  "CT24": {
+    "fixtures": [],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T08/T09",
+    "boundary": "Queue/config limit shape; actual saturation/admission is runtime."
+  },
+  "CT25": {
+    "fixtures": [],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T08/T13",
+    "boundary": "Retention config shape; expiry/tombstone persistence is runtime."
+  },
+  "CT26": {
+    "fixtures": [
+      "FX14",
+      "FX17",
+      "FX21",
+      "FX43",
+      "FX44"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T07/T17",
+    "boundary": "Applied verified requires loaded/healthy checks; real save/apply/rollback is runtime."
+  },
+  "CT27": {
+    "fixtures": [
+      "FX18",
+      "FX45"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T03/T07",
+    "boundary": "Network/auth layered metadata; real 401/403 discovery is runtime."
+  },
+  "CT28": {
+    "fixtures": [
+      "FX22",
+      "FX45"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T03/T07",
+    "boundary": "Tunnel ready/auth_required consistency; real endpoint and legacy migration are runtime."
+  },
+  "CT29": {
+    "fixtures": [
+      "FX18"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T03/T20",
+    "boundary": "OAuth/connection state shape; real authenticated ChatGPT connection is runtime."
+  },
+  "CT30": {
+    "fixtures": [
+      "FX19"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T17/T18",
+    "boundary": "UI compatibility version shape; cached/open old browser behavior is runtime."
+  },
+  "CT31": {
+    "fixtures": [
+      "OPT01",
+      "OPT02",
+      "OPT05",
+      "OPT47",
+      "OPT49",
+      "OPT52"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T04/T16/T22",
+    "boundary": "Disabled config shapes and stable registration specification; zero CLI/model execution is runtime."
+  },
+  "CT32": {
+    "fixtures": [
+      "OPT02",
+      "OPT03",
+      "OPT04",
+      "OPT05",
+      "OPT17",
+      "OPT18",
+      "OPT19",
+      "OPT36",
+      "OPT45",
+      "OPT47",
+      "OPT50",
+      "OPT60"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T11/T27",
+    "boundary": "Auth/billing/endpoint consistency; environment isolation and no fallback are runtime."
+  },
+  "CT33": {
+    "fixtures": [
+      "OPT06",
+      "OPT20",
+      "OPT21",
+      "OPT22",
+      "OPT23",
+      "OPT24",
+      "OPT25",
+      "OPT26",
+      "OPT27",
+      "OPT28",
+      "OPT44",
+      "OPT59"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T27",
+    "boundary": "Dedicated strict credential CAS input and sanitized status; protected storage/idempotency are runtime."
+  },
+  "CT34": {
+    "fixtures": [
+      "OPT09",
+      "OPT10",
+      "OPT11",
+      "OPT12",
+      "OPT13",
+      "OPT14",
+      "OPT15",
+      "OPT19",
+      "OPT60"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T14/T27",
+    "boundary": "HTTPS/literal-address/URL syntax validation; DNS rebinding and redirect approval are runtime."
+  },
+  "CT35": {
+    "fixtures": [
+      "OPT02",
+      "OPT07",
+      "OPT08",
+      "OPT29",
+      "OPT30",
+      "OPT31",
+      "OPT33",
+      "OPT34",
+      "OPT35",
+      "OPT36",
+      "OPT37",
+      "OPT41",
+      "OPT43",
+      "OPT44",
+      "OPT48",
+      "OPT52",
+      "OPT53",
+      "OPT56",
+      "OPT57"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T28/T18",
+    "boundary": "Catalog, manual model and identity/verification consistency; real selection wiring is runtime."
+  },
+  "CT36": {
+    "fixtures": [
+      "OPT08",
+      "OPT16",
+      "OPT17",
+      "OPT29",
+      "OPT32",
+      "OPT51",
+      "OPT53",
+      "OPT54",
+      "OPT55",
+      "OPT58"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T11/T28",
+    "boundary": "Supported effort/tier selection consistency; installed-version CLI wire mapping is runtime."
+  },
+  "CT37": {
+    "fixtures": [
+      "OPT30",
+      "OPT31",
+      "OPT49"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T08/T27/T28",
+    "boundary": "Frozen execution metadata shape; exact fingerprint invalidation and revocation are runtime."
+  },
+  "CT38": {
+    "fixtures": [
+      "OPT35",
+      "OPT38",
+      "OPT39",
+      "OPT40",
+      "OPT41",
+      "OPT42",
+      "OPT46"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T08/T17/T28",
+    "boundary": "Explicit model request consent constant and fixed request fields; single durable task is runtime."
+  },
+  "CT39": {
+    "fixtures": [
+      "OPT45"
+    ],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T19/T20",
+    "boundary": "Dual-source output schema only; actual selected identity/model and web end-to-end are runtime."
+  },
+  "CT40": {
+    "fixtures": [],
+    "runtime_status": "NOT_RUN",
+    "runtime_owner": "T00/T19/T25",
+    "boundary": "No runtime service side effects in contract validation; live protection/cutover is separately evidenced."
+  }
+}

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>CodeGPT · 本地连接</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js?v=agent-ui-2.0.0-t18.2" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#projects-title">跳到项目配置</a>
+  <div class="page">
+    <header class="masthead"><a class="wordmark" href="/" aria-label="CodeGPT 首页">CodeGPT</a><span class="local-label">配置仅在本机</span></header>
+    <div class="intro"><h1>连接 ChatGPT</h1><p>让 ChatGPT 使用你授权的本地项目。<span class="intro-reassurance">项目与配置由你掌控。</span></p></div>
+    <div id="page-message" class="message" role="status" aria-live="polite" hidden></div>
+    <div id="conflict-message" class="message warning" hidden><div><strong>配置已在别处修改</strong><p>当前输入已保留，请读取最新版本后合并修改。</p></div><button id="reload-config" type="button" class="button secondary">重新读取</button></div>
+    <section class="connection-choice" aria-labelledby="connection-title">
+      <div class="mode-field"><label id="connection-title" for="tunnel-mode">连接方式</label><select id="tunnel-mode" name="tunnel-mode" form="config-form" disabled><option value="ngrok">ngrok · 推荐首选</option><option value="cloudflare">Cloudflare 临时连接 · 备选</option><option value="off">仅本机 · 备选</option></select></div>
+      <p id="tunnel-help" class="field-help"></p><p class="connection-intro">推荐 ngrok 用于持续接入，稳定域名可持续复用；Cloudflare 临时连接和仅本机为备选。ChatGPT 网页无法访问本机地址。</p>
+      <button id="save-connection" type="submit" form="config-form" class="button secondary" disabled hidden>保存当前配置</button>
+      <div id="named-warning" class="inline-warning" hidden>无法验证此 Named Tunnel 的配置页面隔离。请改用 ngrok 或 Cloudflare 临时连接。</div>
+    </section>
+    <div class="overview">
+      <section class="connect" aria-labelledby="setup-guide-title">
+        <p id="local-mode-note" class="mode-note" hidden>当前仅本机。完成下方步骤并启用 ngrok，才会生成 ChatGPT 可用的公网地址。</p>
+        <section id="ngrok-guide" class="ngrok-guide" aria-labelledby="setup-guide-title">
+          <h2 id="setup-guide-title">配置 ngrok <span class="guide-time">约5分钟</span></h2>
+          <ol class="ngrok-steps">
+            <li><strong>注册或登录</strong><p><a href="https://dashboard.ngrok.com/signup" target="_blank" rel="noopener noreferrer">打开 ngrok 注册 / 登录 ↗</a>，按提示验证邮箱并进入 Dashboard。</p></li>
+            <li id="ngrok-prerequisite" hidden><strong>下载 Windows 程序</strong><p><a href="https://ngrok.com/download/windows" target="_blank" rel="noopener noreferrer">下载 ngrok for Windows ↗</a>，解压 ngrok.exe，放到本项目目录，再点<button id="refresh-ngrok" type="button" class="inline-button">重新检测</button>。</p></li>
+            <li><strong>复制 authtoken</strong><p><a href="https://dashboard.ngrok.com/get-started/your-authtoken" target="_blank" rel="noopener noreferrer">打开 Your Authtoken ↗</a>，找到 Authtoken 并点击 <strong>Copy</strong>。请勿复制 API Key。</p></li>
+            <li><label for="ngrok-authtoken">粘贴 authtoken</label><input id="ngrok-authtoken" type="password" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="粘贴刚才复制的 authtoken" aria-describedby="ngrok-token-help"><p id="ngrok-token-help" class="field-help">凭据只保存在本机，不会回读。</p><details class="token-help"><summary>复制了整行命令？</summary><p class="field-help">也可粘贴不带引号的 ngrok config add-authtoken 命令。</p></details></li>
+          </ol>
+          <div class="ngrok-action-row"><button id="enable-ngrok" type="button" class="button primary" disabled>一键启用 ngrok</button><span id="ngrok-credential-state" class="credential-state">正在检测凭据</span></div>
+          <p id="ngrok-draft-note" class="field-help" hidden>请先保存项目、端口或开机启动的修改，再启用 ngrok。</p>
+          <p class="field-help setup-timing">完成时间取决于账号验证和网络。</p><div id="ngrok-message" class="ngrok-message" role="status" aria-live="polite" hidden></div>
+        </section>
+        <section id="cloudflare-guide" class="cloudflare-guide" hidden aria-labelledby="cloudflare-title"><h2 id="cloudflare-title">Cloudflare 临时连接</h2><ol class="tutorial"><li>在本机安装 <strong>cloudflared</strong>。<a href="https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/downloads/" target="_blank" rel="noopener noreferrer">官方下载说明 ↗</a></li><li>点击启用，等待公网地址验证；连接失败时可直接重试。</li></ol><p class="field-help">无需注册账号。地址可能在重启后变化，请及时更新 ChatGPT 中的地址。</p><button id="enable-cloudflare" type="button" class="button primary" disabled>启用 / 重试临时连接</button><p id="cloudflare-draft-note" class="field-help" hidden>请先保存项目、端口或开机启动的修改，再启用临时连接。</p><p id="cloudflare-prerequisite" class="field-help" hidden>未找到 cloudflared。下载官方程序并放到本项目目录后重试。</p><div id="cloudflare-message" class="tunnel-message" role="status" aria-live="polite" hidden></div></section>
+        <div class="setup-preferences"><label class="startup-choice" for="startup-enabled"><input id="startup-enabled" type="checkbox" form="config-form" disabled><span>Windows 登录后自动启动</span></label><p id="startup-status" class="field-help" role="status" aria-live="polite">正在读取开机启动状态</p><details class="advanced"><summary>高级连接设置</summary><div class="advanced-fields"><div class="fields two-fields"><div><label for="server-port">MCP 端口</label><input id="server-port" name="server-port" form="config-form" type="number" min="1" max="65535" step="1" required inputmode="numeric" disabled></div><div><label for="server-path">MCP 路径</label><input id="server-path" name="server-path" form="config-form" type="text" placeholder="/mcp" pattern="/.*" required spellcheck="false" disabled></div></div><p class="field-help">修改后重新启动连接。</p><div id="custom-public-url"><label id="public-url-label" for="public-url">已有公网 MCP 地址（可选）</label><input id="public-url" name="public-url" form="config-form" type="url" placeholder="https://你的域名/mcp" spellcheck="false" disabled><p id="public-url-help" class="field-help">留空自动获取地址。</p></div></div></details></div>
+      </section>
+      <aside class="sidebar">
+        <section class="public-card" aria-labelledby="chatgpt-title"><h2 id="chatgpt-title">接入 ChatGPT</h2><div class="mcp-address"><label for="mcp-url">公网 MCP 地址</label><div class="copy-row"><input id="mcp-url" type="text" readonly placeholder="启用连接后获取地址" aria-describedby="mcp-url-status mcp-url-note"><button id="copy-url" type="button" class="button secondary" disabled>复制</button></div><p id="mcp-url-status" class="field-help">等待公网地址验证。</p><p id="mcp-url-note" class="field-help">先确认此地址在线，再填入 ChatGPT。</p></div><ol class="tutorial chatgpt-steps"><li><a id="chatgpt-settings-link" class="service-link" href="https://chatgpt.com/plugins" target="_blank" rel="noopener noreferrer">打开 ChatGPT 配置 ↗</a></li><li>在<strong>设置 → 安全与登录</strong>开启 <strong>Developer mode</strong>。</li><li>点<strong>新增（＋）</strong>，填写上方公网地址，选择无身份验证，检查工具后创建。</li></ol><p class="auth-note">当前 MCP 无身份验证。持有公网地址的人可调用已授权项目，请只分享给可信客户端。</p><details class="guide-details"><summary>验证接入与其他入口</summary><p class="field-help">对话中选择该应用，发送：</p><p class="verification-prompt">调用 list_projects，列出我已登记的本地项目。</p><p class="field-help">入口取决于账号与工作区权限；旧界面可从应用 → 创建进入。地址变化后请更新服务器 URL。</p><a class="guide-link" href="https://developers.openai.com/plugins/deploy/connect-chatgpt" target="_blank" rel="noopener noreferrer">OpenAI 官方说明 ↗</a></details></section>
+        <section class="network section" aria-labelledby="network-title">
+          <div class="section-heading"><h2 id="network-title">连接状态</h2><button id="probe-now" type="button" class="text-button" disabled>立即检测</button></div>
+          <p id="status-freshness" class="section-note">等待真实探测</p><p id="core-availability" class="field-help" role="status">Core 状态待检测</p><p id="connection-recovery" class="field-help" role="status">连接探测不能确认 ChatGPT 当前会话状态。</p>
+          <div id="status-error" class="inline-warning" role="status" hidden></div>
+          <dl class="status-list">
+            <div class="status-row" data-layer="local"><dt><span class="status-dot" aria-hidden="true"></span>Local MCP</dt><dd><span class="status-value">待检测</span><span class="status-hint"></span><details class="status-diagnostic"><summary>详情</summary><span class="status-detail">本机 MCP 服务</span></details></dd></div>
+            <div class="status-row" data-layer="tunnel"><dt><span class="status-dot" aria-hidden="true"></span>Tunnel</dt><dd><span class="status-value">待检测</span><span class="status-hint"></span><details class="status-diagnostic"><summary>详情</summary><span class="status-detail">公网隧道进程</span></details></dd></div>
+            <div class="status-row" data-layer="public"><dt><span class="status-dot" aria-hidden="true"></span>Public URL</dt><dd><span class="status-value">待检测</span><span class="status-hint"></span><details class="status-diagnostic"><summary>详情</summary><span class="status-detail">公网 MCP 协议探测</span></details></dd></div>
+            <div class="status-row" data-layer="activity"><dt><span class="status-dot" aria-hidden="true"></span>实际 MCP 调用</dt><dd><span class="status-value">暂无调用</span><span class="status-detail"></span><span class="status-hint"></span></dd></div>
+          </dl>
+          <figure class="history"><figcaption><span>最近 5 分钟</span><span class="chart-key"><i class="key-dot up"></i>在线 <i class="key-dot down"></i>断连</span></figcaption><svg id="network-chart" viewBox="0 0 420 82" role="img" aria-label="等待真实网络探测数据"></svg><p id="history-note" class="field-help">等待真实采样</p></figure>
+          <details class="diagnostics"><summary>连接诊断与重启</summary>
+            <p class="field-help">公网探测不代表 ChatGPT 已连接；探测请求不计入实际工具调用。</p>
+            <details class="connection-events"><summary>最近断连与重连</summary><ul id="connection-events"><li>尚无连接事件</li></ul></details>
+            <button id="restart-mcp" class="text-button" type="button" disabled>重启 MCP 与隧道</button>
+          </details>
+        </section>
+      </aside>
+    </div>
+    <main class="layout">
+      <form id="config-form" class="configuration" autocomplete="off" novalidate>
+        <fieldset id="configuration-fields" disabled>
+          <section class="section projects-section" aria-labelledby="projects-title">
+            <div class="section-heading"><h2 id="projects-title" tabindex="-1">本地项目</h2><span id="project-count" class="count">—</span></div>
+            <p class="section-note">新项目默认只读。</p>
+            <div class="project-list-wrap"><div id="projects" role="region" aria-label="本地项目列表" tabindex="0"></div></div>
+            <div id="empty-projects" class="empty-state" hidden><strong>添加你的第一个项目</strong><p>选择本机已有文件夹，让 ChatGPT 读取它。</p></div>
+            <button id="add-project" type="button" class="button secondary add-project"><span aria-hidden="true">＋</span> 添加本地项目</button>
+          </section>
+          <section class="section agent-section" aria-labelledby="agent-title">
+            <div class="section-heading"><h2 id="agent-title">本机 Codex · 可选</h2><label class="startup-choice" for="agent-enabled"><input id="agent-enabled" type="checkbox"><span>启用</span></label></div>
+            <p class="section-note">默认关闭。Core 的 15 个工具与连接恢复独立运行，无需安装或登录 Codex。</p>
+            <p id="agent-availability" class="field-help" role="status">正在读取能力状态</p><p id="agent-execution-access" class="field-help">本机执行尚未启用；未经验证的公网调用不得启动 Codex。本机受信任执行不代表严格沙箱。</p>
+            <details id="agent-settings-disclosure" class="agent-settings-disclosure"><summary>配置可选阅读设置</summary>
+            <fieldset id="agent-settings" disabled>
+              <div class="fields two-fields"><div><label for="agent-auth-mode">使用哪份额度</label><select id="agent-auth-mode"><option value="unselected">尚未选择</option><option value="chatgpt">本机 ChatGPT / Codex 额度</option><option value="api_key">自备 API Key</option></select></div><div><label for="agent-default-profile">默认阅读档案</label><select id="agent-default-profile"></select></div></div>
+              <p id="agent-billing" class="field-help">尚未选择额度来源。不会自动切换账号或使用环境中的其他 Key。</p>
+              <div id="agent-profiles" class="agent-profiles"></div><button id="agent-add-profile" type="button" class="text-button">＋ 添加阅读档案</button>
+              <div class="agent-actions"><button id="agent-refresh-models" type="button" class="button secondary">刷新模型候选</button><button id="agent-probe" type="button" class="text-button">检测 Codex 安装与登录</button></div>
+              <p id="agent-catalog-note" class="field-help">候选不等于当前身份有权限。无目录时仍可手填模型 ID。</p>
+              <details class="advanced agent-advanced"><summary>路径、运行限制与 API 端点</summary><div class="advanced-fields">
+                <label for="agent-executable">Codex 程序路径（可留空自动发现）</label><input id="agent-executable" type="text" spellcheck="false">
+                <div class="fields two-fields"><div><label for="agent-api-provider">API 提供方</label><select id="agent-api-provider"><option value="openai">OpenAI</option><option value="custom_responses">自定义 Responses API</option></select></div><div><label for="agent-api-url">API 地址</label><input id="agent-api-url" type="url" spellcheck="false"></div></div>
+                <label class="choice"><input id="agent-endpoint-consent" type="checkbox"><span>我确认此 API 端点及凭据目的地；变更后旧验证失效。</span></label>
+                <div class="fields two-fields"><div><label for="agent-max-running">同时阅读任务数</label><input id="agent-max-running" type="number" min="1" max="4"></div><div><label for="agent-max-queued">等待任务数</label><input id="agent-max-queued" type="number" min="0" max="100"></div><div><label for="agent-max-response">每次响应字符上限</label><input id="agent-max-response" type="number" min="2048" max="32000"></div><div><label for="agent-max-wait">同步等待秒数</label><input id="agent-max-wait" type="number" min="0" max="20"></div><div><label for="agent-retention-days">报告保留天数</label><input id="agent-retention-days" type="number" min="1" max="365"></div><div><label for="agent-storage-bytes">存储上限（字节）</label><input id="agent-storage-bytes" type="number" min="10485760" max="10737418240"></div></div>
+              </div></details>
+              <div id="agent-api-secret" hidden><label for="agent-api-key">API Key（只写，不回显）</label><input id="agent-api-key" type="password" autocomplete="new-password" spellcheck="false"><p id="agent-credential-state" class="field-help">尚未读取凭据状态</p><div class="agent-actions"><button id="agent-save-key" type="button" class="button secondary">保存 Key</button><button id="agent-delete-key" type="button" class="text-button danger">删除 Key 并撤销</button></div><p class="field-help">先保存端点设置，再单独保存 Key。Key 不进入普通配置。</p></div>
+              <div class="agent-model-test"><label for="agent-test-project">验证使用的已授权项目</label><select id="agent-test-project"></select><label class="choice"><input id="agent-test-consent" type="checkbox"><span>我同意用已保存的选择做一次短测试，可能消耗所选套餐额度或 API 费用。</span></label><button id="agent-model-test" type="button" class="button secondary">测试所选模型</button><p id="agent-test-result" class="field-help" role="status">尚未验证。实际用量与剩余额度未知。</p></div>
+            </fieldset></details>
+            <p id="agent-message" class="message" role="status" aria-live="polite" hidden></p>
+          </section>
+        </fieldset>
+        <div class="save-bar"><div><strong id="save-state">正在读取配置…</strong><p id="save-description">本机配置</p></div><button id="save-config" type="submit" class="button primary" disabled>保存并生效</button></div>
+      </form>
+    </main>
+    <div class="secondary-help"><details class="local-address"><summary>本机 MCP 客户端地址</summary><div class="local-address-content"><label for="local-mcp-url">本地 MCP 地址</label><div class="copy-row"><input id="local-mcp-url" type="text" readonly placeholder="等待本机 MCP 启动" aria-describedby="local-mcp-note"><button id="copy-local-url" type="button" class="button secondary" disabled>复制本地地址</button></div><p id="local-mcp-note" class="field-help">仅供本机 MCP 客户端使用。ChatGPT 网页不能连接 127.0.0.1。</p></div></details><details class="launcher-help"><summary>启动与停止</summary><p class="field-help">双击 setup.bat 启动配置页面和 MCP；deploy.bat 使用同一启动入口。stop-all.bat 停止本项目的 MCP 和公网连接。停止不会取消开机启动；如需取消，请关闭上方开关并保存。</p></details></div>
+    <footer class="page-footer"><span>CodeGPT</span><span>配置与项目由你掌控</span></footer>
+  </div>
+  <template id="project-template">
+    <details class="project">
+      <summary><span class="project-summary"><strong class="project-name">新项目</strong><span class="project-path">填写本地项目目录</span></span><span class="permission-badge">只读</span><span class="edit-label">编辑 <span aria-hidden="true">⌄</span></span></summary>
+      <div class="project-fields">
+        <div class="fields two-fields"><div><label class="name-label">项目名称</label><input class="project-name-input" type="text" required placeholder="例如：我的网站" maxlength="200"></div><div><label class="id-label">项目 ID</label><input class="project-id-input" type="text" required placeholder="例如：my-website" maxlength="200" spellcheck="false"><p class="field-help">供 AI 选择项目，必须唯一。</p></div></div>
+        <label class="path-label">本地项目目录</label><input class="project-path-input" type="text" required placeholder="例如：D:/code/my-website" spellcheck="false" aria-invalid="false"><p class="field-help">填写已存在文件夹的完整路径。</p>
+        <fieldset class="permission-choice"><legend>访问权限</legend><label class="choice"><input class="read-only" type="radio" value="readonly"><span><strong>只读 <span class="recommended">默认</span></strong><small>读取和检索，禁止写入。</small></span></label><label class="choice"><input class="controlled-write" type="radio" value="write"><span><strong>受控写</strong><small>指定目录写入，工作区重命名。</small></span></label></fieldset>
+        <div class="project-agent"><label class="choice"><input class="project-agent-enabled" type="checkbox"><span>允许本机 Codex 阅读此项目</span></label><label class="profiles-label">允许的阅读档案（每行一个名称）</label><textarea class="project-agent-profiles" rows="2" spellcheck="false"></textarea><p class="field-help">仍需全局启用；只允许已配置的阅读档案。</p></div>
+        <div class="write-settings" hidden><label class="roots-label">文件可写目录</label><textarea class="write-roots" rows="2" spellcheck="false" placeholder="docs"></textarea><p class="field-help">每行一个相对目录，如 docs。禁用绝对路径、.. 和通配符。</p><p class="write-warning">工作区重命名也可修改源码，不受上述目录限制；仍有路径、敏感文件与冲突检查。</p></div>
+        <div class="project-actions"><button class="remove-project text-button danger" type="button">移除项目</button><span>仅取消登记，不删除文件。</span></div>
+      </div>
+    </details>
+  </template>
+</body>
+</html>

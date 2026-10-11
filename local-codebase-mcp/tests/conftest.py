@@ -26,6 +26,7 @@ PRODUCTION_SOURCES = (
     "config.py", "errors.py", "projects.py", "security.py",
     "tools.py", "tools_services.py", "server.py",
     "writer.py",  # task15：受控写纳入静态扫描面（shell 形态）
+    "setup.py", "runtime.py", "startup.py",
     "intel.py",   # task18：LSP 薄适配器纳入静态扫描面（shell 形态）
 )
 

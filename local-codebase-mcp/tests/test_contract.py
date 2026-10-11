@@ -108,7 +108,7 @@ def test_contract_read_file_output_contains_content_sha256(contract):
     assert {"sha256", "write_seq"} <= set(wf["output"])
 
 
-def test_contract_write_paths_default_docs_glob(contract):
+def test_contract_write_paths_default_docs_glob(contract, tmp_path):
     """契约 configSchema security.write_paths 默认 ["docs/**"]，与 config._DEFAULT_SECURITY 一致。
 
     （test_config.test_defaults_match_contract_limits_and_security 已做整 dict 相等断言，
@@ -121,9 +121,10 @@ def test_contract_write_paths_default_docs_glob(contract):
     note = contract["configSchema"]["shape"]["projects_note"]
     assert "write_enabled" in note and "默认 false" in note
     # 实现侧 write_enabled 解析默认 false（config.py _parse_projects）
-    import inspect
-    import config as cfg_src
-    assert 'entry.get("write_enabled", False)' in inspect.getsource(cfg_src)
+    from config import config_from_data
+    actual = config_from_data({"projects": [{"id": "default", "name": "Default", "path": str(tmp_path)}]})
+    assert actual.projects[0].write_enabled is False
+    assert actual.projects[0].write_roots == ("docs",)
 
 
 # ---------------------------------------------------------------- v1.2 契约 diff 审计（task16 GWT-2）
@@ -134,7 +135,7 @@ def test_contract_write_paths_default_docs_glob(contract):
 #   R3 错误码名 "(新)" 后缀为提案标记，落盘剥离；
 #   R4 write_seq 描述尾缀 "供模型检测并发写冲突" 裁剪（字段/类型/语义不变，语义由 notes 并发段保留）；
 #   R5 错误码含义中的 sha256→content_sha256、提示语具体化（WRITE_PATH_FORBIDDEN 追加
-#      "白名单锚定 root/docs"、WRITE_DISABLED 指明 config.yaml 键名）——均为提案安全链/表格同义细化。
+#      "白名单锚定 root/docs"、WRITE_DISABLED 指明 config.toml 键名）——均为提案安全链/表格同义细化。
 _D1_LIST_FILES = {
     "description": "列出项目内某目录的内容。默认返回该目录的直接子目录与文件（ls 风格）；传 depth（1-5）时返回限深目录树。默认过滤 .git/node_modules/dist/build/__pycache__ 与敏感文件。",
     "input": {
@@ -234,7 +235,7 @@ def test_contract_v13_diff_audit_vs_proposal(contract):
     # v1.7（owner 执行令「项目灵感多目录写」）：description 由 v1.2 基线「docs/ 目录下」改为
     # write_roots 通用表述（契约与 tools.py 同步更新，test_registered_descriptions_match_contract 仍闭环）
     assert wf["description"] == (
-        "创建或更新项目声明的可写目录（默认 docs/，可在 config.yaml 项目级 write_roots 扩展）下的"
+        "创建或更新项目声明的可写目录（默认 docs/，可在 config.toml 项目级 write_roots 扩展）下的"
         " UTF-8 文本文件（文档维护专用）。新建文件必须 expected_absent=true；更新已有文件必须传入"
         "最近一次 read_file 返回的 content_sha256（防覆盖他人/用户新改动）。禁止写可写目录之外路径。")
     # annotations：契约 JSON 侧为 dict；注册侧 readOnlyHint=false/destructiveHint=true

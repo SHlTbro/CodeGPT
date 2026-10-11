@@ -1,0 +1,209 @@
+﻿field,producer,api,consumer,tests
+task.task_id,task_acceptance+auth_context+adapter,project_context/task_poll/task_cancel,web_host,CT02;CT04;CT11;CT12;CT13
+task.project_id,task_acceptance+auth_context+adapter,project_context/task_poll/task_cancel,web_host,CT02;CT04;CT11;CT12;CT13
+task.request_id,task_acceptance+auth_context+adapter,project_context/task_poll/task_cancel,web_host,CT02;CT04;CT11;CT12;CT13
+task.owner_id,task_acceptance+auth_context+adapter,project_context/task_poll/task_cancel,web_host,CT02;CT04;CT11;CT12;CT13
+task.mode,task_acceptance+auth_context+adapter,project_context/task_poll/task_cancel,web_host,CT02;CT04;CT11;CT12;CT13
+task.backend,task_acceptance+auth_context+adapter,project_context/task_poll/task_cancel,web_host,CT02;CT04;CT11;CT12;CT13
+task.profile,task_acceptance+auth_context+adapter,project_context/task_poll/task_cancel,web_host,CT02;CT04;CT11;CT12;CT13
+task.backend_version,task_acceptance+auth_context+adapter,project_context/task_poll/task_cancel,web_host,CT02;CT04;CT11;CT12;CT13
+task.requested_model,task_acceptance+auth_context+adapter,project_context/task_poll/task_cancel,web_host,CT02;CT04;CT11;CT12;CT13
+task.resolved_model,task_acceptance+auth_context+adapter,project_context/task_poll/task_cancel,web_host,CT02;CT04;CT11;CT12;CT13
+task.config_revision,task_acceptance+auth_context+adapter,project_context/task_poll/task_cancel,web_host,CT02;CT04;CT11;CT12;CT13
+task.parent_task_id,task_acceptance+auth_context+adapter,project_context/task_poll/task_cancel,web_host,CT02;CT04;CT11;CT12;CT13
+task.created_at,task_acceptance+auth_context+adapter,project_context/task_poll/task_cancel,web_host,CT02;CT04;CT11;CT12;CT13
+task.status,task_state_machine,task_poll/task_cancel,web_host,CT14;CT15
+task.started_at,task_state_machine,task_poll/task_cancel,web_host,CT14;CT15
+task.finished_at,task_state_machine,task_poll/task_cancel,web_host,CT14;CT15
+task.finish_reason,task_state_machine,task_poll/task_cancel,web_host,CT14;CT15
+task.progress,task_state_machine,task_poll/task_cancel,web_host,CT14;CT15
+task.error,task_state_machine,task_poll/task_cancel,web_host,CT14;CT15
+task.report_id,report_publisher,task_poll,web_host,CT16
+task.summary,report_publisher,task_poll,web_host,CT16
+task.completion,report_publisher,task_poll,web_host,CT16
+task.verification,report_publisher,task_poll,web_host,CT16
+task.continuation_type,private_session_map,task_poll,web_host,CT17
+task.session_available,private_session_map,task_poll,web_host,CT17
+task.actual_models,verified_cli_events,task_poll,web_host,CT12;CT18
+task.usage,verified_cli_events,task_poll,web_host,CT12;CT18
+task.usage_scope,verified_cli_events,task_poll,web_host,CT12;CT18
+task.cost,verified_cli_events,task_poll,web_host,CT12;CT18
+task.cost_basis,verified_cli_events,task_poll,web_host,CT12;CT18
+report.report_id,report_repository+snapshot_validator,task_poll(report_id)/project_context(cache),web_host,CT07;CT13;CT16;CT19;CT20
+report.project_id,report_repository+snapshot_validator,task_poll(report_id)/project_context(cache),web_host,CT07;CT13;CT16;CT19;CT20
+report.parent_report_id,report_repository+snapshot_validator,task_poll(report_id)/project_context(cache),web_host,CT07;CT13;CT16;CT19;CT20
+report.report_schema_version,report_repository+snapshot_validator,task_poll(report_id)/project_context(cache),web_host,CT07;CT13;CT16;CT19;CT20
+report.generated_at,report_repository+snapshot_validator,task_poll(report_id)/project_context(cache),web_host,CT07;CT13;CT16;CT19;CT20
+report.snapshot_id,report_repository+snapshot_validator,task_poll(report_id)/project_context(cache),web_host,CT07;CT13;CT16;CT19;CT20
+report.config_revision,report_repository+snapshot_validator,task_poll(report_id)/project_context(cache),web_host,CT07;CT13;CT16;CT19;CT20
+report.backend,report_repository+snapshot_validator,task_poll(report_id)/project_context(cache),web_host,CT07;CT13;CT16;CT19;CT20
+report.backend_version,report_repository+snapshot_validator,task_poll(report_id)/project_context(cache),web_host,CT07;CT13;CT16;CT19;CT20
+report.profile,report_repository+snapshot_validator,task_poll(report_id)/project_context(cache),web_host,CT07;CT13;CT16;CT19;CT20
+report.freshness,report_repository+snapshot_validator,task_poll(report_id)/project_context(cache),web_host,CT07;CT13;CT16;CT19;CT20
+report.summary,report_repository+snapshot_validator,task_poll(report_id)/project_context(cache),web_host,CT07;CT13;CT16;CT19;CT20
+report.sections,report_repository+snapshot_validator,task_poll(report_id)/project_context(cache),web_host,CT07;CT13;CT16;CT19;CT20
+report.completion,report_repository+snapshot_validator,task_poll(report_id)/project_context(cache),web_host,CT07;CT13;CT16;CT19;CT20
+report.verification,report_repository+snapshot_validator,task_poll(report_id)/project_context(cache),web_host,CT07;CT13;CT16;CT19;CT20
+page.section,report_paginator,task_poll,web_host,CT06;CT08;CT09
+page.text,report_paginator,task_poll,web_host,CT06;CT08;CT09
+page.format,report_paginator,task_poll,web_host,CT06;CT08;CT09
+pagination.cursor,report_paginator,all_new_mcp_tools,web_host,CT06;CT09
+pagination.next_cursor,report_paginator,all_new_mcp_tools,web_host,CT06;CT09
+pagination.has_more,report_paginator,all_new_mcp_tools,web_host,CT06;CT09
+pagination.returned_chars,report_paginator,all_new_mcp_tools,web_host,CT06;CT09
+pagination.total_chars,report_paginator,all_new_mcp_tools,web_host,CT06;CT09
+pagination.remaining_chars,report_paginator,all_new_mcp_tools,web_host,CT06;CT09
+probe.backend,non_model_capability_probe,POST /api/agent/probe,vanilla_js_agent_panel,CT23
+probe.availability,non_model_capability_probe,POST /api/agent/probe,vanilla_js_agent_panel,CT23
+probe.version,non_model_capability_probe,POST /api/agent/probe,vanilla_js_agent_panel,CT23
+probe.auth_state,non_model_capability_probe,POST /api/agent/probe,vanilla_js_agent_panel,CT23
+probe.checked_at,non_model_capability_probe,POST /api/agent/probe,vanilla_js_agent_panel,CT23
+probe.enforcement,non_model_capability_probe,POST /api/agent/probe,vanilla_js_agent_panel,CT23
+probe.errors,non_model_capability_probe,POST /api/agent/probe,vanilla_js_agent_panel,CT23
+probe.model_request_performed,non_model_capability_probe,POST /api/agent/probe,vanilla_js_agent_panel,CT23
+capability.schema_version,config_acl+probe_cache,project_info.agent_capabilities,web_host,CT04;CT11;CT23
+capability.context_enabled,config_acl+probe_cache,project_info.agent_capabilities,web_host,CT04;CT11;CT23
+capability.profiles,config_acl+probe_cache,project_info.agent_capabilities,web_host,CT04;CT11;CT23
+capability.backend,config_acl+probe_cache,project_info.agent_capabilities,web_host,CT04;CT11;CT23
+capability.availability,config_acl+probe_cache,project_info.agent_capabilities,web_host,CT04;CT11;CT23
+capability.reasons,config_acl+probe_cache,project_info.agent_capabilities,web_host,CT04;CT11;CT23
+capability.checked_at,config_acl+probe_cache,project_info.agent_capabilities,web_host,CT04;CT11;CT23
+capability.enforcement,config_acl+probe_cache,project_info.agent_capabilities,web_host,CT04;CT11;CT23
+agent_status.backend,task_service+probe_cache,GET /api/status.agent,vanilla_js_renderStatus,CT23;CT24
+agent_status.enabled,task_service+probe_cache,GET /api/status.agent,vanilla_js_renderStatus,CT23;CT24
+agent_status.availability,task_service+probe_cache,GET /api/status.agent,vanilla_js_renderStatus,CT23;CT24
+agent_status.version,task_service+probe_cache,GET /api/status.agent,vanilla_js_renderStatus,CT23;CT24
+agent_status.auth_state,task_service+probe_cache,GET /api/status.agent,vanilla_js_renderStatus,CT23;CT24
+agent_status.enforcement,task_service+probe_cache,GET /api/status.agent,vanilla_js_renderStatus,CT23;CT24
+agent_status.checked_at,task_service+probe_cache,GET /api/status.agent,vanilla_js_renderStatus,CT23;CT24
+agent_status.active_tasks,task_service+probe_cache,GET /api/status.agent,vanilla_js_renderStatus,CT23;CT24
+agent_status.queued_tasks,task_service+probe_cache,GET /api/status.agent,vanilla_js_renderStatus,CT23;CT24
+agent_status.last_error,task_service+probe_cache,GET /api/status.agent,vanilla_js_renderStatus,CT23;CT24
+network_extension.reachability,network_auth_probe,GET /api/status.local|public,vanilla_js_renderStatus/renderHistory,CT27
+network_extension.mcp,network_auth_probe,GET /api/status.local|public,vanilla_js_renderStatus/renderHistory,CT27
+network_extension.auth,network_auth_probe,GET /api/status.local|public,vanilla_js_renderStatus/renderHistory,CT27
+network_extension.checked_at,network_auth_probe,GET /api/status.local|public,vanilla_js_renderStatus/renderHistory,CT27
+network_extension.http_status,network_auth_probe,GET /api/status.local|public,vanilla_js_renderStatus/renderHistory,CT27
+auth_status.mode,auth_config+verified_connection_evidence,GET /api/status.auth,vanilla_js_connection_guide,CT29
+auth_status.resource,auth_config+verified_connection_evidence,GET /api/status.auth,vanilla_js_connection_guide,CT29
+auth_status.issuer,auth_config+verified_connection_evidence,GET /api/status.auth,vanilla_js_connection_guide,CT29
+auth_status.discovery_state,auth_config+verified_connection_evidence,GET /api/status.auth,vanilla_js_connection_guide,CT29
+auth_status.chatgpt_connection,auth_config+verified_connection_evidence,GET /api/status.auth,vanilla_js_connection_guide,CT29
+auth_status.last_verified_at,auth_config+verified_connection_evidence,GET /api/status.auth,vanilla_js_connection_guide,CT29
+applied_checks.config_loaded,runtime_private_verification,PUT /api/config.applied.checks,vanilla_js_saveConfig,CT26;CT27
+applied_checks.local_health,runtime_private_verification,PUT /api/config.applied.checks,vanilla_js_saveConfig,CT26;CT27
+applied_checks.auth_discovery,runtime_private_verification,PUT /api/config.applied.checks,vanilla_js_saveConfig,CT26;CT27
+applied_checks.agent_capability,runtime_private_verification,PUT /api/config.applied.checks,vanilla_js_saveConfig,CT26;CT27
+evidence.evidence_id,snapshot_bound_evidence_validator,task_poll(section=evidence),web_host,CT21
+evidence.path,snapshot_bound_evidence_validator,task_poll(section=evidence),web_host,CT21
+evidence.line_start,snapshot_bound_evidence_validator,task_poll(section=evidence),web_host,CT21
+evidence.line_end,snapshot_bound_evidence_validator,task_poll(section=evidence),web_host,CT21
+evidence.symbol,snapshot_bound_evidence_validator,task_poll(section=evidence),web_host,CT21
+evidence.content_sha256,snapshot_bound_evidence_validator,task_poll(section=evidence),web_host,CT21
+evidence.snapshot_id,snapshot_bound_evidence_validator,task_poll(section=evidence),web_host,CT21
+evidence.excerpt,snapshot_bound_evidence_validator,task_poll(section=evidence),web_host,CT21
+evidence.validation,snapshot_bound_evidence_validator,task_poll(section=evidence),web_host,CT21
+coverage.enumerated_files,independently_verified_read_audit,task_poll(section=coverage),web_host,CT20;CT21
+coverage.read_files,independently_verified_read_audit,task_poll(section=coverage),web_host,CT20;CT21
+coverage.excluded_paths,independently_verified_read_audit,task_poll(section=coverage),web_host,CT20;CT21
+coverage.scope,independently_verified_read_audit,task_poll(section=coverage),web_host,CT20;CT21
+coverage.execution_performed,independently_verified_read_audit,task_poll(section=coverage),web_host,CT20;CT21
+unknown.question,report_validator,task_poll(section=unknowns),web_host,CT16
+unknown.reason,report_validator,task_poll(section=unknowns),web_host,CT16
+unknown.next_step,report_validator,task_poll(section=unknowns),web_host,CT16
+setup_info_extension.ui_contract_version,release build metadata,GET /api/info,web/app.js start() compatibility guard,CT30
+setup_info_extension.ui_asset_version,release build metadata,GET /api/info,web/app.js start() compatibility guard,CT30
+execution_context.auth_mode,frozen identity + adapter evidence,project_context/task_poll/report,host provenance and billing display,CT32;CT36;CT37;CT39
+execution_context.billing_source,frozen identity + adapter evidence,project_context/task_poll/report,host provenance and billing display,CT32;CT36;CT37;CT39
+execution_context.provider,frozen identity + adapter evidence,project_context/task_poll/report,host provenance and billing display,CT32;CT36;CT37;CT39
+execution_context.endpoint,frozen identity + adapter evidence,project_context/task_poll/report,host provenance and billing display,CT32;CT36;CT37;CT39
+execution_context.credential_context_id,frozen identity + adapter evidence,project_context/task_poll/report,host provenance and billing display,CT32;CT36;CT37;CT39
+execution_context.credential_revision,frozen identity + adapter evidence,project_context/task_poll/report,host provenance and billing display,CT32;CT36;CT37;CT39
+execution_context.requested_reasoning_effort,frozen identity + adapter evidence,project_context/task_poll/report,host provenance and billing display,CT32;CT36;CT37;CT39
+execution_context.resolved_reasoning_effort,frozen identity + adapter evidence,project_context/task_poll/report,host provenance and billing display,CT32;CT36;CT37;CT39
+execution_context.requested_service_tier,frozen identity + adapter evidence,project_context/task_poll/report,host provenance and billing display,CT32;CT36;CT37;CT39
+execution_context.resolved_service_tier,frozen identity + adapter evidence,project_context/task_poll/report,host provenance and billing display,CT32;CT36;CT37;CT39
+execution_context.selection_fingerprint,frozen identity + adapter evidence,project_context/task_poll/report,host provenance and billing display,CT32;CT36;CT37;CT39
+execution_context.effective_auth_verified,frozen identity + adapter evidence,project_context/task_poll/report,host provenance and billing display,CT32;CT36;CT37;CT39
+credential_status.configured,CredentialStore nonsecret projection,localhost credential/status,Setup credentials controls,CT33;CT34
+credential_status.credential_revision,CredentialStore nonsecret projection,localhost credential/status,Setup credentials controls,CT33;CT34
+credential_status.storage,CredentialStore nonsecret projection,localhost credential/status,Setup credentials controls,CT33;CT34
+credential_status.bound_endpoint,CredentialStore nonsecret projection,localhost credential/status,Setup credentials controls,CT33;CT34
+credential_status.status,CredentialStore nonsecret projection,localhost credential/status,Setup credentials controls,CT33;CT34
+credential_status.updated_at,CredentialStore nonsecret projection,localhost credential/status,Setup credentials controls,CT33;CT34
+model_option.model_id,version-gated catalog + verification cache,GET/POST /api/agent/models,Setup model/reasoning picker,CT35;CT36;CT37
+model_option.display_name,version-gated catalog + verification cache,GET/POST /api/agent/models,Setup model/reasoning picker,CT35;CT36;CT37
+model_option.source,version-gated catalog + verification cache,GET/POST /api/agent/models,Setup model/reasoning picker,CT35;CT36;CT37
+model_option.auth_mode,version-gated catalog + verification cache,GET/POST /api/agent/models,Setup model/reasoning picker,CT35;CT36;CT37
+model_option.availability,version-gated catalog + verification cache,GET/POST /api/agent/models,Setup model/reasoning picker,CT35;CT36;CT37
+model_option.compatibility,version-gated catalog + verification cache,GET/POST /api/agent/models,Setup model/reasoning picker,CT35;CT36;CT37
+model_option.reasoning_efforts,version-gated catalog + verification cache,GET/POST /api/agent/models,Setup model/reasoning picker,CT35;CT36;CT37
+model_option.reasoning_effort_status,version-gated catalog + verification cache,GET/POST /api/agent/models,Setup model/reasoning picker,CT35;CT36;CT37
+model_option.default_reasoning_effort,version-gated catalog + verification cache,GET/POST /api/agent/models,Setup model/reasoning picker,CT35;CT36;CT37
+model_option.service_tiers,version-gated catalog + verification cache,GET/POST /api/agent/models,Setup model/reasoning picker,CT35;CT36;CT37
+model_option.parameter_source,version-gated catalog + verification cache,GET/POST /api/agent/models,Setup model/reasoning picker,CT35;CT36;CT37
+model_option.verified_selection_fingerprint,version-gated catalog + verification cache,GET/POST /api/agent/models,Setup model/reasoning picker,CT35;CT36;CT37
+model_option.checked_at,version-gated catalog + verification cache,GET/POST /api/agent/models,Setup model/reasoning picker,CT35;CT36;CT37
+model_option.reason,version-gated catalog + verification cache,GET/POST /api/agent/models,Setup model/reasoning picker,CT35;CT36;CT37
+model_option.cost_hint,version-gated catalog + verification cache,GET/POST /api/agent/models,Setup model/reasoning picker,CT35;CT36;CT37
+model_option.cost_hint_basis,version-gated catalog + verification cache,GET/POST /api/agent/models,Setup model/reasoning picker,CT35;CT36;CT37
+model_catalog.catalog_revision,version-gated catalog + verification cache,GET/POST /api/agent/models,Setup model/reasoning picker,CT35;CT36;CT37
+model_catalog.config_revision,version-gated catalog + verification cache,GET/POST /api/agent/models,Setup model/reasoning picker,CT35;CT36;CT37
+model_catalog.auth_mode,version-gated catalog + verification cache,GET/POST /api/agent/models,Setup model/reasoning picker,CT35;CT36;CT37
+model_catalog.provider,version-gated catalog + verification cache,GET/POST /api/agent/models,Setup model/reasoning picker,CT35;CT36;CT37
+model_catalog.credential_context_id,version-gated catalog + verification cache,GET/POST /api/agent/models,Setup model/reasoning picker,CT35;CT36;CT37
+model_catalog.source,version-gated catalog + verification cache,GET/POST /api/agent/models,Setup model/reasoning picker,CT35;CT36;CT37
+model_catalog.state,version-gated catalog + verification cache,GET/POST /api/agent/models,Setup model/reasoning picker,CT35;CT36;CT37
+model_catalog.models,version-gated catalog + verification cache,GET/POST /api/agent/models,Setup model/reasoning picker,CT35;CT36;CT37
+model_catalog.fetched_at,version-gated catalog + verification cache,GET/POST /api/agent/models,Setup model/reasoning picker,CT35;CT36;CT37
+model_catalog.manual_entry_allowed,version-gated catalog + verification cache,GET/POST /api/agent/models,Setup model/reasoning picker,CT35;CT36;CT37
+model_catalog.model_request_performed,version-gated catalog + verification cache,GET/POST /api/agent/models,Setup model/reasoning picker,CT35;CT36;CT37
+model_catalog.warning,version-gated catalog + verification cache,GET/POST /api/agent/models,Setup model/reasoning picker,CT35;CT36;CT37
+model_test_status.task_id,consented model-test task,POST /api/agent/model-test; GET /api/status,Setup test-result display,CT38;CT39
+model_test_status.profile,consented model-test task,POST /api/agent/model-test; GET /api/status,Setup test-result display,CT38;CT39
+model_test_status.model_id,consented model-test task,POST /api/agent/model-test; GET /api/status,Setup test-result display,CT38;CT39
+model_test_status.selection_fingerprint,consented model-test task,POST /api/agent/model-test; GET /api/status,Setup test-result display,CT38;CT39
+model_test_status.status,consented model-test task,POST /api/agent/model-test; GET /api/status,Setup test-result display,CT38;CT39
+model_test_status.verification,consented model-test task,POST /api/agent/model-test; GET /api/status,Setup test-result display,CT38;CT39
+model_test_status.billing_source,consented model-test task,POST /api/agent/model-test; GET /api/status,Setup test-result display,CT38;CT39
+model_test_status.message,consented model-test task,POST /api/agent/model-test; GET /api/status,Setup test-result display,CT38;CT39
+model_test_status.updated_at,consented model-test task,POST /api/agent/model-test; GET /api/status,Setup test-result display,CT38;CT39
+model_test_status.model_request_performed,consented model-test task,POST /api/agent/model-test; GET /api/status,Setup test-result display,CT38;CT39
+agent.schema_version,Setup controls,GET/PUT /api/config,config / frozen task / adapter,CT19;CT31
+agent.codex.auth_mode,Setup controls,GET/PUT /api/config,config / frozen task / adapter,CT31;CT32;CT33
+agent.codex.api_provider,Setup controls,GET/PUT /api/config,config / frozen task / adapter,CT32;CT34
+agent.codex.api_base_url,Setup controls,GET/PUT /api/config,config / frozen task / adapter,CT34
+agent.profiles.<id>.reasoning_effort,Setup controls,GET/PUT /api/config,config / frozen task / adapter,CT35;CT36
+agent.profiles.<id>.service_tier,Setup controls,GET/PUT /api/config,config / frozen task / adapter,CT36
+probe.auth_mode,configuration + identity + model verification cache,Setup status/probe; project_info capability,UI and host capability choice,CT31;CT32;CT35;CT37
+probe.billing_source,configuration + identity + model verification cache,Setup status/probe; project_info capability,UI and host capability choice,CT31;CT32;CT35;CT37
+probe.credential_status,configuration + identity + model verification cache,Setup status/probe; project_info capability,UI and host capability choice,CT31;CT32;CT35;CT37
+probe.selected_profile,configuration + identity + model verification cache,Setup status/probe; project_info capability,UI and host capability choice,CT31;CT32;CT35;CT37
+probe.requested_model,configuration + identity + model verification cache,Setup status/probe; project_info capability,UI and host capability choice,CT31;CT32;CT35;CT37
+probe.requested_reasoning_effort,configuration + identity + model verification cache,Setup status/probe; project_info capability,UI and host capability choice,CT31;CT32;CT35;CT37
+probe.requested_service_tier,configuration + identity + model verification cache,Setup status/probe; project_info capability,UI and host capability choice,CT31;CT32;CT35;CT37
+probe.model_availability,configuration + identity + model verification cache,Setup status/probe; project_info capability,UI and host capability choice,CT31;CT32;CT35;CT37
+probe.selection_fingerprint,configuration + identity + model verification cache,Setup status/probe; project_info capability,UI and host capability choice,CT31;CT32;CT35;CT37
+agent_status.auth_mode,configuration + identity + model verification cache,Setup status/probe; project_info capability,UI and host capability choice,CT31;CT32;CT35;CT37
+agent_status.billing_source,configuration + identity + model verification cache,Setup status/probe; project_info capability,UI and host capability choice,CT31;CT32;CT35;CT37
+agent_status.credential_status,configuration + identity + model verification cache,Setup status/probe; project_info capability,UI and host capability choice,CT31;CT32;CT35;CT37
+agent_status.selected_profile,configuration + identity + model verification cache,Setup status/probe; project_info capability,UI and host capability choice,CT31;CT32;CT35;CT37
+agent_status.requested_model,configuration + identity + model verification cache,Setup status/probe; project_info capability,UI and host capability choice,CT31;CT32;CT35;CT37
+agent_status.requested_reasoning_effort,configuration + identity + model verification cache,Setup status/probe; project_info capability,UI and host capability choice,CT31;CT32;CT35;CT37
+agent_status.requested_service_tier,configuration + identity + model verification cache,Setup status/probe; project_info capability,UI and host capability choice,CT31;CT32;CT35;CT37
+agent_status.model_availability,configuration + identity + model verification cache,Setup status/probe; project_info capability,UI and host capability choice,CT31;CT32;CT35;CT37
+agent_status.selection_fingerprint,configuration + identity + model verification cache,Setup status/probe; project_info capability,UI and host capability choice,CT31;CT32;CT35;CT37
+capability.auth_mode,configuration + identity + model verification cache,Setup status/probe; project_info capability,UI and host capability choice,CT31;CT32;CT35;CT37
+capability.billing_source,configuration + identity + model verification cache,Setup status/probe; project_info capability,UI and host capability choice,CT31;CT32;CT35;CT37
+capability.selected_profile,configuration + identity + model verification cache,Setup status/probe; project_info capability,UI and host capability choice,CT31;CT32;CT35;CT37
+capability.requested_model,configuration + identity + model verification cache,Setup status/probe; project_info capability,UI and host capability choice,CT31;CT32;CT35;CT37
+capability.requested_reasoning_effort,configuration + identity + model verification cache,Setup status/probe; project_info capability,UI and host capability choice,CT31;CT32;CT35;CT37
+capability.requested_service_tier,configuration + identity + model verification cache,Setup status/probe; project_info capability,UI and host capability choice,CT31;CT32;CT35;CT37
+capability.model_availability,configuration + identity + model verification cache,Setup status/probe; project_info capability,UI and host capability choice,CT31;CT32;CT35;CT37
+capability.selection_fingerprint,configuration + identity + model verification cache,Setup status/probe; project_info capability,UI and host capability choice,CT31;CT32;CT35;CT37
+setup_credential_put_request.api_key,localhost password input,PUT /api/agent/credential,protected CredentialStore; never normal config/logging,CT33;CT34
+task.purpose,task acceptance service,project_context / setup model-test / task_poll,mode-specific status and validation,CT38
+task.execution_context,frozen profile + AuthContext,project_context/task_poll,host source/parameter trace,CT32;CT36;CT37
+report.execution_context,producer task snapshot,report/task_poll,historical provenance,CT37;CT39
+capability.credential_state,sanitized active identity state,project_info,host capability choice,CT32;CT33
+agent_status.last_model_test,same persistent task service,GET /api/status,Setup explicit model test result,CT38;CT39

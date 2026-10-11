@@ -1,0 +1,3677 @@
+{
+  "schema_version": "2.0.0",
+  "purpose": "Offline examples; no model was executed; hash/model/identity examples are synthetic.",
+  "cases": [
+    {
+      "case_id": "FX01",
+      "schema_def": "project_context_request",
+      "valid": true,
+      "contract_cases": [
+        "CT02",
+        "CT03"
+      ],
+      "value": {
+        "project_id": "fixture-project",
+        "request_id": "req-overview-001"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX02",
+      "schema_def": "project_context_request",
+      "valid": true,
+      "contract_cases": [
+        "CT03",
+        "CT04"
+      ],
+      "value": {
+        "project_id": "fixture-project",
+        "request_id": "req-overview-001",
+        "intent": "question",
+        "question": "配置保存后如何进入运行时？",
+        "profile": "cheap_reader"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX03",
+      "schema_def": "project_context_request",
+      "valid": true,
+      "contract_cases": [
+        "CT05",
+        "CT20"
+      ],
+      "value": {
+        "project_id": "fixture-project",
+        "request_id": "req-overview-001",
+        "intent": "refresh",
+        "report_id": "report_fixture_001"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX04",
+      "schema_def": "task_poll_request",
+      "valid": true,
+      "contract_cases": [
+        "CT07",
+        "CT10"
+      ],
+      "value": {
+        "task_id": "task_fixture_001",
+        "wait_seconds": 20
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX05",
+      "schema_def": "task_poll_request",
+      "valid": true,
+      "contract_cases": [
+        "CT07",
+        "CT08"
+      ],
+      "value": {
+        "report_id": "report_fixture_001",
+        "section": "evidence",
+        "max_chars": 4096
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX06",
+      "schema_def": "task_cancel_request",
+      "valid": true,
+      "contract_cases": [
+        "CT14"
+      ],
+      "value": {
+        "task_id": "task_fixture_001",
+        "reason": "离线取消示例"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX07",
+      "schema_def": "setup_agent_probe_request",
+      "valid": true,
+      "contract_cases": [
+        "CT23"
+      ],
+      "value": {
+        "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "backend": "codex"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX08",
+      "schema_def": "project_context_response",
+      "valid": true,
+      "contract_cases": [
+        "CT06",
+        "CT12",
+        "CT18"
+      ],
+      "value": {
+        "schema_version": "2.0.0",
+        "kind": "task",
+        "task": {
+          "task_id": "task_fixture_001",
+          "project_id": "fixture-project",
+          "request_id": "request-fixture-001",
+          "owner_id": "owner_fixture_001",
+          "mode": "context",
+          "backend": "codex",
+          "profile": "cheap_reader",
+          "backend_version": null,
+          "requested_model": "MODEL_SELECTED_AT_T02",
+          "resolved_model": null,
+          "config_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "parent_task_id": null,
+          "status": "queued",
+          "created_at": "2026-10-07T10:26:15Z",
+          "started_at": null,
+          "finished_at": null,
+          "finish_reason": null,
+          "progress": {
+            "phase": "queued",
+            "message": "离线契约示例：尚未执行模型",
+            "updated_at": "2026-10-07T10:26:15Z"
+          },
+          "report_id": null,
+          "summary": null,
+          "completion": null,
+          "verification": null,
+          "continuation_type": "fresh",
+          "session_available": null,
+          "actual_models": null,
+          "usage": null,
+          "usage_scope": "unknown",
+          "cost": null,
+          "cost_basis": "unknown",
+          "error": null,
+          "execution_context": {
+            "auth_mode": "chatgpt",
+            "billing_source": "chatgpt_plan",
+            "provider": "openai",
+            "endpoint": null,
+            "credential_context_id": "identity_fixture_chatgpt",
+            "credential_revision": "auth_fixture_v1",
+            "requested_reasoning_effort": "low",
+            "resolved_reasoning_effort": null,
+            "requested_service_tier": "standard",
+            "resolved_service_tier": null,
+            "selection_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "effective_auth_verified": false
+          },
+          "purpose": "project_context"
+        },
+        "report": null,
+        "page": null,
+        "pagination": {
+          "cursor": null,
+          "next_cursor": null,
+          "has_more": false,
+          "returned_chars": 0,
+          "total_chars": 0,
+          "remaining_chars": 0
+        },
+        "response_chars": 1517
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX09",
+      "schema_def": "task_poll_response",
+      "valid": true,
+      "contract_cases": [
+        "CT06",
+        "CT07",
+        "CT09",
+        "CT16"
+      ],
+      "value": {
+        "schema_version": "2.0.0",
+        "kind": "report",
+        "task": null,
+        "report": {
+          "report_id": "report_fixture_001",
+          "project_id": "fixture-project",
+          "parent_report_id": null,
+          "report_schema_version": "2.0.0",
+          "generated_at": "2026-10-07T10:26:15Z",
+          "snapshot_id": "snapshot_fixture_001",
+          "config_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "backend": "codex",
+          "backend_version": null,
+          "profile": "cheap_reader",
+          "freshness": {
+            "state": "unknown",
+            "checked_at": null,
+            "reasons": [
+              "这是静态契约夹具"
+            ]
+          },
+          "summary": "离线字段示例，不代表本机项目已经完成调查。",
+          "sections": [
+            {
+              "id": "summary",
+              "title": "概览",
+              "total_chars": 19
+            },
+            {
+              "id": "evidence",
+              "title": "证据",
+              "total_chars": 0
+            }
+          ],
+          "completion": "partial",
+          "verification": "not_run",
+          "execution_context": {
+            "auth_mode": "chatgpt",
+            "billing_source": "chatgpt_plan",
+            "provider": "openai",
+            "endpoint": null,
+            "credential_context_id": "identity_fixture_chatgpt",
+            "credential_revision": "auth_fixture_v1",
+            "requested_reasoning_effort": "low",
+            "resolved_reasoning_effort": null,
+            "requested_service_tier": "standard",
+            "resolved_service_tier": null,
+            "selection_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "effective_auth_verified": false
+          }
+        },
+        "page": {
+          "section": "summary",
+          "text": "这是离线示例：架构 🧭，模型尚未执行。",
+          "format": "markdown"
+        },
+        "pagination": {
+          "cursor": null,
+          "next_cursor": null,
+          "has_more": false,
+          "returned_chars": 19,
+          "total_chars": 19,
+          "remaining_chars": 0
+        },
+        "response_chars": 1354
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX10",
+      "schema_def": "task_cancel_response",
+      "valid": true,
+      "contract_cases": [
+        "CT14",
+        "CT15"
+      ],
+      "value": {
+        "schema_version": "2.0.0",
+        "kind": "task",
+        "task": {
+          "task_id": "task_fixture_001",
+          "project_id": "fixture-project",
+          "request_id": "request-fixture-001",
+          "owner_id": "owner_fixture_001",
+          "mode": "context",
+          "backend": "codex",
+          "profile": "cheap_reader",
+          "backend_version": null,
+          "requested_model": "MODEL_SELECTED_AT_T02",
+          "resolved_model": null,
+          "config_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "parent_task_id": null,
+          "status": "cancelling",
+          "created_at": "2026-10-07T10:26:15Z",
+          "started_at": "2026-10-07T10:26:15Z",
+          "finished_at": null,
+          "finish_reason": null,
+          "progress": {
+            "phase": "cleaning",
+            "message": "离线示例：尚未证实所属进程退出",
+            "updated_at": "2026-10-07T10:26:15Z"
+          },
+          "report_id": null,
+          "summary": null,
+          "completion": null,
+          "verification": null,
+          "continuation_type": "fresh",
+          "session_available": null,
+          "actual_models": null,
+          "usage": null,
+          "usage_scope": "unknown",
+          "cost": null,
+          "cost_basis": "unknown",
+          "error": {
+            "code": "CLEANUP_FAILED",
+            "message": "离线示例：尚未证实任务进程退出。",
+            "recoverable": true,
+            "hint": "实际实现需核对任务进程归属；此处未启动进程。",
+            "task_id": "task_fixture_001",
+            "retriable": false
+          },
+          "execution_context": {
+            "auth_mode": "chatgpt",
+            "billing_source": "chatgpt_plan",
+            "provider": "openai",
+            "endpoint": null,
+            "credential_context_id": "identity_fixture_chatgpt",
+            "credential_revision": "auth_fixture_v1",
+            "requested_reasoning_effort": "low",
+            "resolved_reasoning_effort": null,
+            "requested_service_tier": "standard",
+            "resolved_service_tier": null,
+            "selection_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "effective_auth_verified": false
+          },
+          "purpose": "project_context"
+        },
+        "report": null,
+        "page": null,
+        "pagination": {
+          "cursor": null,
+          "next_cursor": null,
+          "has_more": false,
+          "returned_chars": 0,
+          "total_chars": 0,
+          "remaining_chars": 0
+        },
+        "response_chars": 1715,
+        "cancel_requested": true
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX11",
+      "schema_def": "project_context_response",
+      "valid": true,
+      "contract_cases": [
+        "CT02",
+        "CT15"
+      ],
+      "value": {
+        "schema_version": "2.0.0",
+        "error": {
+          "code": "REQUEST_CONFLICT",
+          "message": "离线示例：请求 ID 已绑定其他参数。",
+          "recoverable": true,
+          "hint": "实际实现需核对任务进程归属；此处未启动进程。",
+          "task_id": "task_fixture_001",
+          "retriable": false
+        },
+        "response_chars": 213
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX12",
+      "schema_def": "agent_config",
+      "valid": true,
+      "contract_cases": [
+        "CT22"
+      ],
+      "value": {
+        "enabled": false,
+        "codex": {
+          "enabled": false,
+          "executable": "",
+          "auth_mode": "unselected",
+          "api_provider": "openai",
+          "api_base_url": "https://api.openai.com/v1"
+        },
+        "default_profile": "cheap_reader",
+        "profiles": {
+          "cheap_reader": {
+            "backend": "codex",
+            "mode": "context",
+            "model": "",
+            "timeout_seconds": 1200,
+            "reasoning_effort": "",
+            "service_tier": "standard"
+          }
+        },
+        "limits": {
+          "max_running": 2,
+          "max_queued": 20,
+          "max_response_chars": 32000,
+          "max_wait_seconds": 20
+        },
+        "retention": {
+          "days": 30,
+          "max_storage_bytes": 1073741824
+        },
+        "schema_version": "2.0.0"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX13",
+      "schema_def": "agent_config",
+      "valid": true,
+      "contract_cases": [
+        "CT04",
+        "CT12",
+        "CT22"
+      ],
+      "value": {
+        "enabled": true,
+        "codex": {
+          "enabled": true,
+          "executable": "",
+          "auth_mode": "chatgpt",
+          "api_provider": "openai",
+          "api_base_url": "https://api.openai.com/v1"
+        },
+        "default_profile": "cheap_reader",
+        "profiles": {
+          "cheap_reader": {
+            "backend": "codex",
+            "mode": "context",
+            "model": "MODEL_SELECTED_AT_T02",
+            "timeout_seconds": 1200,
+            "reasoning_effort": "",
+            "service_tier": "standard"
+          }
+        },
+        "limits": {
+          "max_running": 2,
+          "max_queued": 20,
+          "max_response_chars": 32000,
+          "max_wait_seconds": 20
+        },
+        "retention": {
+          "days": 30,
+          "max_storage_bytes": 1073741824
+        },
+        "schema_version": "2.0.0"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX14",
+      "schema_def": "setup_config_put_request",
+      "valid": true,
+      "contract_cases": [
+        "CT13",
+        "CT22",
+        "CT26"
+      ],
+      "value": {
+        "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "data": {
+          "projects": [
+            {
+              "id": "fixture-project",
+              "name": "夹具项目",
+              "path": "E:/fixture-project",
+              "write_enabled": false,
+              "write_roots": [
+                "docs"
+              ]
+            }
+          ],
+          "server": {
+            "port": 8000
+          },
+          "startup": {
+            "enabled": false
+          }
+        }
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX15",
+      "schema_def": "setup_config_put_request",
+      "valid": true,
+      "contract_cases": [
+        "CT22"
+      ],
+      "value": {
+        "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "data": {
+          "agent": {
+            "enabled": false,
+            "codex": {
+              "enabled": false,
+              "executable": "",
+              "auth_mode": "unselected",
+              "api_provider": "openai",
+              "api_base_url": "https://api.openai.com/v1"
+            },
+            "default_profile": "cheap_reader",
+            "profiles": {
+              "cheap_reader": {
+                "backend": "codex",
+                "mode": "context",
+                "model": "",
+                "timeout_seconds": 1200,
+                "reasoning_effort": "",
+                "service_tier": "standard"
+              }
+            },
+            "limits": {
+              "max_running": 2,
+              "max_queued": 20,
+              "max_response_chars": 32000,
+              "max_wait_seconds": 20
+            },
+            "retention": {
+              "days": 30,
+              "max_storage_bytes": 1073741824
+            },
+            "schema_version": "2.0.0"
+          }
+        }
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX16",
+      "schema_def": "setup_config_get_response_overlay",
+      "valid": true,
+      "contract_cases": [
+        "CT22"
+      ],
+      "value": {
+        "revision": "fixture",
+        "data": {
+          "agent": {
+            "enabled": false,
+            "codex": {
+              "enabled": false,
+              "executable": "",
+              "auth_mode": "unselected",
+              "api_provider": "openai",
+              "api_base_url": "https://api.openai.com/v1"
+            },
+            "default_profile": "cheap_reader",
+            "profiles": {
+              "cheap_reader": {
+                "backend": "codex",
+                "mode": "context",
+                "model": "",
+                "timeout_seconds": 1200,
+                "reasoning_effort": "",
+                "service_tier": "standard"
+              }
+            },
+            "limits": {
+              "max_running": 2,
+              "max_queued": 20,
+              "max_response_chars": 32000,
+              "max_wait_seconds": 20
+            },
+            "retention": {
+              "days": 30,
+              "max_storage_bytes": 1073741824
+            },
+            "schema_version": "2.0.0"
+          },
+          "projects": []
+        }
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX17",
+      "schema_def": "setup_config_put_response_overlay",
+      "valid": true,
+      "contract_cases": [
+        "CT13",
+        "CT26"
+      ],
+      "value": {
+        "revision": "fixture",
+        "data": {
+          "agent": {
+            "enabled": false,
+            "codex": {
+              "enabled": false,
+              "executable": "",
+              "auth_mode": "unselected",
+              "api_provider": "openai",
+              "api_base_url": "https://api.openai.com/v1"
+            },
+            "default_profile": "cheap_reader",
+            "profiles": {
+              "cheap_reader": {
+                "backend": "codex",
+                "mode": "context",
+                "model": "",
+                "timeout_seconds": 1200,
+                "reasoning_effort": "",
+                "service_tier": "standard"
+              }
+            },
+            "limits": {
+              "max_running": 2,
+              "max_queued": 20,
+              "max_response_chars": 32000,
+              "max_wait_seconds": 20
+            },
+            "retention": {
+              "days": 30,
+              "max_storage_bytes": 1073741824
+            },
+            "schema_version": "2.0.0"
+          },
+          "projects": []
+        },
+        "ok": true,
+        "applied": {
+          "verified": true,
+          "checks": {
+            "config_loaded": true,
+            "local_health": true,
+            "auth_discovery": "passed",
+            "agent_capability": "ready"
+          }
+        }
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX18",
+      "schema_def": "setup_status_response_overlay",
+      "valid": true,
+      "contract_cases": [
+        "CT27",
+        "CT29"
+      ],
+      "value": {
+        "local": {
+          "reachability": "reachable",
+          "mcp": "ready",
+          "auth": "not_required",
+          "checked_at": null,
+          "http_status": null
+        },
+        "public": {
+          "reachability": "reachable",
+          "mcp": "ready",
+          "auth": "not_required",
+          "checked_at": null,
+          "http_status": null
+        },
+        "agent": {
+          "backend": "codex",
+          "enabled": false,
+          "availability": "disabled",
+          "version": null,
+          "auth_state": "unknown",
+          "enforcement": {
+            "state": "unverified",
+            "mechanisms": [],
+            "tested_boundaries": []
+          },
+          "checked_at": null,
+          "active_tasks": 0,
+          "queued_tasks": 0,
+          "last_error": null,
+          "auth_mode": "unselected",
+          "billing_source": "unselected",
+          "credential_status": {
+            "configured": false,
+            "credential_revision": "absent",
+            "storage": "none",
+            "bound_endpoint": null,
+            "status": "missing",
+            "updated_at": null
+          },
+          "selected_profile": null,
+          "requested_model": null,
+          "requested_reasoning_effort": null,
+          "requested_service_tier": "standard",
+          "model_availability": "unselected",
+          "selection_fingerprint": null,
+          "last_model_test": null
+        },
+        "auth": {
+          "mode": "none",
+          "resource": null,
+          "issuer": null,
+          "discovery_state": "ready",
+          "chatgpt_connection": "unknown",
+          "last_verified_at": null
+        }
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX19",
+      "schema_def": "setup_info_response_overlay",
+      "valid": true,
+      "contract_cases": [
+        "CT30"
+      ],
+      "value": {
+        "ui_contract_version": "2.0.0",
+        "ui_asset_version": "fixture"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX20",
+      "schema_def": "setup_agent_probe_response",
+      "valid": true,
+      "contract_cases": [
+        "CT23"
+      ],
+      "value": {
+        "ok": true,
+        "probe": {
+          "backend": "codex",
+          "availability": "disabled",
+          "version": null,
+          "auth_state": "unknown",
+          "checked_at": "2026-10-07T10:26:15Z",
+          "enforcement": {
+            "state": "unverified",
+            "mechanisms": [],
+            "tested_boundaries": []
+          },
+          "errors": [],
+          "model_request_performed": false,
+          "auth_mode": "unselected",
+          "billing_source": "unselected",
+          "credential_status": {
+            "configured": false,
+            "credential_revision": "absent",
+            "storage": "none",
+            "bound_endpoint": null,
+            "status": "missing",
+            "updated_at": null
+          },
+          "selected_profile": null,
+          "requested_model": null,
+          "requested_reasoning_effort": null,
+          "requested_service_tier": "standard",
+          "model_availability": "unselected",
+          "selection_fingerprint": null
+        },
+        "config_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX21",
+      "schema_def": "setup_error_response_overlay",
+      "valid": true,
+      "contract_cases": [
+        "CT26"
+      ],
+      "value": {
+        "error": {
+          "code": "fixture",
+          "message": "fixture",
+          "hint": "fixture"
+        }
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX22",
+      "schema_def": "setup_tunnel_response_overlay",
+      "valid": true,
+      "contract_cases": [
+        "CT28"
+      ],
+      "value": {
+        "revision": "fixture",
+        "data": {
+          "agent": {
+            "enabled": false,
+            "codex": {
+              "enabled": false,
+              "executable": "",
+              "auth_mode": "unselected",
+              "api_provider": "openai",
+              "api_base_url": "https://api.openai.com/v1"
+            },
+            "default_profile": "cheap_reader",
+            "profiles": {
+              "cheap_reader": {
+                "backend": "codex",
+                "mode": "context",
+                "model": "",
+                "timeout_seconds": 1200,
+                "reasoning_effort": "",
+                "service_tier": "standard"
+              }
+            },
+            "limits": {
+              "max_running": 2,
+              "max_queued": 20,
+              "max_response_chars": 32000,
+              "max_wait_seconds": 20
+            },
+            "retention": {
+              "days": 30,
+              "max_storage_bytes": 1073741824
+            },
+            "schema_version": "2.0.0"
+          },
+          "projects": []
+        },
+        "ok": true,
+        "applied": {
+          "verified": true,
+          "checks": {
+            "config_loaded": true,
+            "local_health": true,
+            "auth_discovery": "passed",
+            "agent_capability": "ready"
+          },
+          "public_verified": false,
+          "public_reachable": true,
+          "auth_discovery_verified": true,
+          "connection_state": "auth_required"
+        }
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX23",
+      "schema_def": "task_poll_request",
+      "valid": false,
+      "contract_cases": [
+        "CT07"
+      ],
+      "value": {
+        "task_id": "t",
+        "report_id": "r"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX24",
+      "schema_def": "task_poll_request",
+      "valid": false,
+      "contract_cases": [
+        "CT07"
+      ],
+      "value": {},
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX25",
+      "schema_def": "task_poll_request",
+      "valid": false,
+      "contract_cases": [
+        "CT10"
+      ],
+      "value": {
+        "report_id": "r",
+        "wait_seconds": 1
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX26",
+      "schema_def": "task_poll_request",
+      "valid": false,
+      "contract_cases": [
+        "CT07"
+      ],
+      "value": {
+        "task_id": null
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX27",
+      "schema_def": "project_context_request",
+      "valid": false,
+      "contract_cases": [
+        "CT03",
+        "CT11"
+      ],
+      "value": {
+        "project_id": "fixture-project",
+        "request_id": "req-overview-001",
+        "shell": "echo unsafe"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX28",
+      "schema_def": "project_context_request",
+      "valid": false,
+      "contract_cases": [
+        "CT11"
+      ],
+      "value": {
+        "project_id": "fixture-project",
+        "request_id": "req-overview-001",
+        "owner_id": "caller_supplied"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX29",
+      "schema_def": "project_context_request",
+      "valid": false,
+      "contract_cases": [
+        "CT03"
+      ],
+      "value": {
+        "project_id": "fixture-project",
+        "request_id": "req-overview-001",
+        "intent": "question"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX30",
+      "schema_def": "project_context_request",
+      "valid": false,
+      "contract_cases": [
+        "CT03"
+      ],
+      "value": {
+        "project_id": "fixture-project",
+        "request_id": "req-overview-001",
+        "intent": "question",
+        "question": "   "
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX31",
+      "schema_def": "task_poll_request",
+      "valid": false,
+      "contract_cases": [
+        "CT06"
+      ],
+      "value": {
+        "task_id": "t",
+        "max_chars": true
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX32",
+      "schema_def": "task_poll_request",
+      "valid": false,
+      "contract_cases": [
+        "CT06"
+      ],
+      "value": {
+        "task_id": "t",
+        "max_chars": 32001
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX33",
+      "schema_def": "task_cancel_request",
+      "valid": false,
+      "contract_cases": [
+        "CT06"
+      ],
+      "value": {
+        "task_id": "t",
+        "reason": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX34",
+      "schema_def": "project_context_request",
+      "valid": false,
+      "contract_cases": [
+        "CT02"
+      ],
+      "value": {
+        "project_id": "p"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX35",
+      "schema_def": "agent_config",
+      "valid": false,
+      "contract_cases": [
+        "CT12",
+        "CT22"
+      ],
+      "value": {
+        "enabled": true,
+        "codex": {
+          "enabled": true,
+          "executable": "",
+          "auth_mode": "chatgpt",
+          "api_provider": "openai",
+          "api_base_url": "https://api.openai.com/v1"
+        },
+        "default_profile": "cheap_reader",
+        "profiles": {
+          "cheap_reader": {
+            "backend": "codex",
+            "mode": "context",
+            "model": "",
+            "timeout_seconds": 1200,
+            "reasoning_effort": "",
+            "service_tier": "standard"
+          }
+        },
+        "limits": {
+          "max_running": 2,
+          "max_queued": 20,
+          "max_response_chars": 32000,
+          "max_wait_seconds": 20
+        },
+        "retention": {
+          "days": 30,
+          "max_storage_bytes": 1073741824
+        },
+        "schema_version": "2.0.0"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX36",
+      "schema_def": "task_poll_response",
+      "valid": false,
+      "contract_cases": [
+        "CT06"
+      ],
+      "value": {
+        "schema_version": "2.0.0",
+        "kind": "report",
+        "task": null,
+        "report": {
+          "report_id": "report_fixture_001",
+          "project_id": "fixture-project",
+          "parent_report_id": null,
+          "report_schema_version": "2.0.0",
+          "generated_at": "2026-10-07T10:26:15Z",
+          "snapshot_id": "snapshot_fixture_001",
+          "config_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "backend": "codex",
+          "backend_version": null,
+          "profile": "cheap_reader",
+          "freshness": {
+            "state": "unknown",
+            "checked_at": null,
+            "reasons": [
+              "这是静态契约夹具"
+            ]
+          },
+          "summary": "离线字段示例，不代表本机项目已经完成调查。",
+          "sections": [
+            {
+              "id": "summary",
+              "title": "概览",
+              "total_chars": 19
+            },
+            {
+              "id": "evidence",
+              "title": "证据",
+              "total_chars": 0
+            }
+          ],
+          "completion": "partial",
+          "verification": "not_run",
+          "execution_context": {
+            "auth_mode": "chatgpt",
+            "billing_source": "chatgpt_plan",
+            "provider": "openai",
+            "endpoint": null,
+            "credential_context_id": "identity_fixture_chatgpt",
+            "credential_revision": "auth_fixture_v1",
+            "requested_reasoning_effort": "low",
+            "resolved_reasoning_effort": null,
+            "requested_service_tier": "standard",
+            "resolved_service_tier": null,
+            "selection_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "effective_auth_verified": false
+          }
+        },
+        "page": {
+          "section": "summary",
+          "text": "这是离线示例：架构 🧭，模型尚未执行。",
+          "format": "markdown"
+        },
+        "pagination": {
+          "cursor": null,
+          "next_cursor": null,
+          "has_more": false,
+          "returned_chars": 19,
+          "total_chars": 19,
+          "remaining_chars": 0
+        },
+        "response_chars": 1355
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX37",
+      "schema_def": "task_poll_response",
+      "valid": false,
+      "contract_cases": [
+        "CT06",
+        "CT09"
+      ],
+      "value": {
+        "schema_version": "2.0.0",
+        "kind": "report",
+        "task": null,
+        "report": {
+          "report_id": "report_fixture_001",
+          "project_id": "fixture-project",
+          "parent_report_id": null,
+          "report_schema_version": "2.0.0",
+          "generated_at": "2026-10-07T10:26:15Z",
+          "snapshot_id": "snapshot_fixture_001",
+          "config_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "backend": "codex",
+          "backend_version": null,
+          "profile": "cheap_reader",
+          "freshness": {
+            "state": "unknown",
+            "checked_at": null,
+            "reasons": [
+              "这是静态契约夹具"
+            ]
+          },
+          "summary": "离线字段示例，不代表本机项目已经完成调查。",
+          "sections": [
+            {
+              "id": "summary",
+              "title": "概览",
+              "total_chars": 19
+            },
+            {
+              "id": "evidence",
+              "title": "证据",
+              "total_chars": 0
+            }
+          ],
+          "completion": "partial",
+          "verification": "not_run",
+          "execution_context": {
+            "auth_mode": "chatgpt",
+            "billing_source": "chatgpt_plan",
+            "provider": "openai",
+            "endpoint": null,
+            "credential_context_id": "identity_fixture_chatgpt",
+            "credential_revision": "auth_fixture_v1",
+            "requested_reasoning_effort": "low",
+            "resolved_reasoning_effort": null,
+            "requested_service_tier": "standard",
+            "resolved_service_tier": null,
+            "selection_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "effective_auth_verified": false
+          }
+        },
+        "page": {
+          "section": "summary",
+          "text": "这是离线示例：架构 🧭，模型尚未执行。",
+          "format": "markdown"
+        },
+        "pagination": {
+          "cursor": null,
+          "next_cursor": null,
+          "has_more": false,
+          "returned_chars": 18,
+          "total_chars": 19,
+          "remaining_chars": 0
+        },
+        "response_chars": 1354
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX38",
+      "schema_def": "task_poll_response",
+      "valid": false,
+      "contract_cases": [
+        "CT09"
+      ],
+      "value": {
+        "schema_version": "2.0.0",
+        "kind": "report",
+        "task": null,
+        "report": {
+          "report_id": "report_fixture_001",
+          "project_id": "fixture-project",
+          "parent_report_id": null,
+          "report_schema_version": "2.0.0",
+          "generated_at": "2026-10-07T10:26:15Z",
+          "snapshot_id": "snapshot_fixture_001",
+          "config_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "backend": "codex",
+          "backend_version": null,
+          "profile": "cheap_reader",
+          "freshness": {
+            "state": "unknown",
+            "checked_at": null,
+            "reasons": [
+              "这是静态契约夹具"
+            ]
+          },
+          "summary": "离线字段示例，不代表本机项目已经完成调查。",
+          "sections": [
+            {
+              "id": "summary",
+              "title": "概览",
+              "total_chars": 19
+            },
+            {
+              "id": "evidence",
+              "title": "证据",
+              "total_chars": 0
+            }
+          ],
+          "completion": "partial",
+          "verification": "not_run",
+          "execution_context": {
+            "auth_mode": "chatgpt",
+            "billing_source": "chatgpt_plan",
+            "provider": "openai",
+            "endpoint": null,
+            "credential_context_id": "identity_fixture_chatgpt",
+            "credential_revision": "auth_fixture_v1",
+            "requested_reasoning_effort": "low",
+            "resolved_reasoning_effort": null,
+            "requested_service_tier": "standard",
+            "resolved_service_tier": null,
+            "selection_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "effective_auth_verified": false
+          }
+        },
+        "page": {
+          "section": "summary",
+          "text": "这是离线示例：架构 🧭，模型尚未执行。",
+          "format": "markdown"
+        },
+        "pagination": {
+          "cursor": null,
+          "next_cursor": "unexpected",
+          "has_more": false,
+          "returned_chars": 19,
+          "total_chars": 19,
+          "remaining_chars": 0
+        },
+        "response_chars": 1362
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX39",
+      "schema_def": "task_poll_response",
+      "valid": false,
+      "contract_cases": [
+        "CT14"
+      ],
+      "value": {
+        "schema_version": "2.0.0",
+        "kind": "task",
+        "task": {
+          "task_id": "task_fixture_001",
+          "project_id": "fixture-project",
+          "request_id": "request-fixture-001",
+          "owner_id": "owner_fixture_001",
+          "mode": "context",
+          "backend": "codex",
+          "profile": "cheap_reader",
+          "backend_version": null,
+          "requested_model": "MODEL_SELECTED_AT_T02",
+          "resolved_model": null,
+          "config_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "parent_task_id": null,
+          "status": "succeeded",
+          "created_at": "2026-10-07T10:26:15Z",
+          "started_at": null,
+          "finished_at": null,
+          "finish_reason": null,
+          "progress": {
+            "phase": "queued",
+            "message": "离线契约示例：尚未执行模型",
+            "updated_at": "2026-10-07T10:26:15Z"
+          },
+          "report_id": null,
+          "summary": null,
+          "completion": null,
+          "verification": null,
+          "continuation_type": "fresh",
+          "session_available": null,
+          "actual_models": null,
+          "usage": null,
+          "usage_scope": "unknown",
+          "cost": null,
+          "cost_basis": "unknown",
+          "error": null,
+          "execution_context": {
+            "auth_mode": "chatgpt",
+            "billing_source": "chatgpt_plan",
+            "provider": "openai",
+            "endpoint": null,
+            "credential_context_id": "identity_fixture_chatgpt",
+            "credential_revision": "auth_fixture_v1",
+            "requested_reasoning_effort": "low",
+            "resolved_reasoning_effort": null,
+            "requested_service_tier": "standard",
+            "resolved_service_tier": null,
+            "selection_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "effective_auth_verified": false
+          },
+          "purpose": "project_context"
+        },
+        "report": null,
+        "page": null,
+        "pagination": {
+          "cursor": null,
+          "next_cursor": null,
+          "has_more": false,
+          "returned_chars": 0,
+          "total_chars": 0,
+          "remaining_chars": 0
+        },
+        "response_chars": 1520
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX40",
+      "schema_def": "setup_config_put_request",
+      "valid": false,
+      "contract_cases": [
+        "CT22"
+      ],
+      "value": {
+        "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "data": {
+          "unexpected": true
+        }
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX41",
+      "schema_def": "setup_agent_probe_request",
+      "valid": false,
+      "contract_cases": [
+        "CT23"
+      ],
+      "value": {
+        "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "backend": "claude"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX42",
+      "schema_def": "project_context_request",
+      "valid": false,
+      "contract_cases": [
+        "CT03"
+      ],
+      "value": {
+        "project_id": "fixture-project",
+        "request_id": "req-overview-001",
+        "intent": "develop"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX43",
+      "schema_def": "setup_config_put_response_overlay",
+      "valid": false,
+      "contract_cases": [
+        "CT13",
+        "CT26"
+      ],
+      "value": {
+        "revision": "fixture",
+        "data": {
+          "agent": {
+            "enabled": false,
+            "codex": {
+              "enabled": false,
+              "executable": "",
+              "auth_mode": "unselected",
+              "api_provider": "openai",
+              "api_base_url": "https://api.openai.com/v1"
+            },
+            "default_profile": "cheap_reader",
+            "profiles": {
+              "cheap_reader": {
+                "backend": "codex",
+                "mode": "context",
+                "model": "",
+                "timeout_seconds": 1200,
+                "reasoning_effort": "",
+                "service_tier": "standard"
+              }
+            },
+            "limits": {
+              "max_running": 2,
+              "max_queued": 20,
+              "max_response_chars": 32000,
+              "max_wait_seconds": 20
+            },
+            "retention": {
+              "days": 30,
+              "max_storage_bytes": 1073741824
+            },
+            "schema_version": "2.0.0"
+          },
+          "projects": []
+        },
+        "ok": true,
+        "applied": {
+          "verified": true,
+          "checks": {
+            "config_loaded": false,
+            "local_health": true,
+            "auth_discovery": "passed",
+            "agent_capability": "ready"
+          }
+        }
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX44",
+      "schema_def": "setup_config_put_response_overlay",
+      "valid": false,
+      "contract_cases": [
+        "CT26"
+      ],
+      "value": {
+        "revision": "fixture",
+        "data": {
+          "agent": {
+            "enabled": false,
+            "codex": {
+              "enabled": false,
+              "executable": "",
+              "auth_mode": "unselected",
+              "api_provider": "openai",
+              "api_base_url": "https://api.openai.com/v1"
+            },
+            "default_profile": "cheap_reader",
+            "profiles": {
+              "cheap_reader": {
+                "backend": "codex",
+                "mode": "context",
+                "model": "",
+                "timeout_seconds": 1200,
+                "reasoning_effort": "",
+                "service_tier": "standard"
+              }
+            },
+            "limits": {
+              "max_running": 2,
+              "max_queued": 20,
+              "max_response_chars": 32000,
+              "max_wait_seconds": 20
+            },
+            "retention": {
+              "days": 30,
+              "max_storage_bytes": 1073741824
+            },
+            "schema_version": "2.0.0"
+          },
+          "projects": []
+        },
+        "ok": true,
+        "applied": {
+          "verified": true,
+          "checks": {
+            "config_loaded": true,
+            "local_health": false,
+            "auth_discovery": "passed",
+            "agent_capability": "ready"
+          }
+        }
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX45",
+      "schema_def": "setup_tunnel_response_overlay",
+      "valid": false,
+      "contract_cases": [
+        "CT27",
+        "CT28"
+      ],
+      "value": {
+        "revision": "fixture",
+        "data": {
+          "agent": {
+            "enabled": false,
+            "codex": {
+              "enabled": false,
+              "executable": "",
+              "auth_mode": "unselected",
+              "api_provider": "openai",
+              "api_base_url": "https://api.openai.com/v1"
+            },
+            "default_profile": "cheap_reader",
+            "profiles": {
+              "cheap_reader": {
+                "backend": "codex",
+                "mode": "context",
+                "model": "",
+                "timeout_seconds": 1200,
+                "reasoning_effort": "",
+                "service_tier": "standard"
+              }
+            },
+            "limits": {
+              "max_running": 2,
+              "max_queued": 20,
+              "max_response_chars": 32000,
+              "max_wait_seconds": 20
+            },
+            "retention": {
+              "days": 30,
+              "max_storage_bytes": 1073741824
+            },
+            "schema_version": "2.0.0"
+          },
+          "projects": []
+        },
+        "ok": true,
+        "applied": {
+          "verified": true,
+          "checks": {
+            "config_loaded": true,
+            "local_health": true,
+            "auth_discovery": "passed",
+            "agent_capability": "ready"
+          },
+          "public_verified": false,
+          "public_reachable": false,
+          "auth_discovery_verified": false,
+          "connection_state": "ready"
+        }
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX46",
+      "schema_def": "setup_config_get_response_overlay",
+      "valid": false,
+      "contract_cases": [
+        "CT12",
+        "CT22"
+      ],
+      "value": {
+        "revision": "fixture",
+        "data": {
+          "agent": {
+            "enabled": true,
+            "codex": {
+              "enabled": false,
+              "executable": "",
+              "auth_mode": "chatgpt",
+              "api_provider": "openai",
+              "api_base_url": "https://api.openai.com/v1"
+            },
+            "default_profile": "cheap_reader",
+            "profiles": {
+              "cheap_reader": {
+                "backend": "codex",
+                "mode": "context",
+                "model": "   ",
+                "timeout_seconds": 1200,
+                "reasoning_effort": "",
+                "service_tier": "standard"
+              }
+            },
+            "limits": {
+              "max_running": 2,
+              "max_queued": 20,
+              "max_response_chars": 32000,
+              "max_wait_seconds": 20
+            },
+            "retention": {
+              "days": 30,
+              "max_storage_bytes": 1073741824
+            },
+            "schema_version": "2.0.0"
+          },
+          "projects": []
+        }
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "FX47",
+      "schema_def": "setup_agent_probe_response",
+      "valid": false,
+      "contract_cases": [
+        "CT23"
+      ],
+      "value": {
+        "ok": true,
+        "probe": {
+          "backend": "codex",
+          "availability": "disabled",
+          "version": null,
+          "auth_state": "unknown",
+          "checked_at": "2026-10-07T10:26:15Z",
+          "enforcement": {
+            "state": "verified",
+            "mechanisms": [],
+            "tested_boundaries": []
+          },
+          "errors": [],
+          "model_request_performed": false,
+          "auth_mode": "unselected",
+          "billing_source": "unselected",
+          "credential_status": {
+            "configured": false,
+            "credential_revision": "absent",
+            "storage": "none",
+            "bound_endpoint": null,
+            "status": "missing",
+            "updated_at": null
+          },
+          "selected_profile": null,
+          "requested_model": null,
+          "requested_reasoning_effort": null,
+          "requested_service_tier": "standard",
+          "model_availability": "unselected",
+          "selection_fingerprint": null
+        },
+        "config_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT01",
+      "schema_def": "agent_config",
+      "valid": true,
+      "contract_cases": [
+        "CT31"
+      ],
+      "value": {
+        "enabled": false,
+        "codex": {
+          "enabled": false,
+          "executable": "",
+          "auth_mode": "unselected",
+          "api_provider": "openai",
+          "api_base_url": "https://api.openai.com/v1"
+        },
+        "default_profile": "cheap_reader",
+        "profiles": {
+          "cheap_reader": {
+            "backend": "codex",
+            "mode": "context",
+            "model": "",
+            "timeout_seconds": 1200,
+            "reasoning_effort": "",
+            "service_tier": "standard"
+          }
+        },
+        "limits": {
+          "max_running": 2,
+          "max_queued": 20,
+          "max_response_chars": 32000,
+          "max_wait_seconds": 20
+        },
+        "retention": {
+          "days": 30,
+          "max_storage_bytes": 1073741824
+        },
+        "schema_version": "2.0.0"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT02",
+      "schema_def": "agent_config",
+      "valid": true,
+      "contract_cases": [
+        "CT31",
+        "CT32",
+        "CT35"
+      ],
+      "value": {
+        "enabled": true,
+        "codex": {
+          "enabled": true,
+          "executable": "",
+          "auth_mode": "chatgpt",
+          "api_provider": "openai",
+          "api_base_url": "https://api.openai.com/v1"
+        },
+        "default_profile": "cheap_reader",
+        "profiles": {
+          "cheap_reader": {
+            "backend": "codex",
+            "mode": "context",
+            "model": "fixture-fast",
+            "timeout_seconds": 1200,
+            "reasoning_effort": "low",
+            "service_tier": "standard"
+          }
+        },
+        "limits": {
+          "max_running": 2,
+          "max_queued": 20,
+          "max_response_chars": 32000,
+          "max_wait_seconds": 20
+        },
+        "retention": {
+          "days": 30,
+          "max_storage_bytes": 1073741824
+        },
+        "schema_version": "2.0.0"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT03",
+      "schema_def": "agent_config",
+      "valid": true,
+      "contract_cases": [
+        "CT32"
+      ],
+      "value": {
+        "enabled": true,
+        "codex": {
+          "enabled": true,
+          "executable": "",
+          "auth_mode": "api_key",
+          "api_provider": "openai",
+          "api_base_url": "https://api.openai.com/v1"
+        },
+        "default_profile": "cheap_reader",
+        "profiles": {
+          "cheap_reader": {
+            "backend": "codex",
+            "mode": "context",
+            "model": "fixture-fast",
+            "timeout_seconds": 1200,
+            "reasoning_effort": "low",
+            "service_tier": "standard"
+          }
+        },
+        "limits": {
+          "max_running": 2,
+          "max_queued": 20,
+          "max_response_chars": 32000,
+          "max_wait_seconds": 20
+        },
+        "retention": {
+          "days": 30,
+          "max_storage_bytes": 1073741824
+        },
+        "schema_version": "2.0.0"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT04",
+      "schema_def": "agent_config",
+      "valid": false,
+      "contract_cases": [
+        "CT32"
+      ],
+      "value": {
+        "enabled": true,
+        "codex": {
+          "enabled": true,
+          "executable": "",
+          "auth_mode": "unselected",
+          "api_provider": "openai",
+          "api_base_url": "https://api.openai.com/v1"
+        },
+        "default_profile": "cheap_reader",
+        "profiles": {
+          "cheap_reader": {
+            "backend": "codex",
+            "mode": "context",
+            "model": "fixture-fast",
+            "timeout_seconds": 1200,
+            "reasoning_effort": "low",
+            "service_tier": "standard"
+          }
+        },
+        "limits": {
+          "max_running": 2,
+          "max_queued": 20,
+          "max_response_chars": 32000,
+          "max_wait_seconds": 20
+        },
+        "retention": {
+          "days": 30,
+          "max_storage_bytes": 1073741824
+        },
+        "schema_version": "2.0.0"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT05",
+      "schema_def": "agent_config",
+      "valid": false,
+      "contract_cases": [
+        "CT31",
+        "CT32"
+      ],
+      "value": {
+        "enabled": true,
+        "codex": {
+          "enabled": true,
+          "executable": "",
+          "auth_mode": "disabled",
+          "api_provider": "openai",
+          "api_base_url": "https://api.openai.com/v1"
+        },
+        "default_profile": "cheap_reader",
+        "profiles": {
+          "cheap_reader": {
+            "backend": "codex",
+            "mode": "context",
+            "model": "fixture-fast",
+            "timeout_seconds": 1200,
+            "reasoning_effort": "low",
+            "service_tier": "standard"
+          }
+        },
+        "limits": {
+          "max_running": 2,
+          "max_queued": 20,
+          "max_response_chars": 32000,
+          "max_wait_seconds": 20
+        },
+        "retention": {
+          "days": 30,
+          "max_storage_bytes": 1073741824
+        },
+        "schema_version": "2.0.0"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT06",
+      "schema_def": "agent_config",
+      "valid": false,
+      "contract_cases": [
+        "CT33"
+      ],
+      "value": {
+        "enabled": true,
+        "codex": {
+          "enabled": true,
+          "executable": "",
+          "auth_mode": "chatgpt",
+          "api_provider": "openai",
+          "api_base_url": "https://api.openai.com/v1",
+          "api_key": "SYNTHETIC_NOT_A_REAL_KEY"
+        },
+        "default_profile": "cheap_reader",
+        "profiles": {
+          "cheap_reader": {
+            "backend": "codex",
+            "mode": "context",
+            "model": "fixture-fast",
+            "timeout_seconds": 1200,
+            "reasoning_effort": "low",
+            "service_tier": "standard"
+          }
+        },
+        "limits": {
+          "max_running": 2,
+          "max_queued": 20,
+          "max_response_chars": 32000,
+          "max_wait_seconds": 20
+        },
+        "retention": {
+          "days": 30,
+          "max_storage_bytes": 1073741824
+        },
+        "schema_version": "2.0.0"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT07",
+      "schema_def": "agent_config",
+      "valid": false,
+      "contract_cases": [
+        "CT35"
+      ],
+      "value": {
+        "enabled": true,
+        "codex": {
+          "enabled": true,
+          "executable": "",
+          "auth_mode": "chatgpt",
+          "api_provider": "openai",
+          "api_base_url": "https://api.openai.com/v1"
+        },
+        "default_profile": "cheap_reader",
+        "profiles": {
+          "cheap_reader": {
+            "backend": "codex",
+            "mode": "context",
+            "model": "  ",
+            "timeout_seconds": 1200,
+            "reasoning_effort": "low",
+            "service_tier": "standard"
+          }
+        },
+        "limits": {
+          "max_running": 2,
+          "max_queued": 20,
+          "max_response_chars": 32000,
+          "max_wait_seconds": 20
+        },
+        "retention": {
+          "days": 30,
+          "max_storage_bytes": 1073741824
+        },
+        "schema_version": "2.0.0"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT08",
+      "schema_def": "agent_config",
+      "valid": true,
+      "contract_cases": [
+        "CT35",
+        "CT36"
+      ],
+      "value": {
+        "enabled": true,
+        "codex": {
+          "enabled": true,
+          "executable": "",
+          "auth_mode": "chatgpt",
+          "api_provider": "openai",
+          "api_base_url": "https://api.openai.com/v1"
+        },
+        "default_profile": "cheap_reader",
+        "profiles": {
+          "cheap_reader": {
+            "backend": "codex",
+            "mode": "context",
+            "model": "fixture-fast",
+            "timeout_seconds": 1200,
+            "reasoning_effort": "low",
+            "service_tier": "standard"
+          },
+          "deep_reader": {
+            "backend": "codex",
+            "mode": "context",
+            "model": "fixture-deep",
+            "timeout_seconds": 1200,
+            "reasoning_effort": "high",
+            "service_tier": "standard"
+          }
+        },
+        "limits": {
+          "max_running": 2,
+          "max_queued": 20,
+          "max_response_chars": 32000,
+          "max_wait_seconds": 20
+        },
+        "retention": {
+          "days": 30,
+          "max_storage_bytes": 1073741824
+        },
+        "schema_version": "2.0.0"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT09",
+      "schema_def": "agent_config",
+      "valid": false,
+      "contract_cases": [
+        "CT34"
+      ],
+      "value": {
+        "enabled": true,
+        "codex": {
+          "enabled": true,
+          "executable": "",
+          "auth_mode": "api_key",
+          "api_provider": "openai",
+          "api_base_url": "https://other-provider.example/v1"
+        },
+        "default_profile": "cheap_reader",
+        "profiles": {
+          "cheap_reader": {
+            "backend": "codex",
+            "mode": "context",
+            "model": "fixture-fast",
+            "timeout_seconds": 1200,
+            "reasoning_effort": "low",
+            "service_tier": "standard"
+          }
+        },
+        "limits": {
+          "max_running": 2,
+          "max_queued": 20,
+          "max_response_chars": 32000,
+          "max_wait_seconds": 20
+        },
+        "retention": {
+          "days": 30,
+          "max_storage_bytes": 1073741824
+        },
+        "schema_version": "2.0.0"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT10",
+      "schema_def": "agent_config",
+      "valid": true,
+      "contract_cases": [
+        "CT34"
+      ],
+      "value": {
+        "enabled": true,
+        "codex": {
+          "enabled": true,
+          "executable": "",
+          "auth_mode": "api_key",
+          "api_provider": "custom_responses",
+          "api_base_url": "https://provider.example/v1"
+        },
+        "default_profile": "cheap_reader",
+        "profiles": {
+          "cheap_reader": {
+            "backend": "codex",
+            "mode": "context",
+            "model": "fixture-fast",
+            "timeout_seconds": 1200,
+            "reasoning_effort": "low",
+            "service_tier": "standard"
+          }
+        },
+        "limits": {
+          "max_running": 2,
+          "max_queued": 20,
+          "max_response_chars": 32000,
+          "max_wait_seconds": 20
+        },
+        "retention": {
+          "days": 30,
+          "max_storage_bytes": 1073741824
+        },
+        "schema_version": "2.0.0"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT11",
+      "schema_def": "agent_config",
+      "valid": false,
+      "contract_cases": [
+        "CT34"
+      ],
+      "value": {
+        "enabled": true,
+        "codex": {
+          "enabled": true,
+          "executable": "",
+          "auth_mode": "api_key",
+          "api_provider": "custom_responses",
+          "api_base_url": "http://provider.example/v1"
+        },
+        "default_profile": "cheap_reader",
+        "profiles": {
+          "cheap_reader": {
+            "backend": "codex",
+            "mode": "context",
+            "model": "fixture-fast",
+            "timeout_seconds": 1200,
+            "reasoning_effort": "low",
+            "service_tier": "standard"
+          }
+        },
+        "limits": {
+          "max_running": 2,
+          "max_queued": 20,
+          "max_response_chars": 32000,
+          "max_wait_seconds": 20
+        },
+        "retention": {
+          "days": 30,
+          "max_storage_bytes": 1073741824
+        },
+        "schema_version": "2.0.0"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT12",
+      "schema_def": "agent_config",
+      "valid": false,
+      "contract_cases": [
+        "CT34"
+      ],
+      "value": {
+        "enabled": true,
+        "codex": {
+          "enabled": true,
+          "executable": "",
+          "auth_mode": "api_key",
+          "api_provider": "custom_responses",
+          "api_base_url": "https://key@provider.example/v1"
+        },
+        "default_profile": "cheap_reader",
+        "profiles": {
+          "cheap_reader": {
+            "backend": "codex",
+            "mode": "context",
+            "model": "fixture-fast",
+            "timeout_seconds": 1200,
+            "reasoning_effort": "low",
+            "service_tier": "standard"
+          }
+        },
+        "limits": {
+          "max_running": 2,
+          "max_queued": 20,
+          "max_response_chars": 32000,
+          "max_wait_seconds": 20
+        },
+        "retention": {
+          "days": 30,
+          "max_storage_bytes": 1073741824
+        },
+        "schema_version": "2.0.0"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT13",
+      "schema_def": "agent_config",
+      "valid": false,
+      "contract_cases": [
+        "CT34"
+      ],
+      "value": {
+        "enabled": true,
+        "codex": {
+          "enabled": true,
+          "executable": "",
+          "auth_mode": "api_key",
+          "api_provider": "custom_responses",
+          "api_base_url": "https://provider.example/v1?key=SECRET"
+        },
+        "default_profile": "cheap_reader",
+        "profiles": {
+          "cheap_reader": {
+            "backend": "codex",
+            "mode": "context",
+            "model": "fixture-fast",
+            "timeout_seconds": 1200,
+            "reasoning_effort": "low",
+            "service_tier": "standard"
+          }
+        },
+        "limits": {
+          "max_running": 2,
+          "max_queued": 20,
+          "max_response_chars": 32000,
+          "max_wait_seconds": 20
+        },
+        "retention": {
+          "days": 30,
+          "max_storage_bytes": 1073741824
+        },
+        "schema_version": "2.0.0"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT14",
+      "schema_def": "agent_config",
+      "valid": false,
+      "contract_cases": [
+        "CT34"
+      ],
+      "value": {
+        "enabled": true,
+        "codex": {
+          "enabled": true,
+          "executable": "",
+          "auth_mode": "api_key",
+          "api_provider": "custom_responses",
+          "api_base_url": "https://127.0.0.1/v1"
+        },
+        "default_profile": "cheap_reader",
+        "profiles": {
+          "cheap_reader": {
+            "backend": "codex",
+            "mode": "context",
+            "model": "fixture-fast",
+            "timeout_seconds": 1200,
+            "reasoning_effort": "low",
+            "service_tier": "standard"
+          }
+        },
+        "limits": {
+          "max_running": 2,
+          "max_queued": 20,
+          "max_response_chars": 32000,
+          "max_wait_seconds": 20
+        },
+        "retention": {
+          "days": 30,
+          "max_storage_bytes": 1073741824
+        },
+        "schema_version": "2.0.0"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT15",
+      "schema_def": "agent_config",
+      "valid": false,
+      "contract_cases": [
+        "CT34"
+      ],
+      "value": {
+        "enabled": true,
+        "codex": {
+          "enabled": true,
+          "executable": "",
+          "auth_mode": "api_key",
+          "api_provider": "custom_responses",
+          "api_base_url": "https://169.254.169.254/v1"
+        },
+        "default_profile": "cheap_reader",
+        "profiles": {
+          "cheap_reader": {
+            "backend": "codex",
+            "mode": "context",
+            "model": "fixture-fast",
+            "timeout_seconds": 1200,
+            "reasoning_effort": "low",
+            "service_tier": "standard"
+          }
+        },
+        "limits": {
+          "max_running": 2,
+          "max_queued": 20,
+          "max_response_chars": 32000,
+          "max_wait_seconds": 20
+        },
+        "retention": {
+          "days": 30,
+          "max_storage_bytes": 1073741824
+        },
+        "schema_version": "2.0.0"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT16",
+      "schema_def": "agent_config",
+      "valid": false,
+      "contract_cases": [
+        "CT36"
+      ],
+      "value": {
+        "enabled": true,
+        "codex": {
+          "enabled": true,
+          "executable": "",
+          "auth_mode": "chatgpt",
+          "api_provider": "openai",
+          "api_base_url": "https://api.openai.com/v1"
+        },
+        "default_profile": "cheap_reader",
+        "profiles": {
+          "cheap_reader": {
+            "backend": "codex",
+            "mode": "context",
+            "model": "fixture-fast",
+            "timeout_seconds": 1200,
+            "reasoning_effort": " ",
+            "service_tier": "standard"
+          }
+        },
+        "limits": {
+          "max_running": 2,
+          "max_queued": 20,
+          "max_response_chars": 32000,
+          "max_wait_seconds": 20
+        },
+        "retention": {
+          "days": 30,
+          "max_storage_bytes": 1073741824
+        },
+        "schema_version": "2.0.0"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT17",
+      "schema_def": "execution_context",
+      "valid": true,
+      "contract_cases": [
+        "CT32",
+        "CT36"
+      ],
+      "value": {
+        "auth_mode": "chatgpt",
+        "billing_source": "chatgpt_plan",
+        "provider": "openai",
+        "endpoint": null,
+        "credential_context_id": "identity_fixture_chatgpt",
+        "credential_revision": "auth_fixture_v1",
+        "requested_reasoning_effort": "low",
+        "resolved_reasoning_effort": null,
+        "requested_service_tier": "standard",
+        "resolved_service_tier": null,
+        "selection_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "effective_auth_verified": false
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT18",
+      "schema_def": "execution_context",
+      "valid": false,
+      "contract_cases": [
+        "CT32"
+      ],
+      "value": {
+        "auth_mode": "chatgpt",
+        "billing_source": "openai_api",
+        "provider": "openai",
+        "endpoint": null,
+        "credential_context_id": "identity_fixture_chatgpt",
+        "credential_revision": "auth_fixture_v1",
+        "requested_reasoning_effort": "low",
+        "resolved_reasoning_effort": null,
+        "requested_service_tier": "standard",
+        "resolved_service_tier": null,
+        "selection_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "effective_auth_verified": false
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT19",
+      "schema_def": "execution_context",
+      "valid": true,
+      "contract_cases": [
+        "CT32",
+        "CT34"
+      ],
+      "value": {
+        "auth_mode": "api_key",
+        "billing_source": "openai_api",
+        "provider": "openai",
+        "endpoint": "https://api.openai.com/v1",
+        "credential_context_id": "identity_fixture_chatgpt",
+        "credential_revision": "auth_fixture_v1",
+        "requested_reasoning_effort": "low",
+        "resolved_reasoning_effort": null,
+        "requested_service_tier": "standard",
+        "resolved_service_tier": null,
+        "selection_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "effective_auth_verified": false
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT20",
+      "schema_def": "execution_context",
+      "valid": false,
+      "contract_cases": [
+        "CT33"
+      ],
+      "value": {
+        "auth_mode": "chatgpt",
+        "billing_source": "chatgpt_plan",
+        "provider": "openai",
+        "endpoint": null,
+        "credential_context_id": "identity_fixture_chatgpt",
+        "credential_revision": "auth_fixture_v1",
+        "requested_reasoning_effort": "low",
+        "resolved_reasoning_effort": null,
+        "requested_service_tier": "standard",
+        "resolved_service_tier": null,
+        "selection_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "effective_auth_verified": false,
+        "api_key": "SYNTHETIC_NOT_A_REAL_KEY"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT21",
+      "schema_def": "credential_status",
+      "valid": true,
+      "contract_cases": [
+        "CT33"
+      ],
+      "value": {
+        "configured": false,
+        "credential_revision": "absent",
+        "storage": "none",
+        "bound_endpoint": null,
+        "status": "missing",
+        "updated_at": null
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT22",
+      "schema_def": "credential_status",
+      "valid": true,
+      "contract_cases": [
+        "CT33"
+      ],
+      "value": {
+        "configured": true,
+        "credential_revision": "key-v1-fixture",
+        "storage": "windows_credential_manager",
+        "bound_endpoint": "https://api.openai.com/v1",
+        "status": "configured",
+        "updated_at": "2026-10-07T12:00:00Z"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT23",
+      "schema_def": "credential_status",
+      "valid": false,
+      "contract_cases": [
+        "CT33"
+      ],
+      "value": {
+        "configured": true,
+        "credential_revision": "key-v1-fixture",
+        "storage": "windows_credential_manager",
+        "bound_endpoint": "https://api.openai.com/v1",
+        "status": "configured",
+        "updated_at": "2026-10-07T12:00:00Z",
+        "api_key": "SYNTHETIC_NOT_A_REAL_KEY"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT24",
+      "schema_def": "setup_credential_put_request",
+      "valid": true,
+      "contract_cases": [
+        "CT33"
+      ],
+      "value": {
+        "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "request_id": "credential-put-1",
+        "expected_credential_revision": "absent",
+        "api_key": "SYNTHETIC_NOT_A_REAL_KEY"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT25",
+      "schema_def": "setup_credential_put_request",
+      "valid": false,
+      "contract_cases": [
+        "CT33"
+      ],
+      "value": {
+        "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "request_id": "credential-put-1",
+        "api_key": "SYNTHETIC_NOT_A_REAL_KEY"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT26",
+      "schema_def": "setup_credential_put_request",
+      "valid": false,
+      "contract_cases": [
+        "CT33"
+      ],
+      "value": {
+        "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "request_id": "credential-put-1",
+        "expected_credential_revision": "absent",
+        "api_key": "SYNTHETIC_NOT_A_REAL_KEY",
+        "path": "../../auth.json"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT27",
+      "schema_def": "setup_credential_put_request",
+      "valid": false,
+      "contract_cases": [
+        "CT33"
+      ],
+      "value": {
+        "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "request_id": "credential-put-1",
+        "expected_credential_revision": "absent",
+        "api_key": " key\n"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT28",
+      "schema_def": "setup_credential_delete_request",
+      "valid": true,
+      "contract_cases": [
+        "CT33"
+      ],
+      "value": {
+        "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "request_id": "credential-put-1",
+        "expected_credential_revision": "absent"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT29",
+      "schema_def": "model_option",
+      "valid": true,
+      "contract_cases": [
+        "CT35",
+        "CT36"
+      ],
+      "value": {
+        "model_id": "fixture-fast",
+        "display_name": "示例快速阅读模型（不是实际产品模型）",
+        "source": "cli_bundled",
+        "auth_mode": "chatgpt",
+        "availability": "unverified",
+        "compatibility": "supported",
+        "reasoning_efforts": [
+          "low",
+          "high"
+        ],
+        "reasoning_effort_status": "known",
+        "default_reasoning_effort": "low",
+        "service_tiers": [
+          "standard"
+        ],
+        "parameter_source": "cli_catalog",
+        "verified_selection_fingerprint": null,
+        "checked_at": null,
+        "reason": null,
+        "cost_hint": null,
+        "cost_hint_basis": "unknown"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT30",
+      "schema_def": "model_option",
+      "valid": false,
+      "contract_cases": [
+        "CT35",
+        "CT37"
+      ],
+      "value": {
+        "model_id": "fixture-fast",
+        "display_name": "示例快速阅读模型（不是实际产品模型）",
+        "source": "cli_bundled",
+        "auth_mode": "chatgpt",
+        "availability": "verified",
+        "compatibility": "supported",
+        "reasoning_efforts": [
+          "low",
+          "high"
+        ],
+        "reasoning_effort_status": "known",
+        "default_reasoning_effort": "low",
+        "service_tiers": [
+          "standard"
+        ],
+        "parameter_source": "cli_catalog",
+        "verified_selection_fingerprint": null,
+        "checked_at": null,
+        "reason": null,
+        "cost_hint": null,
+        "cost_hint_basis": "unknown"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT31",
+      "schema_def": "model_option",
+      "valid": true,
+      "contract_cases": [
+        "CT35",
+        "CT37"
+      ],
+      "value": {
+        "model_id": "fixture-fast",
+        "display_name": "示例快速阅读模型（不是实际产品模型）",
+        "source": "cli_bundled",
+        "auth_mode": "chatgpt",
+        "availability": "verified",
+        "compatibility": "supported",
+        "reasoning_efforts": [
+          "low",
+          "high"
+        ],
+        "reasoning_effort_status": "known",
+        "default_reasoning_effort": "low",
+        "service_tiers": [
+          "standard"
+        ],
+        "parameter_source": "cli_catalog",
+        "verified_selection_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "checked_at": "2026-10-07T12:00:00Z",
+        "reason": null,
+        "cost_hint": null,
+        "cost_hint_basis": "unknown"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT32",
+      "schema_def": "model_option",
+      "valid": false,
+      "contract_cases": [
+        "CT36"
+      ],
+      "value": {
+        "model_id": "fixture-fast",
+        "display_name": "示例快速阅读模型（不是实际产品模型）",
+        "source": "cli_bundled",
+        "auth_mode": "chatgpt",
+        "availability": "unverified",
+        "compatibility": "supported",
+        "reasoning_efforts": [
+          "low",
+          "high"
+        ],
+        "reasoning_effort_status": "known",
+        "default_reasoning_effort": "ultra-not-listed",
+        "service_tiers": [
+          "standard"
+        ],
+        "parameter_source": "cli_catalog",
+        "verified_selection_fingerprint": null,
+        "checked_at": null,
+        "reason": null,
+        "cost_hint": null,
+        "cost_hint_basis": "unknown"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT33",
+      "schema_def": "model_option",
+      "valid": true,
+      "contract_cases": [
+        "CT35"
+      ],
+      "value": {
+        "model_id": "fixture-fast",
+        "display_name": "示例快速阅读模型（不是实际产品模型）",
+        "source": "manual",
+        "auth_mode": "chatgpt",
+        "availability": "unverified",
+        "compatibility": "unknown",
+        "reasoning_efforts": [],
+        "reasoning_effort_status": "unknown",
+        "default_reasoning_effort": null,
+        "service_tiers": [],
+        "parameter_source": "unknown",
+        "verified_selection_fingerprint": null,
+        "checked_at": null,
+        "reason": null,
+        "cost_hint": null,
+        "cost_hint_basis": "unknown"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT34",
+      "schema_def": "model_catalog",
+      "valid": true,
+      "contract_cases": [
+        "CT35"
+      ],
+      "value": {
+        "catalog_revision": "catalog-fixture-1",
+        "config_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "auth_mode": "chatgpt",
+        "provider": "openai",
+        "credential_context_id": "identity_fixture_chatgpt",
+        "source": "cli_bundled",
+        "state": "cached",
+        "models": [
+          {
+            "model_id": "fixture-fast",
+            "display_name": "示例快速阅读模型（不是实际产品模型）",
+            "source": "cli_bundled",
+            "auth_mode": "chatgpt",
+            "availability": "unverified",
+            "compatibility": "supported",
+            "reasoning_efforts": [
+              "low",
+              "high"
+            ],
+            "reasoning_effort_status": "known",
+            "default_reasoning_effort": "low",
+            "service_tiers": [
+              "standard"
+            ],
+            "parameter_source": "cli_catalog",
+            "verified_selection_fingerprint": null,
+            "checked_at": null,
+            "reason": null,
+            "cost_hint": null,
+            "cost_hint_basis": "unknown"
+          },
+          {
+            "model_id": "fixture-deep",
+            "display_name": "示例深入阅读模型",
+            "source": "cli_bundled",
+            "auth_mode": "chatgpt",
+            "availability": "unverified",
+            "compatibility": "supported",
+            "reasoning_efforts": [
+              "low",
+              "high"
+            ],
+            "reasoning_effort_status": "known",
+            "default_reasoning_effort": "low",
+            "service_tiers": [
+              "standard"
+            ],
+            "parameter_source": "cli_catalog",
+            "verified_selection_fingerprint": null,
+            "checked_at": null,
+            "reason": null,
+            "cost_hint": null,
+            "cost_hint_basis": "unknown"
+          }
+        ],
+        "fetched_at": "2026-10-07T12:00:00Z",
+        "manual_entry_allowed": true,
+        "model_request_performed": false,
+        "warning": "目录候选不等于账号已获得权限"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT35",
+      "schema_def": "model_catalog",
+      "valid": false,
+      "contract_cases": [
+        "CT35",
+        "CT38"
+      ],
+      "value": {
+        "catalog_revision": "catalog-fixture-1",
+        "config_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "auth_mode": "chatgpt",
+        "provider": "openai",
+        "credential_context_id": "identity_fixture_chatgpt",
+        "source": "cli_bundled",
+        "state": "cached",
+        "models": [
+          {
+            "model_id": "fixture-fast",
+            "display_name": "示例快速阅读模型（不是实际产品模型）",
+            "source": "cli_bundled",
+            "auth_mode": "chatgpt",
+            "availability": "unverified",
+            "compatibility": "supported",
+            "reasoning_efforts": [
+              "low",
+              "high"
+            ],
+            "reasoning_effort_status": "known",
+            "default_reasoning_effort": "low",
+            "service_tiers": [
+              "standard"
+            ],
+            "parameter_source": "cli_catalog",
+            "verified_selection_fingerprint": null,
+            "checked_at": null,
+            "reason": null,
+            "cost_hint": null,
+            "cost_hint_basis": "unknown"
+          },
+          {
+            "model_id": "fixture-deep",
+            "display_name": "示例深入阅读模型",
+            "source": "cli_bundled",
+            "auth_mode": "chatgpt",
+            "availability": "unverified",
+            "compatibility": "supported",
+            "reasoning_efforts": [
+              "low",
+              "high"
+            ],
+            "reasoning_effort_status": "known",
+            "default_reasoning_effort": "low",
+            "service_tiers": [
+              "standard"
+            ],
+            "parameter_source": "cli_catalog",
+            "verified_selection_fingerprint": null,
+            "checked_at": null,
+            "reason": null,
+            "cost_hint": null,
+            "cost_hint_basis": "unknown"
+          }
+        ],
+        "fetched_at": "2026-10-07T12:00:00Z",
+        "manual_entry_allowed": true,
+        "model_request_performed": true,
+        "warning": "目录候选不等于账号已获得权限"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT36",
+      "schema_def": "model_catalog",
+      "valid": false,
+      "contract_cases": [
+        "CT32",
+        "CT35"
+      ],
+      "value": {
+        "catalog_revision": "catalog-fixture-1",
+        "config_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "auth_mode": "chatgpt",
+        "provider": "openai",
+        "credential_context_id": "identity_fixture_chatgpt",
+        "source": "cli_bundled",
+        "state": "cached",
+        "models": [
+          {
+            "model_id": "fixture-fast",
+            "display_name": "示例快速阅读模型（不是实际产品模型）",
+            "source": "cli_bundled",
+            "auth_mode": "chatgpt",
+            "availability": "unverified",
+            "compatibility": "supported",
+            "reasoning_efforts": [
+              "low",
+              "high"
+            ],
+            "reasoning_effort_status": "known",
+            "default_reasoning_effort": "low",
+            "service_tiers": [
+              "standard"
+            ],
+            "parameter_source": "cli_catalog",
+            "verified_selection_fingerprint": null,
+            "checked_at": null,
+            "reason": null,
+            "cost_hint": null,
+            "cost_hint_basis": "unknown"
+          },
+          {
+            "model_id": "fixture-deep",
+            "display_name": "示例深入阅读模型",
+            "source": "cli_bundled",
+            "auth_mode": "api_key",
+            "availability": "unverified",
+            "compatibility": "supported",
+            "reasoning_efforts": [
+              "low",
+              "high"
+            ],
+            "reasoning_effort_status": "known",
+            "default_reasoning_effort": "low",
+            "service_tiers": [
+              "standard"
+            ],
+            "parameter_source": "cli_catalog",
+            "verified_selection_fingerprint": null,
+            "checked_at": null,
+            "reason": null,
+            "cost_hint": null,
+            "cost_hint_basis": "unknown"
+          }
+        ],
+        "fetched_at": "2026-10-07T12:00:00Z",
+        "manual_entry_allowed": true,
+        "model_request_performed": false,
+        "warning": "目录候选不等于账号已获得权限"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT37",
+      "schema_def": "model_catalog",
+      "valid": true,
+      "contract_cases": [
+        "CT35"
+      ],
+      "value": {
+        "catalog_revision": "catalog-fixture-1",
+        "config_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "auth_mode": "chatgpt",
+        "provider": "openai",
+        "credential_context_id": "identity_fixture_chatgpt",
+        "source": "manual_only",
+        "state": "unavailable",
+        "models": [],
+        "fetched_at": "2026-10-07T12:00:00Z",
+        "manual_entry_allowed": true,
+        "model_request_performed": false,
+        "warning": "当前CLI未提供受支持的目录入口，请填写模型ID"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT38",
+      "schema_def": "setup_model_test_request",
+      "valid": true,
+      "contract_cases": [
+        "CT38"
+      ],
+      "value": {
+        "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "request_id": "explicit-model-test-1",
+        "project_id": "fixture-project",
+        "profile": "cheap_reader",
+        "expected_credential_revision": "auth_fixture_v1",
+        "allow_model_request": true
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT39",
+      "schema_def": "setup_model_test_request",
+      "valid": false,
+      "contract_cases": [
+        "CT38"
+      ],
+      "value": {
+        "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "request_id": "explicit-model-test-1",
+        "project_id": "fixture-project",
+        "profile": "cheap_reader",
+        "expected_credential_revision": "auth_fixture_v1"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT40",
+      "schema_def": "setup_model_test_request",
+      "valid": false,
+      "contract_cases": [
+        "CT38"
+      ],
+      "value": {
+        "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "request_id": "explicit-model-test-1",
+        "project_id": "fixture-project",
+        "profile": "cheap_reader",
+        "expected_credential_revision": "auth_fixture_v1",
+        "allow_model_request": false
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT41",
+      "schema_def": "setup_model_test_request",
+      "valid": false,
+      "contract_cases": [
+        "CT35",
+        "CT38"
+      ],
+      "value": {
+        "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "request_id": "explicit-model-test-1",
+        "project_id": "fixture-project",
+        "profile": "cheap_reader",
+        "expected_credential_revision": "auth_fixture_v1",
+        "allow_model_request": true,
+        "model": "override-model"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT42",
+      "schema_def": "setup_model_test_request",
+      "valid": false,
+      "contract_cases": [
+        "CT38"
+      ],
+      "value": {
+        "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "request_id": "explicit-model-test-1",
+        "project_id": "fixture-project",
+        "profile": "cheap_reader",
+        "expected_credential_revision": "auth_fixture_v1",
+        "allow_model_request": true,
+        "argv": [
+          "--dangerous"
+        ]
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT43",
+      "schema_def": "setup_models_refresh_request",
+      "valid": true,
+      "contract_cases": [
+        "CT35"
+      ],
+      "value": {
+        "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "backend": "codex"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT44",
+      "schema_def": "setup_models_refresh_request",
+      "valid": false,
+      "contract_cases": [
+        "CT33",
+        "CT35"
+      ],
+      "value": {
+        "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "backend": "codex",
+        "api_key": "SYNTHETIC_NOT_A_REAL_KEY"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT45",
+      "schema_def": "project_context_response",
+      "valid": false,
+      "contract_cases": [
+        "CT32",
+        "CT39"
+      ],
+      "value": {
+        "schema_version": "2.0.0",
+        "kind": "task",
+        "task": {
+          "task_id": "task_fixture_001",
+          "project_id": "fixture-project",
+          "request_id": "request-fixture-001",
+          "owner_id": "owner_fixture_001",
+          "mode": "context",
+          "backend": "codex",
+          "profile": "cheap_reader",
+          "backend_version": null,
+          "requested_model": "MODEL_SELECTED_AT_T02",
+          "resolved_model": null,
+          "config_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "parent_task_id": null,
+          "status": "queued",
+          "created_at": "2026-10-07T10:26:15Z",
+          "started_at": null,
+          "finished_at": null,
+          "finish_reason": null,
+          "progress": {
+            "phase": "queued",
+            "message": "离线契约示例：尚未执行模型",
+            "updated_at": "2026-10-07T10:26:15Z"
+          },
+          "report_id": null,
+          "summary": null,
+          "completion": null,
+          "verification": null,
+          "continuation_type": "fresh",
+          "session_available": null,
+          "actual_models": null,
+          "usage": null,
+          "usage_scope": "unknown",
+          "cost": null,
+          "cost_basis": "api",
+          "error": null,
+          "execution_context": {
+            "auth_mode": "chatgpt",
+            "billing_source": "chatgpt_plan",
+            "provider": "openai",
+            "endpoint": null,
+            "credential_context_id": "identity_fixture_chatgpt",
+            "credential_revision": "auth_fixture_v1",
+            "requested_reasoning_effort": "low",
+            "resolved_reasoning_effort": null,
+            "requested_service_tier": "standard",
+            "resolved_service_tier": null,
+            "selection_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "effective_auth_verified": false
+          },
+          "purpose": "project_context"
+        },
+        "report": null,
+        "page": null,
+        "pagination": {
+          "cursor": null,
+          "next_cursor": null,
+          "has_more": false,
+          "returned_chars": 0,
+          "total_chars": 0,
+          "remaining_chars": 0
+        },
+        "response_chars": 1513
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT46",
+      "schema_def": "setup_model_test_response",
+      "valid": true,
+      "contract_cases": [
+        "CT38"
+      ],
+      "value": {
+        "schema_version": "2.0.0",
+        "kind": "task",
+        "task": {
+          "task_id": "task_fixture_001",
+          "project_id": "fixture-project",
+          "request_id": "request-fixture-001",
+          "owner_id": "owner_fixture_001",
+          "mode": "context",
+          "backend": "codex",
+          "profile": "cheap_reader",
+          "backend_version": null,
+          "requested_model": "MODEL_SELECTED_AT_T02",
+          "resolved_model": null,
+          "config_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "parent_task_id": null,
+          "status": "queued",
+          "created_at": "2026-10-07T10:26:15Z",
+          "started_at": null,
+          "finished_at": null,
+          "finish_reason": null,
+          "progress": {
+            "phase": "queued",
+            "message": "离线契约示例：尚未执行模型",
+            "updated_at": "2026-10-07T10:26:15Z"
+          },
+          "report_id": null,
+          "summary": null,
+          "completion": null,
+          "verification": null,
+          "continuation_type": "fresh",
+          "session_available": null,
+          "actual_models": null,
+          "usage": null,
+          "usage_scope": "unknown",
+          "cost": null,
+          "cost_basis": "unknown",
+          "error": null,
+          "execution_context": {
+            "auth_mode": "chatgpt",
+            "billing_source": "chatgpt_plan",
+            "provider": "openai",
+            "endpoint": null,
+            "credential_context_id": "identity_fixture_chatgpt",
+            "credential_revision": "auth_fixture_v1",
+            "requested_reasoning_effort": "low",
+            "resolved_reasoning_effort": null,
+            "requested_service_tier": "standard",
+            "resolved_service_tier": null,
+            "selection_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "effective_auth_verified": false
+          },
+          "purpose": "model_test"
+        },
+        "report": null,
+        "page": null,
+        "pagination": {
+          "cursor": null,
+          "next_cursor": null,
+          "has_more": false,
+          "returned_chars": 0,
+          "total_chars": 0,
+          "remaining_chars": 0
+        },
+        "response_chars": 1512
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT47",
+      "schema_def": "setup_config_put_request",
+      "valid": true,
+      "contract_cases": [
+        "CT31",
+        "CT32"
+      ],
+      "value": {
+        "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "data": {
+          "agent": {
+            "enabled": true,
+            "codex": {
+              "enabled": true,
+              "executable": "",
+              "auth_mode": "chatgpt",
+              "api_provider": "openai",
+              "api_base_url": "https://api.openai.com/v1"
+            },
+            "default_profile": "cheap_reader",
+            "profiles": {
+              "cheap_reader": {
+                "backend": "codex",
+                "mode": "context",
+                "model": "fixture-fast",
+                "timeout_seconds": 1200,
+                "reasoning_effort": "low",
+                "service_tier": "standard"
+              }
+            },
+            "limits": {
+              "max_running": 2,
+              "max_queued": 20,
+              "max_response_chars": 32000,
+              "max_wait_seconds": 20
+            },
+            "retention": {
+              "days": 30,
+              "max_storage_bytes": 1073741824
+            },
+            "schema_version": "2.0.0"
+          }
+        }
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT48",
+      "schema_def": "setup_config_put_request",
+      "valid": false,
+      "contract_cases": [
+        "CT35"
+      ],
+      "value": {
+        "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "data": {
+          "agent": {
+            "enabled": true,
+            "codex": {
+              "enabled": true,
+              "executable": "",
+              "auth_mode": "chatgpt",
+              "api_provider": "openai",
+              "api_base_url": "https://api.openai.com/v1"
+            },
+            "default_profile": "cheap_reader",
+            "profiles": {
+              "cheap_reader": {
+                "backend": "codex",
+                "mode": "context",
+                "model": " ",
+                "timeout_seconds": 1200,
+                "reasoning_effort": "low",
+                "service_tier": "standard"
+              }
+            },
+            "limits": {
+              "max_running": 2,
+              "max_queued": 20,
+              "max_response_chars": 32000,
+              "max_wait_seconds": 20
+            },
+            "retention": {
+              "days": 30,
+              "max_storage_bytes": 1073741824
+            },
+            "schema_version": "2.0.0"
+          }
+        }
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT49",
+      "schema_def": "agent_config",
+      "valid": true,
+      "contract_cases": [
+        "CT31",
+        "CT37"
+      ],
+      "value": {
+        "enabled": false,
+        "codex": {
+          "enabled": false,
+          "executable": "",
+          "auth_mode": "api_key",
+          "api_provider": "openai",
+          "api_base_url": "https://api.openai.com/v1"
+        },
+        "default_profile": "cheap_reader",
+        "profiles": {
+          "cheap_reader": {
+            "backend": "codex",
+            "mode": "context",
+            "model": "fixture-fast",
+            "timeout_seconds": 1200,
+            "reasoning_effort": "high",
+            "service_tier": "standard"
+          }
+        },
+        "limits": {
+          "max_running": 2,
+          "max_queued": 20,
+          "max_response_chars": 32000,
+          "max_wait_seconds": 20
+        },
+        "retention": {
+          "days": 30,
+          "max_storage_bytes": 1073741824
+        },
+        "schema_version": "2.0.0"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT50",
+      "schema_def": "agent_config",
+      "valid": false,
+      "contract_cases": [
+        "CT32"
+      ],
+      "value": {
+        "enabled": true,
+        "codex": {
+          "enabled": true,
+          "executable": "",
+          "auth_mode": "auto",
+          "api_provider": "openai",
+          "api_base_url": "https://api.openai.com/v1"
+        },
+        "default_profile": "cheap_reader",
+        "profiles": {
+          "cheap_reader": {
+            "backend": "codex",
+            "mode": "context",
+            "model": "fixture-fast",
+            "timeout_seconds": 1200,
+            "reasoning_effort": "low",
+            "service_tier": "standard"
+          }
+        },
+        "limits": {
+          "max_running": 2,
+          "max_queued": 20,
+          "max_response_chars": 32000,
+          "max_wait_seconds": 20
+        },
+        "retention": {
+          "days": 30,
+          "max_storage_bytes": 1073741824
+        },
+        "schema_version": "2.0.0"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT51",
+      "schema_def": "agent_config",
+      "valid": false,
+      "contract_cases": [
+        "CT36"
+      ],
+      "value": {
+        "enabled": true,
+        "codex": {
+          "enabled": true,
+          "executable": "",
+          "auth_mode": "chatgpt",
+          "api_provider": "openai",
+          "api_base_url": "https://api.openai.com/v1"
+        },
+        "default_profile": "cheap_reader",
+        "profiles": {
+          "cheap_reader": {
+            "backend": "codex",
+            "mode": "context",
+            "model": "fixture-fast",
+            "timeout_seconds": 1200,
+            "reasoning_effort": "low",
+            "service_tier": " "
+          }
+        },
+        "limits": {
+          "max_running": 2,
+          "max_queued": 20,
+          "max_response_chars": 32000,
+          "max_wait_seconds": 20
+        },
+        "retention": {
+          "days": 30,
+          "max_storage_bytes": 1073741824
+        },
+        "schema_version": "2.0.0"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT52",
+      "schema_def": "model_catalog",
+      "valid": true,
+      "contract_cases": [
+        "CT31",
+        "CT35"
+      ],
+      "value": {
+        "catalog_revision": "catalog-fixture-1",
+        "config_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "auth_mode": "chatgpt",
+        "provider": "openai",
+        "credential_context_id": null,
+        "source": "none",
+        "state": "disabled",
+        "models": [],
+        "fetched_at": "2026-10-07T12:00:00Z",
+        "manual_entry_allowed": true,
+        "model_request_performed": false,
+        "warning": "目录候选不等于账号已获得权限"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT53",
+      "schema_def": "model_selection",
+      "valid": true,
+      "contract_cases": [
+        "CT35",
+        "CT36"
+      ],
+      "value": {
+        "model_id": "fixture-fast",
+        "reasoning_effort": "low",
+        "service_tier": "standard",
+        "option": {
+          "model_id": "fixture-fast",
+          "display_name": "示例快速阅读模型（不是实际产品模型）",
+          "source": "cli_bundled",
+          "auth_mode": "chatgpt",
+          "availability": "unverified",
+          "compatibility": "supported",
+          "reasoning_efforts": [
+            "low",
+            "high"
+          ],
+          "reasoning_effort_status": "known",
+          "default_reasoning_effort": "low",
+          "service_tiers": [
+            "standard"
+          ],
+          "parameter_source": "cli_catalog",
+          "verified_selection_fingerprint": null,
+          "checked_at": null,
+          "reason": null,
+          "cost_hint": null,
+          "cost_hint_basis": "unknown"
+        }
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT54",
+      "schema_def": "model_selection",
+      "valid": false,
+      "contract_cases": [
+        "CT36"
+      ],
+      "value": {
+        "model_id": "fixture-fast",
+        "reasoning_effort": "not-supported",
+        "service_tier": "standard",
+        "option": {
+          "model_id": "fixture-fast",
+          "display_name": "示例快速阅读模型（不是实际产品模型）",
+          "source": "cli_bundled",
+          "auth_mode": "chatgpt",
+          "availability": "unverified",
+          "compatibility": "supported",
+          "reasoning_efforts": [
+            "low",
+            "high"
+          ],
+          "reasoning_effort_status": "known",
+          "default_reasoning_effort": "low",
+          "service_tiers": [
+            "standard"
+          ],
+          "parameter_source": "cli_catalog",
+          "verified_selection_fingerprint": null,
+          "checked_at": null,
+          "reason": null,
+          "cost_hint": null,
+          "cost_hint_basis": "unknown"
+        }
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT55",
+      "schema_def": "model_selection",
+      "valid": false,
+      "contract_cases": [
+        "CT36"
+      ],
+      "value": {
+        "model_id": "fixture-fast",
+        "reasoning_effort": "low",
+        "service_tier": "fast",
+        "option": {
+          "model_id": "fixture-fast",
+          "display_name": "示例快速阅读模型（不是实际产品模型）",
+          "source": "cli_bundled",
+          "auth_mode": "chatgpt",
+          "availability": "unverified",
+          "compatibility": "supported",
+          "reasoning_efforts": [
+            "low",
+            "high"
+          ],
+          "reasoning_effort_status": "known",
+          "default_reasoning_effort": "low",
+          "service_tiers": [
+            "standard"
+          ],
+          "parameter_source": "cli_catalog",
+          "verified_selection_fingerprint": null,
+          "checked_at": null,
+          "reason": null,
+          "cost_hint": null,
+          "cost_hint_basis": "unknown"
+        }
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT56",
+      "schema_def": "model_selection",
+      "valid": true,
+      "contract_cases": [
+        "CT35"
+      ],
+      "value": {
+        "model_id": "manual-model",
+        "reasoning_effort": "",
+        "service_tier": "standard",
+        "option": null
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT57",
+      "schema_def": "model_selection",
+      "valid": false,
+      "contract_cases": [
+        "CT35"
+      ],
+      "value": {
+        "model_id": "other-model",
+        "reasoning_effort": "low",
+        "service_tier": "standard",
+        "option": {
+          "model_id": "fixture-fast",
+          "display_name": "示例快速阅读模型（不是实际产品模型）",
+          "source": "cli_bundled",
+          "auth_mode": "chatgpt",
+          "availability": "unverified",
+          "compatibility": "supported",
+          "reasoning_efforts": [
+            "low",
+            "high"
+          ],
+          "reasoning_effort_status": "known",
+          "default_reasoning_effort": "low",
+          "service_tiers": [
+            "standard"
+          ],
+          "parameter_source": "cli_catalog",
+          "verified_selection_fingerprint": null,
+          "checked_at": null,
+          "reason": null,
+          "cost_hint": null,
+          "cost_hint_basis": "unknown"
+        }
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT58",
+      "schema_def": "model_option",
+      "valid": true,
+      "contract_cases": [
+        "CT36"
+      ],
+      "value": {
+        "model_id": "fixture-fast",
+        "display_name": "示例快速阅读模型（不是实际产品模型）",
+        "source": "cli_bundled",
+        "auth_mode": "chatgpt",
+        "availability": "unverified",
+        "compatibility": "supported",
+        "reasoning_efforts": [],
+        "reasoning_effort_status": "not_supported",
+        "default_reasoning_effort": null,
+        "service_tiers": [
+          "standard"
+        ],
+        "parameter_source": "cli_catalog",
+        "verified_selection_fingerprint": null,
+        "checked_at": null,
+        "reason": null,
+        "cost_hint": null,
+        "cost_hint_basis": "unknown"
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT59",
+      "schema_def": "credential_status",
+      "valid": false,
+      "contract_cases": [
+        "CT33"
+      ],
+      "value": {
+        "configured": false,
+        "credential_revision": "absent",
+        "storage": "none",
+        "bound_endpoint": null,
+        "status": "configured",
+        "updated_at": null
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    },
+    {
+      "case_id": "OPT60",
+      "schema_def": "execution_context",
+      "valid": true,
+      "contract_cases": [
+        "CT32",
+        "CT34"
+      ],
+      "value": {
+        "auth_mode": "api_key",
+        "billing_source": "custom_api",
+        "provider": "custom_responses",
+        "endpoint": "https://provider.example/v1",
+        "credential_context_id": "identity_fixture_chatgpt",
+        "credential_revision": "auth_fixture_v1",
+        "requested_reasoning_effort": "low",
+        "resolved_reasoning_effort": null,
+        "requested_service_tier": "standard",
+        "resolved_service_tier": null,
+        "selection_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "effective_auth_verified": false
+      },
+      "origin": "SYNTHETIC_OFFLINE_FIXTURE_NOT_PRODUCT_EVIDENCE"
+    }
+  ]
+}

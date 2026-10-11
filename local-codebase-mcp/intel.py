@@ -1,17 +1,18 @@
-"""task17 LSP 基础设施（Option A 薄适配器）：stdio JSON-RPC 薄客户端。
+"""stdio JSON-RPC language-server sessions used by MCP intelligence tools.
 
-供 task18 四智能工具消费；本模块不注册任何 MCP 工具。
-行号口径：对外 1-based（契约），LSP 协议 0-based——转换只经本模块公共函数。
-降级语义：未探测到/启动失败/请求超时/进程崩溃 → McpError(LSP_UNAVAILABLE)，
-不抛 500、不影响既有 7 工具；hint 固定指引安装 + search_code（禁自动安装）。
+Public positions are 1-based; LSP positions are 0-based. Missing dependencies,
+startup failures, timeouts and crashes return LSP_UNAVAILABLE. Runtime requests
+never install software; setup.bat provisions the Python LSP dependency.
 """
 from __future__ import annotations
 
+import hashlib
 import itertools
 import json
 import os
 import queue
 import shutil
+import sys
 import subprocess
 import threading
 import time
@@ -24,7 +25,7 @@ from errors import McpError
 
 LSP_TIMEOUT_S = 30.0
 
-# 契约 LSP_UNAVAILABLE 的固定 hint（禁自动安装；降级 search_code）
+# LSP_UNAVAILABLE 指引；工具调用不自动安装，允许 search_code 降级。
 LSP_HINT = ("安装对应 language server（如 pyright-langserver / typescript-language-server）"
             "或改用 search_code")
 
@@ -35,6 +36,11 @@ _DETECT = (
     (("go.mod",), "go", ("gopls",)),
     (("Cargo.toml",), "rust", ("rust-analyzer",)),
 )
+
+SOURCE_LANGUAGES = {".py": "python", ".pyi": "python", ".ts": "typescript",
+                    ".tsx": "typescriptreact", ".js": "javascript",
+                    ".jsx": "javascriptreact", ".mjs": "javascript", ".cjs": "javascript",
+                    ".go": "go", ".rs": "rust"}
 
 _SYMBOL_KINDS = {1: "File", 2: "Module", 3: "Namespace", 4: "Package", 5: "Class",
                  6: "Method", 7: "Property", 8: "Field", 9: "Constructor", 10: "Enum",
@@ -52,11 +58,15 @@ def detect_server(project, config=None) -> list[str] | None:
 
 
 def resolve_launch_argv(argv: list[str]) -> list[str]:
-    """task21 缺陷 1 修复（task20 实测）：Windows CreateProcess 只补 .exe，npx 实为 npx.cmd，
-    裸 "npx" 直调必败（WinError 2）。os.name=='nt' 且 argv 首元素为裸 "npx" 时替换为
-    shutil.which("npx") 的解析结果（.cmd 绝对路径）；解析不到保持原样（交由启动失败统一降级）。
-    非 Windows 一律原样返回。在唯一启动点 LspSession 应用，探测/配置覆盖两条路都受益。
+    """Use this interpreter's Pyright and resolve the Windows npx.cmd launcher.
+
+    Custom command arrays remain unchanged; no install or shell command is exposed
+    through MCP. setup.bat provisions the project-local Python LSP dependency.
     """
+    if argv and argv[0] == "pyright-langserver":
+        local = Path(sys.executable).with_name("pyright-langserver.exe" if os.name == "nt" else "pyright-langserver")
+        if local.is_file():
+            return [str(local), *argv[1:]]
     if os.name == "nt" and argv and argv[0] == "npx":
         resolved = shutil.which("npx")
         if resolved:
@@ -115,18 +125,25 @@ class LspSession:
     """单个语言服务器子进程会话：同步 request + 独立守护读线程。"""
 
     def __init__(self, project, argv: list[str]):
+        self._lock = threading.RLock()
+        # Serialize frames and replies for this single stdio channel.
         # argv 数组直传（无 shell）；stderr 丢弃防阻塞；Windows npx 解析在唯一启动点统一生效
         self._proc = subprocess.Popen(resolve_launch_argv(argv), stdin=subprocess.PIPE,
                                       stdout=subprocess.PIPE,
-                                      stderr=subprocess.DEVNULL, cwd=str(project.path))
+                                      stderr=subprocess.DEVNULL, cwd=str(project.path),
+                                      creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
         self._msgs: queue.Queue = queue.Queue()
         self._ids = itertools.count(1)
-        self._opened: set[str] = set()
+        self._opened: dict[str, tuple[str, int]] = {}
         self.diagnostics: dict[str, list] = {}  # publishDiagnostics 暂存（task18 get_diagnostics 用）
         # 独立守护读线程做 Content-Length 帧解析：防服务器输出写满 stdout 管道导致双向死锁
         self._reader = threading.Thread(target=self._read_loop, daemon=True)
         self._reader.start()
-        self._handshake(project)
+        try:
+            self._handshake(project)
+        except Exception:
+            self.close()
+            raise
 
     # ---- 内部 ----
     def _read_loop(self):
@@ -166,9 +183,9 @@ class LspSession:
 
     def _handshake(self, project):
         self.request("initialize", {
-            "processId": None, "rootUri": project.path.as_uri(),
-            # task21 缺陷 2 修复（task20 实测）：tsls v6 以 textDocument.publishDiagnostics
-            # 客户端能力为诊断推送开关，声明最小集（对不支持的服务器无害）
+            "processId": os.getpid(), "rootUri": project.path.as_uri(),
+            "workspaceFolders": [{"uri": project.path.as_uri(), "name": project.name}],
+            # tsls uses publishDiagnostics capability to enable asynchronous diagnostics.
             "capabilities": {"textDocument": {"publishDiagnostics": {}}},
         })
         self.notify("initialized", {})
@@ -177,11 +194,19 @@ class LspSession:
         if msg.get("method") == "textDocument/publishDiagnostics":
             p = msg.get("params") or {}
             if isinstance(p.get("uri"), str):
-                self.diagnostics[p["uri"]] = p.get("diagnostics", [])
+                uri = self.document_uri(p["uri"])
+                current = self._opened.get(uri)
+                if current and isinstance(p.get("version"), int) and p["version"] < current[1]:
+                    return
+                self.diagnostics[uri] = p.get("diagnostics", [])
 
     # ---- 对 task18 的公共面 ----
     def request(self, method: str, params: dict, timeout: float = LSP_TIMEOUT_S):
         """同步请求：阻塞等同 id 响应；超时/进程崩溃/错误响应 → McpError(LSP_UNAVAILABLE)。"""
+        with self._lock:
+            return self._request(method, params, timeout)
+
+    def _request(self, method, params, timeout):
         rid = next(self._ids)
         self._send({"jsonrpc": "2.0", "id": rid, "method": method, "params": params})
         deadline = time.monotonic() + timeout
@@ -198,23 +223,63 @@ class LspSession:
                 raise McpError(errors.LSP_UNAVAILABLE, "语言服务器进程崩溃或意外退出", LSP_HINT)
             if msg.get("id") == rid and ("result" in msg or "error" in msg):
                 if "error" in msg:
-                    raise McpError(errors.LSP_UNAVAILABLE,
-                                   f"语言服务器返回错误: {msg['error'].get('message', '')}", LSP_HINT)
+                    error = McpError(errors.LSP_UNAVAILABLE,
+                                     "语言服务器返回错误: " + " ".join(msg["error"].get("message", "").splitlines()[:2])[:400], LSP_HINT)
+                    error.lsp_code = msg["error"].get("code")
+                    raise error
                 return msg.get("result")
             self._absorb(msg)
 
     def notify(self, method: str, params: dict):
-        self._send({"jsonrpc": "2.0", "method": method, "params": params})
+        with self._lock:
+            self._send({"jsonrpc": "2.0", "method": method, "params": params})
 
-    def ensure_open(self, path: Path, language_id: str = "python"):
+    def ensure_open(self, path: Path, language_id: str | None = None):
         """definition/references 前确保目标文件已 didOpen（LSP 语义要求），幂等。"""
-        uri = path.resolve().as_uri()
-        if uri in self._opened:
-            return
-        text = path.read_text(encoding="utf-8", errors="replace")
-        self.notify("textDocument/didOpen", {"textDocument": {
-            "uri": uri, "languageId": language_id, "version": 1, "text": text}})
-        self._opened.add(uri)
+        with self._lock:
+            uri = path.resolve().as_uri()
+            text = path.read_text(encoding="utf-8", errors="replace")
+            stamp = hashlib.sha256(text.encode("utf-8")).hexdigest()
+            previous = self._opened.get(uri)
+            if previous and previous[0] == stamp:
+                return
+            version = previous[1] + 1 if previous else 1
+            if previous:
+                self.notify("textDocument/didChange", {"textDocument": {
+                    "uri": uri, "version": version}, "contentChanges": [{"text": text}]})
+            else:
+                self.notify("textDocument/didOpen", {"textDocument": {
+                    "uri": uri, "languageId": language_id or SOURCE_LANGUAGES.get(path.suffix.lower(), "plaintext"),
+                    "version": version, "text": text}})
+            self.diagnostics.pop(uri, None)
+            self._opened[uri] = (stamp, version)
+
+    def document_uri(self, uri: str) -> str:
+        """Servers may encode drive colons or change Windows drive casing."""
+        incoming = Path(url2pathname(unquote(urlparse(uri).path)))
+        for opened in self._opened:
+            if incoming == Path(url2pathname(unquote(urlparse(opened).path))):
+                return opened
+        return incoming.as_uri()
+
+    def wait_diagnostics(self, uri: str, timeout: float = 10.0) -> list:
+        """Wait for an actual publish, including a confirmed empty list."""
+        with self._lock:
+            uri = self.document_uri(uri)
+            deadline = time.monotonic() + timeout
+            while uri not in self.diagnostics:
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    raise McpError(errors.LSP_UNAVAILABLE, "语言服务器尚未确认文件诊断。",
+                                   "稍后重试 get_diagnostics；暂时不能把诊断未完成视为文件无错误。")
+                try:
+                    msg = self._msgs.get(timeout=remaining)
+                except queue.Empty:
+                    continue
+                if msg is None:
+                    raise McpError(errors.LSP_UNAVAILABLE, "语言服务器进程已退出。", LSP_HINT)
+                self._absorb(msg)
+            return list(self.diagnostics[uri])
 
     @property
     def pid(self) -> int | None:
@@ -231,6 +296,10 @@ class LspSession:
         Windows 进程树清理方法：`taskkill /PID <pid> /T /F`（argv 数组直传不走 shell）——
         /T 连同整棵子树（如 npx→node 孙进程，proc.kill() 只杀直接子进程），/F 强制。
         """
+        with self._lock:
+            self._close()
+
+    def _close(self):
         if self._proc.poll() is None:
             try:
                 self._send({"jsonrpc": "2.0", "id": next(self._ids), "method": "shutdown"})

@@ -319,7 +319,7 @@ def test_launch_argv_passthrough(monkeypatch):
     monkeypatch.setattr(intel.os, "name", "nt")
     monkeypatch.setattr(intel.shutil, "which", lambda _: None)
     assert intel.resolve_launch_argv(["npx", "--stdio"]) == ["npx", "--stdio"]
-    assert intel.resolve_launch_argv(["pyright-langserver", "--stdio"]) == ["pyright-langserver", "--stdio"]
+    assert intel.resolve_launch_argv(["custom-lsp", "--stdio"]) == ["custom-lsp", "--stdio"]
 
 
 def test_handshake_declares_publish_diagnostics_capability():

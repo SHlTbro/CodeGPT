@@ -22,6 +22,16 @@ LIST_FILES_MAX_ENTRIES = 2000
 DEFAULT_SENSITIVE_PATTERNS = (".env", "*.key", "*.pem", "credentials*", ".ssh/**", ".aws/**")
 DEFAULT_EXCLUDED_DIRS = (".git", "node_modules", "dist", "build", "__pycache__")
 
+# Operational secrets and private control-plane state are always hidden from MCP.
+_OPERATIONAL_SECRETS = (
+    "ngrok-token.txt", "tunnel-token.txt", "ngrok-credential.pending",
+    # Atomic writes briefly expose a flushed staging file before os.replace.
+    ".ngrok-token.txt.*.tmp", ".ngrok-credential.pending.*.tmp",
+    ".setup", ".setup/**", ".setup-work", ".setup-work/**",
+    ".agent-archive", ".agent-archive/**",
+    ".pytest_cache", ".pytest_cache/**", "*.setup-owner.lock", "*.toml.lock",
+)
+
 _DRIVE_RE = re.compile(r"^[A-Za-z]:")
 _SEARCH_LINE_MAX = 500
 
@@ -61,6 +71,11 @@ def resolve_path(project: Project, relative: str) -> Path:
     return final
 
 
+def sensitive_globs(patterns=DEFAULT_SENSITIVE_PATTERNS) -> tuple[str, ...]:
+    """The same mandatory private paths for Python guards and pre-traversal rg pruning."""
+    return (*patterns, *_OPERATIONAL_SECRETS)
+
+
 def is_sensitive(rel_path: str, patterns: tuple[str, ...] | list[str] = DEFAULT_SENSITIVE_PATTERNS) -> bool:
     """按契约 sensitive_patterns 判定；.env.example 不匹配 .env（按字面）。
 
@@ -73,7 +88,7 @@ def is_sensitive(rel_path: str, patterns: tuple[str, ...] | list[str] = DEFAULT_
     base = norm.rsplit("/", 1)[-1]
     return any(
         fnmatch(norm, p) or fnmatch(norm, "**/" + p) or ("/" not in p and fnmatch(base, p))
-        for p in patterns
+        for p in sensitive_globs(patterns)
     )
 
 

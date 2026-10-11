@@ -10,6 +10,9 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import json
+import os
+import threading
 import time
 from pathlib import Path
 
@@ -19,21 +22,59 @@ import writer
 from config import Config, load_config
 from errors import McpError, error_payload
 
-CONFIG_PATH = Path(__file__).resolve().parent / "config.yaml"
+CONFIG_PATH = Path(__file__).resolve().parent / "config.toml"
 
 # 热重载用可变引用单元：整体替换 cell[0]（原子防部分态），工具闭包每次读取最新值
 _holder: dict = {"config": None}
 
 log = logging.getLogger("local-codebase-mcp.tools")
+_activity_path: Path | None = None
+_activity_lock = threading.Lock()
+_activity: dict = {"count": 0, "last_call": None, "recent": []}
+
+
+def configure_activity(state_dir: Path) -> None:
+    """Only the local supervisor reads this metadata; tool inputs and secrets are never saved."""
+    global _activity_path, _activity
+    _activity_path = state_dir / "activity.json"
+    try:
+        _activity = json.loads(_activity_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        _activity = {"count": 0, "last_call": None, "recent": []}
+
+
+def _record_activity(tool: str, project_id: str | None, duration_ms: float, code: str) -> None:
+    if _activity_path is None:
+        return
+    from fastmcp.server.dependencies import get_http_headers
+    if get_http_headers().get("x-setup-probe") == "1":
+        return  # Setup's verification calls are not user/ChatGPT activity.
+    now = time.time()
+    event = {"time": now, "tool": tool, "project_id": project_id,
+             "duration_ms": round(duration_ms, 1), "result": code}
+    with _activity_lock:
+        _activity.update({"pid": os.getpid(), "last_call": now, "tool": tool,
+                          "project_id": project_id, "result": code,
+                          "duration_ms": event["duration_ms"],
+                          "count": _activity.get("count", 0) + 1})
+        _activity["recent"] = [e for e in _activity.get("recent", [])
+                               if e.get("time", 0) >= now - 300][-99:] + [event]
+        temporary = _activity_path.with_suffix(".tmp")
+        try:
+            temporary.write_text(json.dumps(_activity, ensure_ascii=False), encoding="utf-8")
+            os.replace(temporary, _activity_path)
+        except OSError:
+            log.warning("工具调用状态写入失败；请检查 Setup 状态目录写权限")
+
 
 # —— 契约 tools[].description 原文 ——
-_DESC_LIST_PROJECTS = "列出 config.yaml 登记的全部可用项目。ChatGPT 首次连接时调用，用于发现有哪些项目可分析。"
+_DESC_LIST_PROJECTS = "列出 config.toml 登记的全部可用项目。ChatGPT 首次连接时调用，用于发现有哪些项目可分析。"
 _DESC_PROJECT_INFO = "返回指定项目的基础事实：顶层目录、文件数、标志性文件（README/package.json/pyproject.toml/go.mod/Cargo.toml 等）存在性。只报事实，不做架构判断。 新项目分析第一步建议：本工具 + list_files(depth=2) + read_batch(README/清单文件) 一次建立架构索引。"
 _DESC_LIST_FILES = "列出项目内某目录或多个目录的内容（ls 风格分组或限深树）。默认过滤 .git/node_modules/dist/build/__pycache__ 与敏感文件。分析新项目时建议：先用 depth=2 树建立结构全貌，再定向读文件，避免逐目录多轮往返。"
 _DESC_SEARCH_CODE = "在项目内用 ripgrep 搜索代码，返回 {file, line, text} 匹配列表。"
 _DESC_READ_FILE = "按行区间读取项目内 UTF-8 文本文件。 批量读多个文件请改用 read_batch。"
 _DESC_GIT_INFO = "返回项目 Git 上下文事实：分支、改动文件（路径+状态）、最近提交、per-file diff stat。非 git 项目返回 is_git_repo=false 降级而非报错。"
-_DESC_WRITE_FILE = "创建或更新项目声明的可写目录（默认 docs/，可在 config.yaml 项目级 write_roots 扩展）下的 UTF-8 文本文件（文档维护专用）。新建文件必须 expected_absent=true；更新已有文件必须传入最近一次 read_file 返回的 content_sha256（防覆盖他人/用户新改动）。禁止写可写目录之外路径。"
+_DESC_WRITE_FILE = "创建或更新项目声明的可写目录（默认 docs/，可在 config.toml 项目级 write_roots 扩展）下的 UTF-8 文本文件（文档维护专用）。新建文件必须 expected_absent=true；更新已有文件必须传入最近一次 read_file 返回的 content_sha256（防覆盖他人/用户新改动）。禁止写可写目录之外路径。"
 _DESC_FIND_DEFINITION = "跳转到光标处符号的定义位置（基于项目语言服务器）。语言服务器未安装时返回 LSP_UNAVAILABLE 并建议 search_code。"
 _DESC_FIND_REFERENCES = "查找光标处符号的全部引用位置（含/不含声明可选）。"
 _DESC_WORKSPACE_SYMBOLS = "按名称模糊搜索项目工作区符号（类/函数/变量等，基于语言服务器）。"
@@ -41,7 +82,7 @@ _DESC_GET_DIAGNOSTICS = "获取项目（或指定文件）的诊断信息（编�
 _DESC_RENAME_PREVIEW = "预览工作区级符号重命名的全部改动（基于语言服务器 rename），只读不写：返回每个受影响文件的逐处编辑计划（1-based 位置 + 新文本）。应用需再调 apply_workspace_edit 并附各文件最新 content_sha256。"
 _DESC_APPLY_WORKSPACE_EDIT = "应用 rename_preview 返回的工作区编辑（多文件源码重构写）。必须提供每个受影响文件最近一次 read_file 的 content_sha256（全部校验通过才写，任一不匹配整体拒绝）。需项目 write_enabled=true；绕过 docs/** 白名单（workspace 重构语义），但仍受路径逃逸防护与敏感文件硬过滤约束。"
 _DESC_READ_BATCH = "批量读取多个文件建立项目认知（一次调用替代多轮 read_file）。推荐第一轮取证即用：README、package.json/pyproject.toml、入口文件、配置文件一次读完。paths 支持通配符（如 packages/*/package.json、**/*.patch.yml，命中上限 50 个文件）。每文件独立截断，总额度兜底，防打爆上下文。"
-_DESC_WRITE_BINARY_FILE = "将 base64 编码的二进制内容写入项目声明的可写目录（默认 docs/，可在 config.yaml 项目级 write_roots 扩展）下的文件（支持 .docx/.pdf/.xlsx/.zip/.pptx/.doc/.xls）。新建文件必须 expected_absent=true；更新已有文件必须传入最近一次 read_file 或 write_binary_file 返回的 content_sha256。禁止写可写目录之外路径及非白名单扩展名。"
+_DESC_WRITE_BINARY_FILE = "将 base64 编码的二进制内容写入项目声明的可写目录（默认 docs/，可在 config.toml 项目级 write_roots 扩展）下的文件（支持 .docx/.pdf/.xlsx/.zip/.pptx/.doc/.xls）。新建文件必须 expected_absent=true；更新已有文件必须传入最近一次 read_file 或 write_binary_file 返回的 content_sha256。禁止写可写目录之外路径及非白名单扩展名。"
 
 # 契约 annotations（C8）
 _READ_ONLY = {"readOnlyHint": True, "openWorldHint": False}
@@ -51,12 +92,21 @@ _WRITE = {"readOnlyHint": False, "destructiveHint": True, "openWorldHint": False
 def _finish(tool: str, project_id: str | None, t0: float, result) -> dict:
     """统一出口：记 metadata 日志并返回结果。错误信封的 code 记入结果码（成功记 ok）。"""
     code = result["error"]["code"] if isinstance(result, dict) and "error" in result else "ok"
-    log.info("tool=%s project_id=%s duration_ms=%.1f result=%s", tool, project_id, (time.perf_counter() - t0) * 1000, code)
+    duration_ms = (time.perf_counter() - t0) * 1000
+    log.info("tool=%s project_id=%s duration_ms=%.1f result=%s", tool, project_id, duration_ms, code)
+    _record_activity(tool, project_id, duration_ms, code)
     return result
 
 
+def _file_access_error(tool_name: str, project_id: str, exc: OSError) -> dict:
+    log.warning("tool=%s project_id=%s 文件访问失败 errno=%s winerror=%s",
+                tool_name, project_id, exc.errno, getattr(exc, "winerror", None))
+    return error_payload(errors.INTERNAL_ERROR, "文件暂时无法读取或保存。",
+                         "关闭占用该文件的编辑器或 Office 程序，检查项目目录读写权限后重试；原文件未确认写入时请先重新读取。")
+
+
 def register_tools(mcp, config: Config | None = None) -> None:
-    """把 15 个工具（12 只读 + write_file + apply_workspace_edit + write_binary_file）注册到 FastMCP 实例 mcp；config 缺省时从本目录 config.yaml 加载。"""
+    """把 15 个工具（12 只读 + write_file + apply_workspace_edit + write_binary_file）注册到 FastMCP 实例 mcp；config 缺省时从本目录 config.toml 加载。"""
     if config is None:
         config = load_config(CONFIG_PATH)
     _holder["config"] = config
@@ -104,6 +154,8 @@ def register_tools(mcp, config: Config | None = None) -> None:
             return _finish("read_file", project_id, t0, tools_services.read_file(_config(), project_id, path, start_line, end_line))
         except McpError as e:
             return _finish("read_file", project_id, t0, e.payload)
+        except OSError as e:
+            return _finish("read_file", project_id, t0, _file_access_error("read_file", project_id, e))
         except Exception:
             log.exception("tool=read_file project_id=%s 未捕获异常", project_id)
             return _finish("read_file", project_id, t0, error_payload(errors.INTERNAL_ERROR, "内部错误，请查看 server 日志"))
@@ -117,6 +169,8 @@ def register_tools(mcp, config: Config | None = None) -> None:
                 tools_services.read_batch, _config(), project_id, paths, max_chars_per_file, max_chars_total))
         except McpError as e:
             return _finish("read_batch", project_id, t0, e.payload)
+        except OSError as e:
+            return _finish("read_batch", project_id, t0, _file_access_error("read_batch", project_id, e))
         except Exception:
             log.exception("tool=read_batch project_id=%s 未捕获异常", project_id)
             return _finish("read_batch", project_id, t0, error_payload(errors.INTERNAL_ERROR, "内部错误，请查看 server 日志"))
@@ -156,6 +210,8 @@ def register_tools(mcp, config: Config | None = None) -> None:
                 proj.write_roots if proj else ("docs",)))
         except McpError as e:
             return _finish("write_file", project_id, t0, e.payload)
+        except OSError as e:
+            return _finish("write_file", project_id, t0, _file_access_error("write_file", project_id, e))
         except Exception:
             log.exception("tool=write_file project_id=%s 未捕获异常", project_id)
             return _finish("write_file", project_id, t0, error_payload(errors.INTERNAL_ERROR, "内部错误，请查看 server 日志"))
@@ -175,6 +231,8 @@ def register_tools(mcp, config: Config | None = None) -> None:
                 proj.write_roots if proj else ("docs",)))
         except McpError as e:
             return _finish("write_binary_file", project_id, t0, e.payload)
+        except OSError as e:
+            return _finish("write_binary_file", project_id, t0, _file_access_error("write_binary_file", project_id, e))
         except Exception:
             log.exception("tool=write_binary_file project_id=%s 未捕获异常", project_id)
             return _finish("write_binary_file", project_id, t0, error_payload(errors.INTERNAL_ERROR, "内部错误，请查看 server 日志"))
@@ -250,6 +308,8 @@ def register_tools(mcp, config: Config | None = None) -> None:
                 tools_services.apply_workspace_edit, _config(), project_id, files, expected_shas))
         except McpError as e:
             return _finish("apply_workspace_edit", project_id, t0, e.payload)
+        except OSError as e:
+            return _finish("apply_workspace_edit", project_id, t0, _file_access_error("apply_workspace_edit", project_id, e))
         except Exception:
             log.exception("tool=apply_workspace_edit project_id=%s 未捕获异常", project_id)
             return _finish("apply_workspace_edit", project_id, t0, error_payload(errors.INTERNAL_ERROR, "内部错误，请查看 server 日志"))

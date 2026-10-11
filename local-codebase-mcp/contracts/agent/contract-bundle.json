@@ -1,0 +1,7031 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:codegpt:agent-contract:2.0.0",
+  "title": "CodeGPT Codex context contract 2.0.0",
+  "contract_version": "2.0.0",
+  "taskpack_version": "1.2.0",
+  "status": "DESIGN_BASELINE_NOT_IMPLEMENTED",
+  "$defs": {
+    "error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "enum": [
+            "INVALID_ARGUMENT",
+            "PAYLOAD_TOO_LARGE",
+            "PROJECT_NOT_FOUND",
+            "CLI_NOT_FOUND",
+            "AUTH_REQUIRED",
+            "MODEL_UNAVAILABLE",
+            "RATE_LIMITED",
+            "CAPABILITY_UNAVAILABLE",
+            "POLICY_DENIED",
+            "QUEUE_FULL",
+            "REQUEST_CONFLICT",
+            "RESULT_EXPIRED",
+            "TASK_NOT_FOUND",
+            "REPORT_NOT_FOUND",
+            "INVALID_CURSOR",
+            "SECTION_NOT_FOUND",
+            "PROTOCOL_ERROR",
+            "EXECUTION_FAILED",
+            "CLEANUP_FAILED",
+            "STORAGE_UNAVAILABLE",
+            "SCHEMA_UNSUPPORTED",
+            "OUTPUT_BUDGET_TOO_SMALL",
+            "INTERNAL_ERROR",
+            "CAPABILITY_DISABLED",
+            "AUTH_MODE_UNSELECTED",
+            "AUTH_MODE_MISMATCH",
+            "CREDENTIAL_UNAVAILABLE",
+            "CREDENTIAL_CONFLICT",
+            "MODEL_PARAMETER_UNAVAILABLE",
+            "ENDPOINT_NOT_APPROVED",
+            "MODEL_TEST_CONSENT_REQUIRED"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "maxLength": 1000,
+          "minLength": 1
+        },
+        "recoverable": {
+          "type": "boolean"
+        },
+        "hint": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "task_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "retriable": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "recoverable",
+        "hint",
+        "task_id",
+        "retriable"
+      ],
+      "additionalProperties": false
+    },
+    "usage": {
+      "type": "object",
+      "properties": {
+        "input_tokens": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "output_tokens": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cached_input_tokens": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "input_tokens",
+        "output_tokens",
+        "cached_input_tokens"
+      ],
+      "additionalProperties": false
+    },
+    "cost": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "minimum": 0
+        },
+        "currency": {
+          "type": "string",
+          "maxLength": 8,
+          "minLength": 1
+        }
+      },
+      "required": [
+        "amount",
+        "currency"
+      ],
+      "additionalProperties": false
+    },
+    "progress": {
+      "type": "object",
+      "properties": {
+        "phase": {
+          "enum": [
+            "queued",
+            "starting",
+            "reading",
+            "reporting",
+            "cleaning",
+            "finished",
+            "unknown"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "maxLength": 240
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "phase",
+        "message",
+        "updated_at"
+      ],
+      "additionalProperties": false
+    },
+    "task": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "project_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "request_id": {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1
+        },
+        "owner_id": {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1
+        },
+        "mode": {
+          "const": "context"
+        },
+        "backend": {
+          "const": "codex"
+        },
+        "profile": {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1
+        },
+        "backend_version": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "requested_model": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "resolved_model": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "config_revision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "parent_task_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "queued",
+            "running",
+            "cancelling",
+            "succeeded",
+            "failed",
+            "cancelled",
+            "timed_out",
+            "interrupted"
+          ]
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "started_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "finished_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "finish_reason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "progress": {
+          "$ref": "#/$defs/progress"
+        },
+        "report_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "summary": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 600
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "completion": {
+          "anyOf": [
+            {
+              "enum": [
+                "complete",
+                "partial"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "verification": {
+          "anyOf": [
+            {
+              "enum": [
+                "passed",
+                "failed",
+                "not_run"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "continuation_type": {
+          "enum": [
+            "fresh",
+            "fresh_with_report",
+            "native_resume"
+          ]
+        },
+        "session_available": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "actual_models": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 128,
+                "minLength": 1
+              },
+              "maxItems": 16
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "usage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/usage"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "usage_scope": {
+          "enum": [
+            "task",
+            "session_cumulative",
+            "unknown"
+          ]
+        },
+        "cost": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/cost"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cost_basis": {
+          "enum": [
+            "reported",
+            "estimated",
+            "unknown"
+          ]
+        },
+        "error": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/error"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "execution_context": {
+          "$ref": "#/$defs/execution_context"
+        },
+        "purpose": {
+          "enum": [
+            "project_context",
+            "model_test"
+          ]
+        }
+      },
+      "required": [
+        "task_id",
+        "project_id",
+        "request_id",
+        "owner_id",
+        "mode",
+        "backend",
+        "profile",
+        "backend_version",
+        "requested_model",
+        "resolved_model",
+        "config_revision",
+        "parent_task_id",
+        "status",
+        "created_at",
+        "started_at",
+        "finished_at",
+        "finish_reason",
+        "progress",
+        "report_id",
+        "summary",
+        "completion",
+        "verification",
+        "continuation_type",
+        "session_available",
+        "actual_models",
+        "usage",
+        "usage_scope",
+        "cost",
+        "cost_basis",
+        "error",
+        "execution_context",
+        "purpose"
+      ],
+      "additionalProperties": false
+    },
+    "freshness": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "enum": [
+            "fresh",
+            "stale",
+            "partial",
+            "unknown"
+          ]
+        },
+        "checked_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reasons": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "maxItems": 8
+        }
+      },
+      "required": [
+        "state",
+        "checked_at",
+        "reasons"
+      ],
+      "additionalProperties": false
+    },
+    "section": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1
+        },
+        "total_chars": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "total_chars"
+      ],
+      "additionalProperties": false
+    },
+    "report": {
+      "type": "object",
+      "properties": {
+        "report_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "project_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parent_report_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "report_schema_version": {
+          "const": "2.0.0"
+        },
+        "generated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "snapshot_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "config_revision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "backend": {
+          "const": "codex"
+        },
+        "backend_version": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "profile": {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1
+        },
+        "freshness": {
+          "$ref": "#/$defs/freshness"
+        },
+        "summary": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "sections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/section"
+          },
+          "maxItems": 12
+        },
+        "completion": {
+          "enum": [
+            "complete",
+            "partial"
+          ]
+        },
+        "verification": {
+          "enum": [
+            "passed",
+            "failed",
+            "not_run"
+          ]
+        },
+        "execution_context": {
+          "$ref": "#/$defs/execution_context"
+        }
+      },
+      "required": [
+        "report_id",
+        "project_id",
+        "parent_report_id",
+        "report_schema_version",
+        "generated_at",
+        "snapshot_id",
+        "config_revision",
+        "backend",
+        "backend_version",
+        "profile",
+        "freshness",
+        "summary",
+        "sections",
+        "completion",
+        "verification",
+        "execution_context"
+      ],
+      "additionalProperties": false
+    },
+    "page": {
+      "type": "object",
+      "properties": {
+        "section": {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1
+        },
+        "text": {
+          "type": "string",
+          "maxLength": 32000
+        },
+        "format": {
+          "const": "markdown"
+        }
+      },
+      "required": [
+        "section",
+        "text",
+        "format"
+      ],
+      "additionalProperties": false
+    },
+    "pagination": {
+      "type": "object",
+      "properties": {
+        "cursor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "next_cursor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "has_more": {
+          "type": "boolean"
+        },
+        "returned_chars": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 32000
+        },
+        "total_chars": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "remaining_chars": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "cursor",
+        "next_cursor",
+        "has_more",
+        "returned_chars",
+        "total_chars",
+        "remaining_chars"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "has_more": {
+                "const": false
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "next_cursor": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "has_more": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "next_cursor": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "success": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": "2.0.0"
+        },
+        "kind": {
+          "enum": [
+            "task",
+            "report"
+          ]
+        },
+        "task": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/task"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "report": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/report"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "page": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/page"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pagination": {
+          "$ref": "#/$defs/pagination"
+        },
+        "response_chars": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32000
+        },
+        "cancel_requested": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "schema_version",
+        "kind",
+        "task",
+        "report",
+        "page",
+        "pagination",
+        "response_chars"
+      ],
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "properties": {
+            "kind": {
+              "const": "task"
+            },
+            "task": {
+              "$ref": "#/$defs/task"
+            }
+          }
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "report"
+            },
+            "task": {
+              "type": "null"
+            },
+            "report": {
+              "$ref": "#/$defs/report"
+            }
+          }
+        }
+      ]
+    },
+    "failure": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": "2.0.0"
+        },
+        "error": {
+          "$ref": "#/$defs/error"
+        },
+        "response_chars": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32000
+        }
+      },
+      "required": [
+        "schema_version",
+        "error",
+        "response_chars"
+      ],
+      "additionalProperties": false
+    },
+    "evidence": {
+      "type": "object",
+      "properties": {
+        "evidence_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "line_start": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "line_end": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "symbol": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "content_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "snapshot_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "excerpt": {
+          "type": "string",
+          "maxLength": 4000
+        },
+        "validation": {
+          "enum": [
+            "verified",
+            "unverified",
+            "invalid"
+          ]
+        }
+      },
+      "required": [
+        "evidence_id",
+        "path",
+        "line_start",
+        "line_end",
+        "symbol",
+        "content_sha256",
+        "snapshot_id",
+        "excerpt",
+        "validation"
+      ],
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "properties": {
+            "line_start": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "line_end": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        {
+          "properties": {
+            "symbol": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      ]
+    },
+    "coverage": {
+      "type": "object",
+      "properties": {
+        "enumerated_files": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "read_files": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "excluded_paths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "scope": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "execution_performed": {
+          "const": false
+        }
+      },
+      "required": [
+        "enumerated_files",
+        "read_files",
+        "excluded_paths",
+        "scope",
+        "execution_performed"
+      ],
+      "additionalProperties": false
+    },
+    "unknown": {
+      "type": "object",
+      "properties": {
+        "question": {
+          "type": "string",
+          "maxLength": 2000,
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 2000,
+          "minLength": 1
+        },
+        "next_step": {
+          "type": "string",
+          "maxLength": 2000
+        }
+      },
+      "required": [
+        "question",
+        "reason",
+        "next_step"
+      ],
+      "additionalProperties": false
+    },
+    "claim": {
+      "type": "object",
+      "properties": {
+        "claim_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "text": {
+          "type": "string",
+          "maxLength": 8000,
+          "minLength": 1
+        },
+        "classification": {
+          "enum": [
+            "fact",
+            "inference",
+            "unknown"
+          ]
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "claim_id",
+        "text",
+        "classification",
+        "evidence_ids"
+      ],
+      "additionalProperties": false
+    },
+    "stored_section": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1
+        },
+        "text": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "persisted_report": {
+      "type": "object",
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/report"
+        },
+        "sections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/stored_section"
+          },
+          "maxItems": 12
+        },
+        "claims": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/claim"
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        },
+        "coverage": {
+          "$ref": "#/$defs/coverage"
+        },
+        "unknowns": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/unknown"
+          }
+        }
+      },
+      "required": [
+        "metadata",
+        "sections",
+        "claims",
+        "evidence",
+        "coverage",
+        "unknowns"
+      ],
+      "additionalProperties": false
+    },
+    "profile": {
+      "type": "object",
+      "properties": {
+        "backend": {
+          "const": "codex",
+          "default": "codex"
+        },
+        "mode": {
+          "const": "context",
+          "default": "context"
+        },
+        "model": {
+          "type": "string",
+          "maxLength": 128,
+          "default": ""
+        },
+        "timeout_seconds": {
+          "type": "integer",
+          "minimum": 60,
+          "default": 1200,
+          "maximum": 7200
+        },
+        "reasoning_effort": {
+          "type": "string",
+          "maxLength": 64,
+          "default": "",
+          "description": "Empty means the explicitly disclosed model default; non-empty values must be validated against the selected model and installed CLI."
+        },
+        "service_tier": {
+          "type": "string",
+          "maxLength": 64,
+          "default": "standard",
+          "description": "CodeGPT logical tier. standard disables inherited premium speed; adapters map only a proven supported wire value."
+        }
+      },
+      "required": [
+        "backend",
+        "mode",
+        "model",
+        "timeout_seconds",
+        "reasoning_effort",
+        "service_tier"
+      ],
+      "additionalProperties": false
+    },
+    "agent_config": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "codex": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": false
+            },
+            "executable": {
+              "type": "string",
+              "maxLength": 2048,
+              "default": ""
+            },
+            "auth_mode": {
+              "enum": [
+                "unselected",
+                "chatgpt",
+                "api_key"
+              ],
+              "default": "unselected"
+            },
+            "api_provider": {
+              "enum": [
+                "openai",
+                "custom_responses"
+              ],
+              "default": "openai"
+            },
+            "api_base_url": {
+              "type": "string",
+              "maxLength": 2048,
+              "default": "https://api.openai.com/v1",
+              "format": "uri"
+            }
+          },
+          "required": [
+            "enabled",
+            "executable",
+            "auth_mode",
+            "api_provider",
+            "api_base_url"
+          ],
+          "additionalProperties": false
+        },
+        "default_profile": {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1,
+          "default": "cheap_reader"
+        },
+        "profiles": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/profile"
+          },
+          "minProperties": 1
+        },
+        "limits": {
+          "type": "object",
+          "properties": {
+            "max_running": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2,
+              "maximum": 4
+            },
+            "max_queued": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 20,
+              "maximum": 100
+            },
+            "max_response_chars": {
+              "type": "integer",
+              "minimum": 2048,
+              "default": 32000,
+              "maximum": 32000
+            },
+            "max_wait_seconds": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 20,
+              "maximum": 20
+            }
+          },
+          "required": [
+            "max_running",
+            "max_queued",
+            "max_response_chars",
+            "max_wait_seconds"
+          ],
+          "additionalProperties": false
+        },
+        "retention": {
+          "type": "object",
+          "properties": {
+            "days": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 30,
+              "maximum": 365
+            },
+            "max_storage_bytes": {
+              "type": "integer",
+              "minimum": 10485760,
+              "default": 1073741824,
+              "maximum": 10737418240
+            }
+          },
+          "required": [
+            "days",
+            "max_storage_bytes"
+          ],
+          "additionalProperties": false
+        },
+        "schema_version": {
+          "const": "2.0.0",
+          "default": "2.0.0"
+        }
+      },
+      "required": [
+        "enabled",
+        "codex",
+        "default_profile",
+        "profiles",
+        "limits",
+        "retention",
+        "schema_version"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "enabled"
+            ],
+            "properties": {
+              "enabled": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "profiles": {
+                "type": "object",
+                "additionalProperties": {
+                  "allOf": [
+                    {
+                      "$ref": "#/$defs/profile"
+                    },
+                    {
+                      "properties": {
+                        "model": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128,
+                          "pattern": "\\S"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "project_agent": {
+      "type": "object",
+      "properties": {
+        "context_enabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "allowed_profiles": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1
+          },
+          "maxItems": 32
+        }
+      },
+      "required": [
+        "context_enabled",
+        "allowed_profiles"
+      ],
+      "additionalProperties": false
+    },
+    "enforcement": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "enum": [
+            "verified",
+            "unverified",
+            "unavailable"
+          ]
+        },
+        "mechanisms": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "tool_policy",
+              "os_sandbox"
+            ]
+          },
+          "maxItems": 2
+        },
+        "tested_boundaries": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "maxItems": 16
+        }
+      },
+      "required": [
+        "state",
+        "mechanisms",
+        "tested_boundaries"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "verified"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "mechanisms": {
+                "minItems": 1
+              },
+              "tested_boundaries": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "probe": {
+      "type": "object",
+      "properties": {
+        "backend": {
+          "const": "codex"
+        },
+        "availability": {
+          "enum": [
+            "disabled",
+            "not_installed",
+            "auth_required",
+            "unsupported_version",
+            "capability_unavailable",
+            "ready",
+            "unknown",
+            "auth_unselected",
+            "auth_mismatch",
+            "model_unselected",
+            "model_unverified",
+            "model_unavailable",
+            "parameter_unavailable",
+            "credential_unavailable"
+          ]
+        },
+        "version": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "auth_state": {
+          "enum": [
+            "available",
+            "required",
+            "unknown"
+          ]
+        },
+        "checked_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "enforcement": {
+          "$ref": "#/$defs/enforcement"
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/error"
+          },
+          "maxItems": 8
+        },
+        "model_request_performed": {
+          "const": false
+        },
+        "auth_mode": {
+          "enum": [
+            "unselected",
+            "chatgpt",
+            "api_key"
+          ]
+        },
+        "billing_source": {
+          "enum": [
+            "unselected",
+            "chatgpt_plan",
+            "openai_api",
+            "custom_api"
+          ]
+        },
+        "credential_status": {
+          "$ref": "#/$defs/credential_status"
+        },
+        "selected_profile": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 64,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "requested_model": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "requested_reasoning_effort": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 64,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "requested_service_tier": {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1
+        },
+        "model_availability": {
+          "enum": [
+            "unselected",
+            "unverified",
+            "verified",
+            "unavailable",
+            "unknown"
+          ]
+        },
+        "selection_fingerprint": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 64,
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "backend",
+        "availability",
+        "version",
+        "auth_state",
+        "checked_at",
+        "enforcement",
+        "errors",
+        "model_request_performed",
+        "auth_mode",
+        "billing_source",
+        "credential_status",
+        "selected_profile",
+        "requested_model",
+        "requested_reasoning_effort",
+        "requested_service_tier",
+        "model_availability",
+        "selection_fingerprint"
+      ],
+      "additionalProperties": false
+    },
+    "capability": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": "2.0.0"
+        },
+        "context_enabled": {
+          "type": "boolean"
+        },
+        "profiles": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1
+          },
+          "maxItems": 32
+        },
+        "backend": {
+          "const": "codex"
+        },
+        "availability": {
+          "enum": [
+            "disabled",
+            "not_installed",
+            "auth_required",
+            "unsupported_version",
+            "capability_unavailable",
+            "ready",
+            "unknown",
+            "auth_unselected",
+            "auth_mismatch",
+            "model_unselected",
+            "model_unverified",
+            "model_unavailable",
+            "parameter_unavailable",
+            "credential_unavailable"
+          ]
+        },
+        "reasons": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "maxItems": 8
+        },
+        "checked_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "enforcement": {
+          "$ref": "#/$defs/enforcement"
+        },
+        "auth_mode": {
+          "enum": [
+            "unselected",
+            "chatgpt",
+            "api_key"
+          ]
+        },
+        "billing_source": {
+          "enum": [
+            "unselected",
+            "chatgpt_plan",
+            "openai_api",
+            "custom_api"
+          ]
+        },
+        "selected_profile": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 64,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "requested_model": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "requested_reasoning_effort": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 64,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "requested_service_tier": {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1
+        },
+        "model_availability": {
+          "enum": [
+            "unselected",
+            "unverified",
+            "verified",
+            "unavailable",
+            "unknown"
+          ]
+        },
+        "selection_fingerprint": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 64,
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "credential_state": {
+          "enum": [
+            "available",
+            "missing",
+            "invalid",
+            "mismatch",
+            "unknown"
+          ]
+        }
+      },
+      "required": [
+        "schema_version",
+        "context_enabled",
+        "profiles",
+        "backend",
+        "availability",
+        "reasons",
+        "checked_at",
+        "enforcement",
+        "auth_mode",
+        "billing_source",
+        "selected_profile",
+        "requested_model",
+        "requested_reasoning_effort",
+        "requested_service_tier",
+        "model_availability",
+        "selection_fingerprint",
+        "credential_state"
+      ],
+      "additionalProperties": false
+    },
+    "agent_status": {
+      "type": "object",
+      "properties": {
+        "backend": {
+          "const": "codex"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "availability": {
+          "enum": [
+            "disabled",
+            "not_installed",
+            "auth_required",
+            "unsupported_version",
+            "capability_unavailable",
+            "ready",
+            "unknown",
+            "auth_unselected",
+            "auth_mismatch",
+            "model_unselected",
+            "model_unverified",
+            "model_unavailable",
+            "parameter_unavailable",
+            "credential_unavailable"
+          ]
+        },
+        "version": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "auth_state": {
+          "enum": [
+            "available",
+            "required",
+            "unknown"
+          ]
+        },
+        "enforcement": {
+          "$ref": "#/$defs/enforcement"
+        },
+        "checked_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "active_tasks": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "queued_tasks": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "last_error": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/error"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "auth_mode": {
+          "enum": [
+            "unselected",
+            "chatgpt",
+            "api_key"
+          ]
+        },
+        "billing_source": {
+          "enum": [
+            "unselected",
+            "chatgpt_plan",
+            "openai_api",
+            "custom_api"
+          ]
+        },
+        "credential_status": {
+          "$ref": "#/$defs/credential_status"
+        },
+        "selected_profile": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 64,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "requested_model": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "requested_reasoning_effort": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 64,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "requested_service_tier": {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1
+        },
+        "model_availability": {
+          "enum": [
+            "unselected",
+            "unverified",
+            "verified",
+            "unavailable",
+            "unknown"
+          ]
+        },
+        "selection_fingerprint": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 64,
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "last_model_test": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/model_test_status"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "backend",
+        "enabled",
+        "availability",
+        "version",
+        "auth_state",
+        "enforcement",
+        "checked_at",
+        "active_tasks",
+        "queued_tasks",
+        "last_error",
+        "auth_mode",
+        "billing_source",
+        "credential_status",
+        "selected_profile",
+        "requested_model",
+        "requested_reasoning_effort",
+        "requested_service_tier",
+        "model_availability",
+        "selection_fingerprint",
+        "last_model_test"
+      ],
+      "additionalProperties": false
+    },
+    "network_extension": {
+      "type": "object",
+      "properties": {
+        "reachability": {
+          "enum": [
+            "reachable",
+            "unreachable",
+            "unknown"
+          ]
+        },
+        "mcp": {
+          "enum": [
+            "ready",
+            "auth_required",
+            "forbidden",
+            "invalid",
+            "not_checked"
+          ]
+        },
+        "auth": {
+          "enum": [
+            "not_required",
+            "required",
+            "authorized",
+            "insufficient_scope",
+            "unknown"
+          ]
+        },
+        "checked_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "http_status": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 100,
+              "maximum": 599
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "reachability",
+        "mcp",
+        "auth",
+        "checked_at",
+        "http_status"
+      ],
+      "additionalProperties": false
+    },
+    "auth_status": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "enum": [
+            "none",
+            "oauth"
+          ]
+        },
+        "resource": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 2048
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "issuer": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 2048
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "discovery_state": {
+          "enum": [
+            "ready",
+            "invalid",
+            "unknown"
+          ]
+        },
+        "chatgpt_connection": {
+          "enum": [
+            "unknown",
+            "verified",
+            "reauthorization_required"
+          ]
+        },
+        "last_verified_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "mode",
+        "resource",
+        "issuer",
+        "discovery_state",
+        "chatgpt_connection",
+        "last_verified_at"
+      ],
+      "additionalProperties": false
+    },
+    "applied_checks": {
+      "type": "object",
+      "properties": {
+        "config_loaded": {
+          "type": "boolean"
+        },
+        "local_health": {
+          "type": "boolean"
+        },
+        "auth_discovery": {
+          "enum": [
+            "passed",
+            "failed",
+            "not_run"
+          ]
+        },
+        "agent_capability": {
+          "enum": [
+            "ready",
+            "unavailable",
+            "not_checked"
+          ]
+        }
+      },
+      "required": [
+        "config_loaded",
+        "local_health",
+        "auth_discovery",
+        "agent_capability"
+      ],
+      "additionalProperties": false
+    },
+    "project_context_request": {
+      "type": "object",
+      "properties": {
+        "project_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "request_id": {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1
+        },
+        "intent": {
+          "enum": [
+            "overview",
+            "question",
+            "refresh"
+          ],
+          "default": "overview"
+        },
+        "question": {
+          "type": "string",
+          "maxLength": 16000,
+          "minLength": 1
+        },
+        "profile": {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1
+        },
+        "report_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "max_chars": {
+          "type": "integer",
+          "minimum": 2048,
+          "default": 12000,
+          "maximum": 32000
+        }
+      },
+      "required": [
+        "project_id",
+        "request_id"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "intent"
+            ],
+            "properties": {
+              "intent": {
+                "const": "question"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "question"
+            ]
+          }
+        }
+      ]
+    },
+    "task_poll_request": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "report_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "section": {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1
+        },
+        "cursor": {
+          "type": "string",
+          "maxLength": 2048,
+          "minLength": 1
+        },
+        "max_chars": {
+          "type": "integer",
+          "minimum": 2048,
+          "default": 12000,
+          "maximum": 32000
+        },
+        "wait_seconds": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "maximum": 20
+        }
+      },
+      "required": [],
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "required": [
+            "task_id"
+          ],
+          "not": {
+            "required": [
+              "report_id"
+            ]
+          }
+        },
+        {
+          "required": [
+            "report_id"
+          ],
+          "not": {
+            "required": [
+              "task_id"
+            ]
+          }
+        }
+      ],
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "report_id"
+            ]
+          },
+          "then": {
+            "properties": {
+              "wait_seconds": {
+                "const": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "task_cancel_request": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 500,
+          "minLength": 1
+        }
+      },
+      "required": [
+        "task_id"
+      ],
+      "additionalProperties": false
+    },
+    "setup_agent_probe_request": {
+      "type": "object",
+      "properties": {
+        "revision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "backend": {
+          "const": "codex"
+        },
+        "profile": {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1
+        }
+      },
+      "required": [
+        "revision",
+        "backend"
+      ],
+      "additionalProperties": false
+    },
+    "project_context_response": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/success"
+        },
+        {
+          "$ref": "#/$defs/failure"
+        }
+      ]
+    },
+    "task_poll_response": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/success"
+        },
+        {
+          "$ref": "#/$defs/failure"
+        }
+      ]
+    },
+    "task_cancel_response": {
+      "oneOf": [
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/success"
+            },
+            {
+              "properties": {
+                "kind": {
+                  "const": "task"
+                }
+              },
+              "required": [
+                "cancel_requested"
+              ]
+            }
+          ]
+        },
+        {
+          "$ref": "#/$defs/failure"
+        }
+      ]
+    },
+    "setup_agent_probe_response": {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "probe": {
+          "$ref": "#/$defs/probe"
+        },
+        "config_revision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "ok",
+        "probe",
+        "config_revision"
+      ],
+      "additionalProperties": false
+    },
+    "setup_info_extension": {
+      "type": "object",
+      "properties": {
+        "ui_contract_version": {
+          "const": "2.0.0"
+        },
+        "ui_asset_version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "ui_contract_version",
+        "ui_asset_version"
+      ],
+      "additionalProperties": false
+    },
+    "raw_profile_config": {
+      "type": "object",
+      "properties": {
+        "backend": {
+          "const": "codex",
+          "default": "codex"
+        },
+        "mode": {
+          "const": "context",
+          "default": "context"
+        },
+        "model": {
+          "type": "string",
+          "maxLength": 128,
+          "default": ""
+        },
+        "timeout_seconds": {
+          "type": "integer",
+          "minimum": 60,
+          "default": 1200,
+          "maximum": 7200
+        },
+        "reasoning_effort": {
+          "type": "string",
+          "maxLength": 64,
+          "default": "",
+          "description": "Empty means the explicitly disclosed model default; non-empty values must be validated against the selected model and installed CLI."
+        },
+        "service_tier": {
+          "type": "string",
+          "maxLength": 64,
+          "default": "standard",
+          "description": "CodeGPT logical tier. standard disables inherited premium speed; adapters map only a proven supported wire value."
+        }
+      },
+      "additionalProperties": false
+    },
+    "raw_agent_config": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "codex": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": false
+            },
+            "executable": {
+              "type": "string",
+              "maxLength": 2048,
+              "default": ""
+            },
+            "auth_mode": {
+              "enum": [
+                "unselected",
+                "chatgpt",
+                "api_key"
+              ],
+              "default": "unselected"
+            },
+            "api_provider": {
+              "enum": [
+                "openai",
+                "custom_responses"
+              ],
+              "default": "openai"
+            },
+            "api_base_url": {
+              "type": "string",
+              "maxLength": 2048,
+              "default": "https://api.openai.com/v1",
+              "format": "uri"
+            }
+          },
+          "additionalProperties": false
+        },
+        "default_profile": {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1,
+          "default": "cheap_reader"
+        },
+        "profiles": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/raw_profile_config"
+          },
+          "minProperties": 1
+        },
+        "limits": {
+          "type": "object",
+          "properties": {
+            "max_running": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2,
+              "maximum": 4
+            },
+            "max_queued": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 20,
+              "maximum": 100
+            },
+            "max_response_chars": {
+              "type": "integer",
+              "minimum": 2048,
+              "default": 32000,
+              "maximum": 32000
+            },
+            "max_wait_seconds": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 20,
+              "maximum": 20
+            }
+          },
+          "additionalProperties": false
+        },
+        "retention": {
+          "type": "object",
+          "properties": {
+            "days": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 30,
+              "maximum": 365
+            },
+            "max_storage_bytes": {
+              "type": "integer",
+              "minimum": 10485760,
+              "default": 1073741824,
+              "maximum": 10737418240
+            }
+          },
+          "additionalProperties": false
+        },
+        "schema_version": {
+          "const": "2.0.0",
+          "default": "2.0.0"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Raw optional agent configuration; fill defaults then validate normalized agent_config and semantic enabled-model capability gates. Existing clients may omit this entire section."
+    },
+    "raw_project_agent": {
+      "type": "object",
+      "properties": {
+        "context_enabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "allowed_profiles": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1
+          },
+          "maxItems": 32
+        }
+      },
+      "additionalProperties": false
+    },
+    "setup_project_input": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "write_enabled": {
+          "type": "boolean"
+        },
+        "write_roots": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "agent": {
+          "$ref": "#/$defs/raw_project_agent"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "path"
+      ],
+      "additionalProperties": false,
+      "description": "Existing project fields and their original semantic validators remain authoritative; agent omission on retained id preserves old policy. Array submission remains full project replacement."
+    },
+    "setup_server_input": {
+      "type": "object",
+      "properties": {
+        "host": {
+          "type": "string"
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^/"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Existing loopback, URL-path, port-conflict and default validations still run in config.py; no changed port default in overlay."
+    },
+    "setup_tunnel_input": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "enum": [
+            "off",
+            "cloudflare",
+            "ngrok",
+            "named"
+          ]
+        },
+        "public_url": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Preserves current schema; HTTPS/credentials/query/fragment and actual named-tunnel restrictions remain in baseline code."
+    },
+    "setup_startup_input": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "setup_config_put_request": {
+      "type": "object",
+      "properties": {
+        "revision": {
+          "type": "string",
+          "minLength": 64,
+          "maxLength": 64
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "projects": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/setup_project_input"
+              }
+            },
+            "server": {
+              "$ref": "#/$defs/setup_server_input"
+            },
+            "tunnel": {
+              "$ref": "#/$defs/setup_tunnel_input"
+            },
+            "startup": {
+              "$ref": "#/$defs/setup_startup_input"
+            },
+            "agent": {
+              "$ref": "#/$defs/raw_agent_config"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "revision",
+        "data"
+      ],
+      "additionalProperties": false,
+      "description": "Preserves exact old top-level request shape. revision keeps old 64-character request check rather than silently imposing a new hex regex. Runtime ConfigStore verifies equality. Old requests may omit agent and project.agent; safe preservation merge is required."
+    },
+    "setup_project_output_overlay": {
+      "type": "object",
+      "properties": {
+        "agent": {
+          "$ref": "#/$defs/project_agent"
+        }
+      },
+      "required": [
+        "agent"
+      ],
+      "additionalProperties": true
+    },
+    "setup_config_data_output_overlay": {
+      "type": "object",
+      "properties": {
+        "agent": {
+          "$ref": "#/$defs/agent_config"
+        },
+        "projects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/setup_project_output_overlay"
+          }
+        }
+      },
+      "required": [
+        "agent",
+        "projects"
+      ],
+      "additionalProperties": true
+    },
+    "setup_config_get_response_overlay": {
+      "type": "object",
+      "properties": {
+        "revision": {
+          "type": "string"
+        },
+        "data": {
+          "$ref": "#/$defs/setup_config_data_output_overlay"
+        }
+      },
+      "required": [
+        "revision",
+        "data"
+      ],
+      "additionalProperties": true
+    },
+    "setup_applied_overlay": {
+      "type": "object",
+      "properties": {
+        "verified": {
+          "type": "boolean"
+        },
+        "checks": {
+          "$ref": "#/$defs/applied_checks"
+        }
+      },
+      "required": [
+        "verified",
+        "checks"
+      ],
+      "additionalProperties": true,
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "verified"
+            ],
+            "properties": {
+              "verified": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "checks"
+            ],
+            "properties": {
+              "checks": {
+                "required": [
+                  "config_loaded",
+                  "local_health"
+                ],
+                "properties": {
+                  "config_loaded": {
+                    "const": true
+                  },
+                  "local_health": {
+                    "const": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "setup_config_put_response_overlay": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/setup_config_get_response_overlay"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "const": true
+            },
+            "applied": {
+              "$ref": "#/$defs/setup_applied_overlay"
+            }
+          },
+          "required": [
+            "ok",
+            "applied"
+          ],
+          "additionalProperties": true
+        },
+        {
+          "properties": {
+            "applied": {
+              "properties": {
+                "verified": {
+                  "const": true
+                }
+              }
+            }
+          }
+        }
+      ],
+      "description": "Success overlay only. Existing fields canonical/config_error/applied.action/applied.revision/projects keep their original shapes. Successful save still requires applied.verified=true."
+    },
+    "setup_network_output_overlay": {
+      "type": "object",
+      "properties": {
+        "reachability": {
+          "enum": [
+            "reachable",
+            "unreachable",
+            "unknown"
+          ]
+        },
+        "mcp": {
+          "enum": [
+            "ready",
+            "auth_required",
+            "forbidden",
+            "invalid",
+            "not_checked"
+          ]
+        },
+        "auth": {
+          "enum": [
+            "not_required",
+            "required",
+            "authorized",
+            "insufficient_scope",
+            "unknown"
+          ]
+        },
+        "checked_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "http_status": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 100,
+              "maximum": 599
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "reachability",
+        "mcp",
+        "auth",
+        "checked_at",
+        "http_status"
+      ],
+      "additionalProperties": true
+    },
+    "setup_status_response_overlay": {
+      "type": "object",
+      "properties": {
+        "local": {
+          "$ref": "#/$defs/setup_network_output_overlay"
+        },
+        "public": {
+          "$ref": "#/$defs/setup_network_output_overlay"
+        },
+        "agent": {
+          "$ref": "#/$defs/agent_status"
+        },
+        "auth": {
+          "$ref": "#/$defs/auth_status"
+        }
+      },
+      "required": [
+        "local",
+        "public",
+        "agent",
+        "auth"
+      ],
+      "additionalProperties": true
+    },
+    "setup_info_response_overlay": {
+      "type": "object",
+      "properties": {
+        "ui_contract_version": {
+          "const": "2.0.0"
+        },
+        "ui_asset_version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "ui_contract_version",
+        "ui_asset_version"
+      ],
+      "additionalProperties": true
+    },
+    "setup_error_response_overlay": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "string"
+            },
+            "message": {
+              "type": "string"
+            },
+            "hint": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "code",
+            "message",
+            "hint"
+          ],
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "error"
+      ],
+      "additionalProperties": true
+    },
+    "setup_tunnel_applied_overlay": {
+      "type": "object",
+      "properties": {
+        "public_verified": {
+          "type": "boolean"
+        },
+        "public_reachable": {
+          "type": "boolean"
+        },
+        "auth_discovery_verified": {
+          "type": "boolean"
+        },
+        "connection_state": {
+          "enum": [
+            "ready",
+            "auth_required"
+          ]
+        }
+      },
+      "required": [
+        "public_verified",
+        "public_reachable",
+        "auth_discovery_verified",
+        "connection_state"
+      ],
+      "additionalProperties": true,
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "connection_state"
+            ],
+            "properties": {
+              "connection_state": {
+                "const": "ready"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "public_verified": {
+                "const": true
+              },
+              "public_reachable": {
+                "const": true
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "connection_state"
+            ],
+            "properties": {
+              "connection_state": {
+                "const": "auth_required"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "public_verified": {
+                "const": false
+              },
+              "public_reachable": {
+                "const": true
+              },
+              "auth_discovery_verified": {
+                "const": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    "setup_tunnel_response_overlay": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/setup_config_put_response_overlay"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "applied": {
+              "$ref": "#/$defs/setup_tunnel_applied_overlay"
+            }
+          },
+          "required": [
+            "applied"
+          ],
+          "additionalProperties": true
+        }
+      ]
+    },
+    "credential_status": {
+      "type": "object",
+      "properties": {
+        "configured": {
+          "type": "boolean"
+        },
+        "credential_revision": {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1
+        },
+        "storage": {
+          "enum": [
+            "windows_credential_manager",
+            "protected_file",
+            "none",
+            "unknown"
+          ]
+        },
+        "bound_endpoint": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 1,
+              "format": "uri"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "missing",
+            "configured",
+            "invalid",
+            "endpoint_mismatch",
+            "unavailable",
+            "unknown"
+          ]
+        },
+        "updated_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "configured",
+        "credential_revision",
+        "storage",
+        "bound_endpoint",
+        "status",
+        "updated_at"
+      ],
+      "additionalProperties": false
+    },
+    "execution_context": {
+      "type": "object",
+      "properties": {
+        "auth_mode": {
+          "enum": [
+            "chatgpt",
+            "api_key"
+          ]
+        },
+        "billing_source": {
+          "enum": [
+            "chatgpt_plan",
+            "openai_api",
+            "custom_api"
+          ]
+        },
+        "provider": {
+          "enum": [
+            "openai",
+            "custom_responses"
+          ]
+        },
+        "endpoint": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 1,
+              "format": "uri"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "credential_context_id": {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1,
+          "description": "Opaque identity/version binding; never a credential or secret-derived public hash."
+        },
+        "credential_revision": {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1
+        },
+        "requested_reasoning_effort": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 64,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "resolved_reasoning_effort": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 64,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "requested_service_tier": {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1
+        },
+        "resolved_service_tier": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 64,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "selection_fingerprint": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "effective_auth_verified": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "auth_mode",
+        "billing_source",
+        "provider",
+        "endpoint",
+        "credential_context_id",
+        "credential_revision",
+        "requested_reasoning_effort",
+        "resolved_reasoning_effort",
+        "requested_service_tier",
+        "resolved_service_tier",
+        "selection_fingerprint",
+        "effective_auth_verified"
+      ],
+      "additionalProperties": false
+    },
+    "model_option": {
+      "type": "object",
+      "properties": {
+        "model_id": {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1
+        },
+        "display_name": {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        "source": {
+          "enum": [
+            "cli_catalog",
+            "cli_bundled",
+            "official_catalog",
+            "api_models",
+            "manual"
+          ]
+        },
+        "auth_mode": {
+          "enum": [
+            "chatgpt",
+            "api_key"
+          ]
+        },
+        "availability": {
+          "enum": [
+            "unverified",
+            "verified",
+            "unavailable",
+            "unknown"
+          ]
+        },
+        "compatibility": {
+          "enum": [
+            "supported",
+            "unsupported",
+            "unknown"
+          ]
+        },
+        "reasoning_efforts": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1
+          },
+          "maxItems": 16
+        },
+        "reasoning_effort_status": {
+          "enum": [
+            "known",
+            "not_supported",
+            "unknown"
+          ]
+        },
+        "default_reasoning_effort": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 64,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "service_tiers": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1
+          },
+          "maxItems": 16
+        },
+        "parameter_source": {
+          "enum": [
+            "cli_catalog",
+            "official_documentation",
+            "runtime_evidence",
+            "unknown"
+          ]
+        },
+        "verified_selection_fingerprint": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 64,
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "checked_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 500,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cost_hint": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 300,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cost_hint_basis": {
+          "enum": [
+            "official_documentation",
+            "measured",
+            "unknown"
+          ]
+        }
+      },
+      "required": [
+        "model_id",
+        "display_name",
+        "source",
+        "auth_mode",
+        "availability",
+        "compatibility",
+        "reasoning_efforts",
+        "reasoning_effort_status",
+        "default_reasoning_effort",
+        "service_tiers",
+        "parameter_source",
+        "verified_selection_fingerprint",
+        "checked_at",
+        "reason",
+        "cost_hint",
+        "cost_hint_basis"
+      ],
+      "additionalProperties": false
+    },
+    "model_catalog": {
+      "type": "object",
+      "properties": {
+        "catalog_revision": {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1
+        },
+        "config_revision": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "auth_mode": {
+          "enum": [
+            "unselected",
+            "chatgpt",
+            "api_key"
+          ]
+        },
+        "provider": {
+          "enum": [
+            "openai",
+            "custom_responses"
+          ]
+        },
+        "credential_context_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source": {
+          "enum": [
+            "cli_catalog",
+            "cli_bundled",
+            "official_catalog",
+            "api_models",
+            "manual_only",
+            "mixed",
+            "none"
+          ]
+        },
+        "state": {
+          "enum": [
+            "cached",
+            "refreshed",
+            "unavailable",
+            "disabled",
+            "unselected",
+            "unknown"
+          ]
+        },
+        "models": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/model_option"
+          },
+          "maxItems": 200
+        },
+        "fetched_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "manual_entry_allowed": {
+          "const": true
+        },
+        "model_request_performed": {
+          "const": false
+        },
+        "warning": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 500,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "catalog_revision",
+        "config_revision",
+        "auth_mode",
+        "provider",
+        "credential_context_id",
+        "source",
+        "state",
+        "models",
+        "fetched_at",
+        "manual_entry_allowed",
+        "model_request_performed",
+        "warning"
+      ],
+      "additionalProperties": false
+    },
+    "model_test_status": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1
+        },
+        "profile": {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1
+        },
+        "model_id": {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1
+        },
+        "selection_fingerprint": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "status": {
+          "enum": [
+            "queued",
+            "running",
+            "cancelling",
+            "succeeded",
+            "failed",
+            "cancelled",
+            "timed_out",
+            "interrupted"
+          ]
+        },
+        "verification": {
+          "enum": [
+            "not_run",
+            "passed",
+            "failed"
+          ]
+        },
+        "billing_source": {
+          "enum": [
+            "chatgpt_plan",
+            "openai_api",
+            "custom_api"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "model_request_performed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "task_id",
+        "profile",
+        "model_id",
+        "selection_fingerprint",
+        "status",
+        "verification",
+        "billing_source",
+        "message",
+        "updated_at",
+        "model_request_performed"
+      ],
+      "additionalProperties": false
+    },
+    "setup_credential_put_request": {
+      "type": "object",
+      "properties": {
+        "revision": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "request_id": {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1
+        },
+        "expected_credential_revision": {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1
+        },
+        "api_key": {
+          "type": "string",
+          "maxLength": 8192,
+          "minLength": 1,
+          "pattern": "^\\S+$"
+        }
+      },
+      "required": [
+        "revision",
+        "request_id",
+        "expected_credential_revision",
+        "api_key"
+      ],
+      "additionalProperties": false
+    },
+    "setup_credential_delete_request": {
+      "type": "object",
+      "properties": {
+        "revision": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "request_id": {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1
+        },
+        "expected_credential_revision": {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1
+        }
+      },
+      "required": [
+        "revision",
+        "request_id",
+        "expected_credential_revision"
+      ],
+      "additionalProperties": false
+    },
+    "setup_credential_response": {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "credential": {
+          "$ref": "#/$defs/credential_status"
+        },
+        "config_revision": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "ok",
+        "credential",
+        "config_revision"
+      ],
+      "additionalProperties": false
+    },
+    "setup_models_refresh_request": {
+      "type": "object",
+      "properties": {
+        "revision": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "backend": {
+          "const": "codex"
+        }
+      },
+      "required": [
+        "revision",
+        "backend"
+      ],
+      "additionalProperties": false
+    },
+    "setup_models_response": {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "catalog": {
+          "$ref": "#/$defs/model_catalog"
+        }
+      },
+      "required": [
+        "ok",
+        "catalog"
+      ],
+      "additionalProperties": false
+    },
+    "setup_model_test_request": {
+      "type": "object",
+      "properties": {
+        "revision": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "request_id": {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1
+        },
+        "project_id": {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        "profile": {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1
+        },
+        "expected_credential_revision": {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1
+        },
+        "allow_model_request": {
+          "const": true
+        }
+      },
+      "required": [
+        "revision",
+        "request_id",
+        "project_id",
+        "profile",
+        "expected_credential_revision",
+        "allow_model_request"
+      ],
+      "additionalProperties": false
+    },
+    "setup_model_test_response": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/success"
+        },
+        {
+          "$ref": "#/$defs/failure"
+        }
+      ]
+    },
+    "model_selection": {
+      "type": "object",
+      "properties": {
+        "model_id": {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1
+        },
+        "reasoning_effort": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "service_tier": {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1
+        },
+        "option": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/model_option"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "model_id",
+        "reasoning_effort",
+        "service_tier",
+        "option"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "request_schemas": {
+    "project_context": {
+      "$ref": "#/$defs/project_context_request"
+    },
+    "task_poll": {
+      "$ref": "#/$defs/task_poll_request"
+    },
+    "task_cancel": {
+      "$ref": "#/$defs/task_cancel_request"
+    },
+    "setup_agent_probe": {
+      "$ref": "#/$defs/setup_agent_probe_request"
+    },
+    "setup_config_put": {
+      "$ref": "#/$defs/setup_config_put_request"
+    },
+    "setup_credential_put": {
+      "$ref": "#/$defs/setup_credential_put_request"
+    },
+    "setup_credential_delete": {
+      "$ref": "#/$defs/setup_credential_delete_request"
+    },
+    "setup_models_refresh": {
+      "$ref": "#/$defs/setup_models_refresh_request"
+    },
+    "setup_model_test": {
+      "$ref": "#/$defs/setup_model_test_request"
+    }
+  },
+  "response_schemas": {
+    "project_context": {
+      "$ref": "#/$defs/project_context_response"
+    },
+    "task_poll": {
+      "$ref": "#/$defs/task_poll_response"
+    },
+    "task_cancel": {
+      "$ref": "#/$defs/task_cancel_response"
+    },
+    "setup_agent_probe": {
+      "$ref": "#/$defs/setup_agent_probe_response"
+    },
+    "setup_config_get": {
+      "$ref": "#/$defs/setup_config_get_response_overlay"
+    },
+    "setup_config_put": {
+      "$ref": "#/$defs/setup_config_put_response_overlay"
+    },
+    "setup_status": {
+      "$ref": "#/$defs/setup_status_response_overlay"
+    },
+    "setup_info": {
+      "$ref": "#/$defs/setup_info_response_overlay"
+    },
+    "setup_error": {
+      "$ref": "#/$defs/setup_error_response_overlay"
+    },
+    "setup_tunnel": {
+      "$ref": "#/$defs/setup_tunnel_response_overlay"
+    },
+    "setup_credential_get": {
+      "$ref": "#/$defs/setup_credential_response"
+    },
+    "setup_credential_put": {
+      "$ref": "#/$defs/setup_credential_response"
+    },
+    "setup_credential_delete": {
+      "$ref": "#/$defs/setup_credential_response"
+    },
+    "setup_models": {
+      "$ref": "#/$defs/setup_models_response"
+    },
+    "setup_model_test": {
+      "$ref": "#/$defs/setup_model_test_response"
+    }
+  },
+  "errors": [
+    {
+      "code": "INVALID_ARGUMENT",
+      "recoverable": true,
+      "retriable_before_acceptance": false,
+      "meaning": "请求类型、枚举、空值或二选一校验失败",
+      "origin": "existing"
+    },
+    {
+      "code": "PAYLOAD_TOO_LARGE",
+      "recoverable": false,
+      "retriable_before_acceptance": false,
+      "meaning": "输入超过UTF-8字节上限",
+      "origin": "existing"
+    },
+    {
+      "code": "PROJECT_NOT_FOUND",
+      "recoverable": true,
+      "retriable_before_acceptance": false,
+      "meaning": "未知或不可见项目，避免泄露他人项目",
+      "origin": "existing"
+    },
+    {
+      "code": "CLI_NOT_FOUND",
+      "recoverable": true,
+      "retriable_before_acceptance": false,
+      "meaning": "已配置Codex不可定位；本机修复后再试",
+      "origin": "new"
+    },
+    {
+      "code": "AUTH_REQUIRED",
+      "recoverable": true,
+      "retriable_before_acceptance": false,
+      "meaning": "CLI登录不可用；与HTTP OAuth挑战区分",
+      "origin": "new"
+    },
+    {
+      "code": "MODEL_UNAVAILABLE",
+      "recoverable": true,
+      "retriable_before_acceptance": false,
+      "meaning": "请求模型不可用；不得静默切模型",
+      "origin": "new"
+    },
+    {
+      "code": "RATE_LIMITED",
+      "recoverable": true,
+      "retriable_before_acceptance": true,
+      "meaning": "提供方限流，只有未接受请求可原ID稍后提交；任务终态不重跑",
+      "origin": "new"
+    },
+    {
+      "code": "CAPABILITY_UNAVAILABLE",
+      "recoverable": true,
+      "retriable_before_acceptance": false,
+      "meaning": "版本/权限/工具边界未达到所需能力",
+      "origin": "new"
+    },
+    {
+      "code": "POLICY_DENIED",
+      "recoverable": false,
+      "retriable_before_acceptance": false,
+      "meaning": "当前身份或项目策略不允许",
+      "origin": "new"
+    },
+    {
+      "code": "QUEUE_FULL",
+      "recoverable": true,
+      "retriable_before_acceptance": true,
+      "meaning": "尚未接受任务，原ID稍后重试",
+      "origin": "new"
+    },
+    {
+      "code": "REQUEST_CONFLICT",
+      "recoverable": true,
+      "retriable_before_acceptance": false,
+      "meaning": "原ID携带不同执行参数",
+      "origin": "new"
+    },
+    {
+      "code": "RESULT_EXPIRED",
+      "recoverable": true,
+      "retriable_before_acceptance": false,
+      "meaning": "已清理结果；墓碑不得触发自动重跑",
+      "origin": "new"
+    },
+    {
+      "code": "TASK_NOT_FOUND",
+      "recoverable": true,
+      "retriable_before_acceptance": false,
+      "meaning": "任务不存在或当前调用者不可见",
+      "origin": "new"
+    },
+    {
+      "code": "REPORT_NOT_FOUND",
+      "recoverable": true,
+      "retriable_before_acceptance": false,
+      "meaning": "报告不存在或当前调用者不可见",
+      "origin": "new"
+    },
+    {
+      "code": "INVALID_CURSOR",
+      "recoverable": true,
+      "retriable_before_acceptance": false,
+      "meaning": "游标无效、错对象、错章节或改变已绑定页大小",
+      "origin": "new"
+    },
+    {
+      "code": "SECTION_NOT_FOUND",
+      "recoverable": true,
+      "retriable_before_acceptance": false,
+      "meaning": "报告没有指定章节",
+      "origin": "new"
+    },
+    {
+      "code": "PROTOCOL_ERROR",
+      "recoverable": false,
+      "retriable_before_acceptance": false,
+      "meaning": "CLI协议未满足终态判定",
+      "origin": "new"
+    },
+    {
+      "code": "EXECUTION_FAILED",
+      "recoverable": false,
+      "retriable_before_acceptance": false,
+      "meaning": "已接受任务执行失败；同ID不重新执行",
+      "origin": "new"
+    },
+    {
+      "code": "CLEANUP_FAILED",
+      "recoverable": true,
+      "retriable_before_acceptance": false,
+      "meaning": "无法证实进程树退出，保持cancelling与锁",
+      "origin": "new"
+    },
+    {
+      "code": "STORAGE_UNAVAILABLE",
+      "recoverable": true,
+      "retriable_before_acceptance": true,
+      "meaning": "接受前存储不可用，不得产生模型任务",
+      "origin": "new"
+    },
+    {
+      "code": "SCHEMA_UNSUPPORTED",
+      "recoverable": true,
+      "retriable_before_acceptance": false,
+      "meaning": "持久对象主版本不受支持",
+      "origin": "new"
+    },
+    {
+      "code": "OUTPUT_BUDGET_TOO_SMALL",
+      "recoverable": true,
+      "retriable_before_acceptance": false,
+      "meaning": "固定响应元数据不能装入请求预算",
+      "origin": "new"
+    },
+    {
+      "code": "INTERNAL_ERROR",
+      "recoverable": false,
+      "retriable_before_acceptance": false,
+      "meaning": "未预期内部异常；不回传堆栈或自动重跑已接受任务",
+      "origin": "existing"
+    },
+    {
+      "code": "CAPABILITY_DISABLED",
+      "recoverable": true,
+      "retriable_before_acceptance": false,
+      "meaning": "全局或项目未选择本机 Codex；禁止启动 CLI 或模型调用",
+      "origin": "new"
+    },
+    {
+      "code": "AUTH_MODE_UNSELECTED",
+      "recoverable": true,
+      "retriable_before_acceptance": false,
+      "meaning": "尚未明确选择套餐登录或 API Key",
+      "origin": "new"
+    },
+    {
+      "code": "AUTH_MODE_MISMATCH",
+      "recoverable": true,
+      "retriable_before_acceptance": false,
+      "meaning": "实际可用认证与用户选择不一致；不通过切换身份补救",
+      "origin": "new"
+    },
+    {
+      "code": "CREDENTIAL_UNAVAILABLE",
+      "recoverable": true,
+      "retriable_before_acceptance": false,
+      "meaning": "密钥不存在、不可读取或已删除",
+      "origin": "new"
+    },
+    {
+      "code": "CREDENTIAL_CONFLICT",
+      "recoverable": true,
+      "retriable_before_acceptance": false,
+      "meaning": "密钥版本或端点绑定已改变，请重新读取状态",
+      "origin": "new"
+    },
+    {
+      "code": "MODEL_PARAMETER_UNAVAILABLE",
+      "recoverable": true,
+      "retriable_before_acceptance": false,
+      "meaning": "所选推理强度或服务等级不支持；不得删参后继续",
+      "origin": "new"
+    },
+    {
+      "code": "ENDPOINT_NOT_APPROVED",
+      "recoverable": true,
+      "retriable_before_acceptance": false,
+      "meaning": "API 端点未通过安全/兼容验证，禁止发送凭据",
+      "origin": "new"
+    },
+    {
+      "code": "MODEL_TEST_CONSENT_REQUIRED",
+      "recoverable": true,
+      "retriable_before_acceptance": false,
+      "meaning": "测试模型需明确同意一次模型消费",
+      "origin": "new"
+    }
+  ],
+  "config_defaults": {
+    "agent": {
+      "enabled": false,
+      "codex": {
+        "enabled": false,
+        "executable": "",
+        "auth_mode": "unselected",
+        "api_provider": "openai",
+        "api_base_url": "https://api.openai.com/v1"
+      },
+      "default_profile": "cheap_reader",
+      "profiles": {
+        "cheap_reader": {
+          "backend": "codex",
+          "mode": "context",
+          "model": "",
+          "timeout_seconds": 1200,
+          "reasoning_effort": "",
+          "service_tier": "standard"
+        }
+      },
+      "limits": {
+        "max_running": 2,
+        "max_queued": 20,
+        "max_response_chars": 32000,
+        "max_wait_seconds": 20
+      },
+      "retention": {
+        "days": 30,
+        "max_storage_bytes": 1073741824
+      },
+      "schema_version": "2.0.0"
+    },
+    "project_agent": {
+      "context_enabled": false,
+      "allowed_profiles": [
+        "cheap_reader"
+      ]
+    }
+  },
+  "config_fields": [
+    {
+      "path": "agent.enabled",
+      "schema": {
+        "type": "boolean",
+        "default": false
+      },
+      "producer": "local Setup form",
+      "api": "GET/PUT /api/config",
+      "consumer": "config_from_data/config_to_dict/dump_toml/task freeze",
+      "tests": [
+        "CT04",
+        "CT13",
+        "CT22"
+      ]
+    },
+    {
+      "path": "agent.codex.enabled",
+      "schema": {
+        "type": "boolean",
+        "default": false
+      },
+      "producer": "local Setup form",
+      "api": "GET/PUT /api/config",
+      "consumer": "config_from_data/config_to_dict/dump_toml/task freeze",
+      "tests": [
+        "CT04",
+        "CT13",
+        "CT22"
+      ]
+    },
+    {
+      "path": "agent.codex.executable",
+      "schema": {
+        "type": "string",
+        "maxLength": 2048,
+        "default": ""
+      },
+      "producer": "local Setup form",
+      "api": "GET/PUT /api/config",
+      "consumer": "config_from_data/config_to_dict/dump_toml/task freeze",
+      "tests": [
+        "CT04",
+        "CT13",
+        "CT22"
+      ]
+    },
+    {
+      "path": "agent.default_profile",
+      "schema": {
+        "type": "string",
+        "maxLength": 64,
+        "minLength": 1,
+        "default": "cheap_reader"
+      },
+      "producer": "local Setup form",
+      "api": "GET/PUT /api/config",
+      "consumer": "config_from_data/config_to_dict/dump_toml/task freeze",
+      "tests": [
+        "CT04",
+        "CT13",
+        "CT22"
+      ]
+    },
+    {
+      "path": "agent.profiles",
+      "schema": {
+        "type": "object",
+        "propertyNames": {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/profile"
+        },
+        "minProperties": 1
+      },
+      "producer": "local Setup form",
+      "api": "GET/PUT /api/config",
+      "consumer": "config_from_data/config_to_dict/dump_toml/task freeze",
+      "tests": [
+        "CT04",
+        "CT13",
+        "CT22"
+      ]
+    },
+    {
+      "path": "agent.limits.max_running",
+      "schema": {
+        "type": "integer",
+        "minimum": 1,
+        "default": 2,
+        "maximum": 4
+      },
+      "producer": "local Setup form",
+      "api": "GET/PUT /api/config",
+      "consumer": "config_from_data/config_to_dict/dump_toml/task freeze",
+      "tests": [
+        "CT04",
+        "CT13",
+        "CT22"
+      ]
+    },
+    {
+      "path": "agent.limits.max_queued",
+      "schema": {
+        "type": "integer",
+        "minimum": 0,
+        "default": 20,
+        "maximum": 100
+      },
+      "producer": "local Setup form",
+      "api": "GET/PUT /api/config",
+      "consumer": "config_from_data/config_to_dict/dump_toml/task freeze",
+      "tests": [
+        "CT04",
+        "CT13",
+        "CT22"
+      ]
+    },
+    {
+      "path": "agent.limits.max_response_chars",
+      "schema": {
+        "type": "integer",
+        "minimum": 2048,
+        "default": 32000,
+        "maximum": 32000
+      },
+      "producer": "local Setup form",
+      "api": "GET/PUT /api/config",
+      "consumer": "config_from_data/config_to_dict/dump_toml/task freeze",
+      "tests": [
+        "CT04",
+        "CT13",
+        "CT22"
+      ]
+    },
+    {
+      "path": "agent.limits.max_wait_seconds",
+      "schema": {
+        "type": "integer",
+        "minimum": 0,
+        "default": 20,
+        "maximum": 20
+      },
+      "producer": "local Setup form",
+      "api": "GET/PUT /api/config",
+      "consumer": "config_from_data/config_to_dict/dump_toml/task freeze",
+      "tests": [
+        "CT04",
+        "CT13",
+        "CT22"
+      ]
+    },
+    {
+      "path": "agent.retention.days",
+      "schema": {
+        "type": "integer",
+        "minimum": 1,
+        "default": 30,
+        "maximum": 365
+      },
+      "producer": "local Setup form",
+      "api": "GET/PUT /api/config",
+      "consumer": "config_from_data/config_to_dict/dump_toml/task freeze",
+      "tests": [
+        "CT04",
+        "CT13",
+        "CT22"
+      ]
+    },
+    {
+      "path": "agent.retention.max_storage_bytes",
+      "schema": {
+        "type": "integer",
+        "minimum": 10485760,
+        "default": 1073741824,
+        "maximum": 10737418240
+      },
+      "producer": "local Setup form",
+      "api": "GET/PUT /api/config",
+      "consumer": "config_from_data/config_to_dict/dump_toml/task freeze",
+      "tests": [
+        "CT04",
+        "CT13",
+        "CT22"
+      ]
+    },
+    {
+      "path": "projects[].agent.context_enabled",
+      "schema": {
+        "type": "boolean",
+        "default": false
+      },
+      "producer": "local Setup form",
+      "api": "GET/PUT /api/config",
+      "consumer": "config_from_data/config_to_dict/dump_toml/task freeze",
+      "tests": [
+        "CT04",
+        "CT13",
+        "CT22"
+      ]
+    },
+    {
+      "path": "projects[].agent.allowed_profiles",
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1
+        },
+        "maxItems": 32
+      },
+      "producer": "local Setup form",
+      "api": "GET/PUT /api/config",
+      "consumer": "config_from_data/config_to_dict/dump_toml/task freeze",
+      "tests": [
+        "CT04",
+        "CT13",
+        "CT22"
+      ]
+    },
+    {
+      "path": "agent.schema_version",
+      "schema": {
+        "const": "2.0.0"
+      },
+      "producer": "Setup saved options",
+      "api": "GET/PUT /api/config",
+      "consumer": "normalized config / frozen execution selection",
+      "tests": [
+        "CT19",
+        "CT31"
+      ]
+    },
+    {
+      "path": "agent.codex.auth_mode",
+      "schema": {
+        "enum": [
+          "unselected",
+          "chatgpt",
+          "api_key"
+        ],
+        "default": "unselected"
+      },
+      "producer": "Setup saved options",
+      "api": "GET/PUT /api/config",
+      "consumer": "normalized config / frozen execution selection",
+      "tests": [
+        "CT31",
+        "CT32",
+        "CT33"
+      ]
+    },
+    {
+      "path": "agent.codex.api_provider",
+      "schema": {
+        "enum": [
+          "openai",
+          "custom_responses"
+        ],
+        "default": "openai"
+      },
+      "producer": "Setup saved options",
+      "api": "GET/PUT /api/config",
+      "consumer": "normalized config / frozen execution selection",
+      "tests": [
+        "CT32",
+        "CT34"
+      ]
+    },
+    {
+      "path": "agent.codex.api_base_url",
+      "schema": {
+        "type": "string",
+        "maxLength": 2048,
+        "default": "https://api.openai.com/v1",
+        "format": "uri"
+      },
+      "producer": "Setup saved options",
+      "api": "GET/PUT /api/config",
+      "consumer": "normalized config / frozen execution selection",
+      "tests": [
+        "CT34"
+      ]
+    },
+    {
+      "path": "agent.profiles.<id>.reasoning_effort",
+      "schema": {
+        "type": "string",
+        "maxLength": 64,
+        "default": "",
+        "description": "Empty means the explicitly disclosed model default; non-empty values must be validated against the selected model and installed CLI."
+      },
+      "producer": "Setup saved options",
+      "api": "GET/PUT /api/config",
+      "consumer": "normalized config / frozen execution selection",
+      "tests": [
+        "CT35",
+        "CT36"
+      ]
+    },
+    {
+      "path": "agent.profiles.<id>.service_tier",
+      "schema": {
+        "type": "string",
+        "maxLength": 64,
+        "default": "standard",
+        "description": "CodeGPT logical tier. standard disables inherited premium speed; adapters map only a proven supported wire value."
+      },
+      "producer": "Setup saved options",
+      "api": "GET/PUT /api/config",
+      "consumer": "normalized config / frozen execution selection",
+      "tests": [
+        "CT36"
+      ]
+    }
+  ],
+  "endpoint_map": [
+    {
+      "method": "GET",
+      "path": "/api/config",
+      "change": "add nonsecret data.agent and projects[].agent; preserve existing shape",
+      "producer": "SetupApplication.config_view",
+      "consumer": "applyConfig/createProject",
+      "tests": [
+        "CT22"
+      ],
+      "response_schema": "setup_config_get_response_overlay",
+      "error_schema": "setup_error_response_overlay",
+      "overlay": true
+    },
+    {
+      "method": "PUT",
+      "path": "/api/config",
+      "change": "same revision/data request; extend whitelists and full config roundtrip; applied.checks added",
+      "producer": "SetupApplication.save+ConfigStore.save+Runtime.apply",
+      "consumer": "saveConfig",
+      "tests": [
+        "CT13",
+        "CT22",
+        "CT26"
+      ],
+      "request_schema": "setup_config_put_request",
+      "response_schema": "setup_config_put_response_overlay",
+      "error_schema": "setup_error_response_overlay",
+      "overlay": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/status",
+      "change": "add agent/auth and per-network extension; preserve original fields",
+      "producer": "SetupApplication.status+Runtime.status",
+      "consumer": "renderStatus/renderHistory",
+      "tests": [
+        "CT23",
+        "CT27",
+        "CT29"
+      ],
+      "response_schema": "setup_status_response_overlay",
+      "error_schema": "setup_error_response_overlay",
+      "overlay": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/probe",
+      "change": "preserve {} body; bounded network checks only; never model",
+      "producer": "Runtime.probe",
+      "consumer": "runtimeAction",
+      "tests": [
+        "CT27"
+      ],
+      "response_schema": "setup_status_response_overlay",
+      "error_schema": "setup_error_response_overlay",
+      "overlay": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/probe",
+      "change": "only new Setup route; local guard and X-Setup-Token required; no new MCP tool",
+      "request_schema": "setup_agent_probe_request",
+      "response_schema": "setup_agent_probe_response",
+      "producer": "new Setup adapter probe method",
+      "consumer": "new vanilla JS agent probe action",
+      "tests": [
+        "CT23"
+      ],
+      "error_schema": "setup_error_response_overlay"
+    },
+    {
+      "method": "POST",
+      "path": "/api/ngrok",
+      "change": "preserve old branch; add public_reachable/auth_discovery_verified/connection_state; public_verified keeps actual MCP verification meaning",
+      "producer": "SetupApplication.setup_ngrok+Runtime.verify_public",
+      "consumer": "enableNgrok",
+      "tests": [
+        "CT28"
+      ],
+      "response_schema": "setup_tunnel_response_overlay",
+      "error_schema": "setup_error_response_overlay",
+      "overlay": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/cloudflare",
+      "change": "same auth-aware public verification fields as ngrok",
+      "producer": "SetupApplication.setup_cloudflare+Runtime.verify_public",
+      "consumer": "enableCloudflare",
+      "tests": [
+        "CT28"
+      ],
+      "response_schema": "setup_tunnel_response_overlay",
+      "error_schema": "setup_error_response_overlay",
+      "overlay": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/restart",
+      "change": "preserve ok/applied.verified; optional applied.checks",
+      "producer": "Runtime.restart",
+      "consumer": "runtimeAction",
+      "tests": [
+        "CT26"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/session",
+      "change": "unchanged; token stays Setup CSRF/control token, never reused for public MCP OAuth",
+      "tests": [
+        "CT11"
+      ]
+    },
+    {
+      "method": "GET/POST",
+      "path": "remaining existing Setup routes",
+      "change": "unchanged; no task submission or arbitrary command HTTP endpoint",
+      "tests": [
+        "CT22"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/info",
+      "change": "preserve name/product/config; add ui_contract_version/ui_asset_version",
+      "producer": "release build metadata via SetupHandler._dispatch",
+      "consumer": "web/app.js start() compatibility guard",
+      "tests": [
+        "CT30"
+      ],
+      "response_schema": "setup_info_response_overlay",
+      "error_schema": "setup_error_response_overlay",
+      "overlay": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/agent/credential",
+      "producer": "CredentialStore sanitized status",
+      "consumer": "Setup key state",
+      "response_schema": "setup_credential_response",
+      "tests": [
+        "CT33"
+      ],
+      "change": "new localhost-only typed route; no arbitrary CLI passthrough",
+      "error_schema": "setup_error_response_overlay"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/agent/credential",
+      "producer": "SetupApplication credential CAS",
+      "consumer": "T27 CredentialStore",
+      "request_schema": "setup_credential_put_request",
+      "response_schema": "setup_credential_response",
+      "tests": [
+        "CT33",
+        "CT34"
+      ],
+      "change": "new localhost-only typed route; no arbitrary CLI passthrough",
+      "error_schema": "setup_error_response_overlay"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/agent/credential",
+      "producer": "Setup credential revocation",
+      "consumer": "CredentialStore / affected task cancellation",
+      "request_schema": "setup_credential_delete_request",
+      "response_schema": "setup_credential_response",
+      "tests": [
+        "CT33",
+        "CT37"
+      ],
+      "change": "new localhost-only typed route; no arbitrary CLI passthrough",
+      "error_schema": "setup_error_response_overlay"
+    },
+    {
+      "method": "GET",
+      "path": "/api/agent/models",
+      "producer": "T28 model catalog cache",
+      "consumer": "Setup model selector",
+      "response_schema": "setup_models_response",
+      "tests": [
+        "CT35"
+      ],
+      "change": "new localhost-only typed route; no arbitrary CLI passthrough",
+      "error_schema": "setup_error_response_overlay"
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/models",
+      "producer": "explicit refresh button",
+      "consumer": "T28 version-gated metadata discovery",
+      "request_schema": "setup_models_refresh_request",
+      "response_schema": "setup_models_response",
+      "tests": [
+        "CT35",
+        "CT36"
+      ],
+      "change": "new localhost-only typed route; no arbitrary CLI passthrough",
+      "error_schema": "setup_error_response_overlay"
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/model-test",
+      "producer": "explicit consented test action",
+      "consumer": "same persistent task service / Codex adapter",
+      "request_schema": "setup_model_test_request",
+      "response_schema": "setup_model_test_response",
+      "tests": [
+        "CT38",
+        "CT39"
+      ],
+      "change": "new localhost-only typed route; no arbitrary CLI passthrough",
+      "error_schema": "setup_error_response_overlay"
+    }
+  ],
+  "field_lineage": [
+    {
+      "field": "task.task_id",
+      "producer": "task_acceptance+auth_context+adapter",
+      "api": "project_context/task_poll/task_cancel",
+      "consumer": "web_host",
+      "tests": [
+        "CT02",
+        "CT04",
+        "CT11",
+        "CT12",
+        "CT13"
+      ]
+    },
+    {
+      "field": "task.project_id",
+      "producer": "task_acceptance+auth_context+adapter",
+      "api": "project_context/task_poll/task_cancel",
+      "consumer": "web_host",
+      "tests": [
+        "CT02",
+        "CT04",
+        "CT11",
+        "CT12",
+        "CT13"
+      ]
+    },
+    {
+      "field": "task.request_id",
+      "producer": "task_acceptance+auth_context+adapter",
+      "api": "project_context/task_poll/task_cancel",
+      "consumer": "web_host",
+      "tests": [
+        "CT02",
+        "CT04",
+        "CT11",
+        "CT12",
+        "CT13"
+      ]
+    },
+    {
+      "field": "task.owner_id",
+      "producer": "task_acceptance+auth_context+adapter",
+      "api": "project_context/task_poll/task_cancel",
+      "consumer": "web_host",
+      "tests": [
+        "CT02",
+        "CT04",
+        "CT11",
+        "CT12",
+        "CT13"
+      ]
+    },
+    {
+      "field": "task.mode",
+      "producer": "task_acceptance+auth_context+adapter",
+      "api": "project_context/task_poll/task_cancel",
+      "consumer": "web_host",
+      "tests": [
+        "CT02",
+        "CT04",
+        "CT11",
+        "CT12",
+        "CT13"
+      ]
+    },
+    {
+      "field": "task.backend",
+      "producer": "task_acceptance+auth_context+adapter",
+      "api": "project_context/task_poll/task_cancel",
+      "consumer": "web_host",
+      "tests": [
+        "CT02",
+        "CT04",
+        "CT11",
+        "CT12",
+        "CT13"
+      ]
+    },
+    {
+      "field": "task.profile",
+      "producer": "task_acceptance+auth_context+adapter",
+      "api": "project_context/task_poll/task_cancel",
+      "consumer": "web_host",
+      "tests": [
+        "CT02",
+        "CT04",
+        "CT11",
+        "CT12",
+        "CT13"
+      ]
+    },
+    {
+      "field": "task.backend_version",
+      "producer": "task_acceptance+auth_context+adapter",
+      "api": "project_context/task_poll/task_cancel",
+      "consumer": "web_host",
+      "tests": [
+        "CT02",
+        "CT04",
+        "CT11",
+        "CT12",
+        "CT13"
+      ]
+    },
+    {
+      "field": "task.requested_model",
+      "producer": "task_acceptance+auth_context+adapter",
+      "api": "project_context/task_poll/task_cancel",
+      "consumer": "web_host",
+      "tests": [
+        "CT02",
+        "CT04",
+        "CT11",
+        "CT12",
+        "CT13"
+      ]
+    },
+    {
+      "field": "task.resolved_model",
+      "producer": "task_acceptance+auth_context+adapter",
+      "api": "project_context/task_poll/task_cancel",
+      "consumer": "web_host",
+      "tests": [
+        "CT02",
+        "CT04",
+        "CT11",
+        "CT12",
+        "CT13"
+      ]
+    },
+    {
+      "field": "task.config_revision",
+      "producer": "task_acceptance+auth_context+adapter",
+      "api": "project_context/task_poll/task_cancel",
+      "consumer": "web_host",
+      "tests": [
+        "CT02",
+        "CT04",
+        "CT11",
+        "CT12",
+        "CT13"
+      ]
+    },
+    {
+      "field": "task.parent_task_id",
+      "producer": "task_acceptance+auth_context+adapter",
+      "api": "project_context/task_poll/task_cancel",
+      "consumer": "web_host",
+      "tests": [
+        "CT02",
+        "CT04",
+        "CT11",
+        "CT12",
+        "CT13"
+      ]
+    },
+    {
+      "field": "task.created_at",
+      "producer": "task_acceptance+auth_context+adapter",
+      "api": "project_context/task_poll/task_cancel",
+      "consumer": "web_host",
+      "tests": [
+        "CT02",
+        "CT04",
+        "CT11",
+        "CT12",
+        "CT13"
+      ]
+    },
+    {
+      "field": "task.status",
+      "producer": "task_state_machine",
+      "api": "task_poll/task_cancel",
+      "consumer": "web_host",
+      "tests": [
+        "CT14",
+        "CT15"
+      ]
+    },
+    {
+      "field": "task.started_at",
+      "producer": "task_state_machine",
+      "api": "task_poll/task_cancel",
+      "consumer": "web_host",
+      "tests": [
+        "CT14",
+        "CT15"
+      ]
+    },
+    {
+      "field": "task.finished_at",
+      "producer": "task_state_machine",
+      "api": "task_poll/task_cancel",
+      "consumer": "web_host",
+      "tests": [
+        "CT14",
+        "CT15"
+      ]
+    },
+    {
+      "field": "task.finish_reason",
+      "producer": "task_state_machine",
+      "api": "task_poll/task_cancel",
+      "consumer": "web_host",
+      "tests": [
+        "CT14",
+        "CT15"
+      ]
+    },
+    {
+      "field": "task.progress",
+      "producer": "task_state_machine",
+      "api": "task_poll/task_cancel",
+      "consumer": "web_host",
+      "tests": [
+        "CT14",
+        "CT15"
+      ]
+    },
+    {
+      "field": "task.error",
+      "producer": "task_state_machine",
+      "api": "task_poll/task_cancel",
+      "consumer": "web_host",
+      "tests": [
+        "CT14",
+        "CT15"
+      ]
+    },
+    {
+      "field": "task.report_id",
+      "producer": "report_publisher",
+      "api": "task_poll",
+      "consumer": "web_host",
+      "tests": [
+        "CT16"
+      ]
+    },
+    {
+      "field": "task.summary",
+      "producer": "report_publisher",
+      "api": "task_poll",
+      "consumer": "web_host",
+      "tests": [
+        "CT16"
+      ]
+    },
+    {
+      "field": "task.completion",
+      "producer": "report_publisher",
+      "api": "task_poll",
+      "consumer": "web_host",
+      "tests": [
+        "CT16"
+      ]
+    },
+    {
+      "field": "task.verification",
+      "producer": "report_publisher",
+      "api": "task_poll",
+      "consumer": "web_host",
+      "tests": [
+        "CT16"
+      ]
+    },
+    {
+      "field": "task.continuation_type",
+      "producer": "private_session_map",
+      "api": "task_poll",
+      "consumer": "web_host",
+      "tests": [
+        "CT17"
+      ]
+    },
+    {
+      "field": "task.session_available",
+      "producer": "private_session_map",
+      "api": "task_poll",
+      "consumer": "web_host",
+      "tests": [
+        "CT17"
+      ]
+    },
+    {
+      "field": "task.actual_models",
+      "producer": "verified_cli_events",
+      "api": "task_poll",
+      "consumer": "web_host",
+      "tests": [
+        "CT12",
+        "CT18"
+      ]
+    },
+    {
+      "field": "task.usage",
+      "producer": "verified_cli_events",
+      "api": "task_poll",
+      "consumer": "web_host",
+      "tests": [
+        "CT12",
+        "CT18"
+      ]
+    },
+    {
+      "field": "task.usage_scope",
+      "producer": "verified_cli_events",
+      "api": "task_poll",
+      "consumer": "web_host",
+      "tests": [
+        "CT12",
+        "CT18"
+      ]
+    },
+    {
+      "field": "task.cost",
+      "producer": "verified_cli_events",
+      "api": "task_poll",
+      "consumer": "web_host",
+      "tests": [
+        "CT12",
+        "CT18"
+      ]
+    },
+    {
+      "field": "task.cost_basis",
+      "producer": "verified_cli_events",
+      "api": "task_poll",
+      "consumer": "web_host",
+      "tests": [
+        "CT12",
+        "CT18"
+      ]
+    },
+    {
+      "field": "report.report_id",
+      "producer": "report_repository+snapshot_validator",
+      "api": "task_poll(report_id)/project_context(cache)",
+      "consumer": "web_host",
+      "tests": [
+        "CT07",
+        "CT13",
+        "CT16",
+        "CT19",
+        "CT20"
+      ]
+    },
+    {
+      "field": "report.project_id",
+      "producer": "report_repository+snapshot_validator",
+      "api": "task_poll(report_id)/project_context(cache)",
+      "consumer": "web_host",
+      "tests": [
+        "CT07",
+        "CT13",
+        "CT16",
+        "CT19",
+        "CT20"
+      ]
+    },
+    {
+      "field": "report.parent_report_id",
+      "producer": "report_repository+snapshot_validator",
+      "api": "task_poll(report_id)/project_context(cache)",
+      "consumer": "web_host",
+      "tests": [
+        "CT07",
+        "CT13",
+        "CT16",
+        "CT19",
+        "CT20"
+      ]
+    },
+    {
+      "field": "report.report_schema_version",
+      "producer": "report_repository+snapshot_validator",
+      "api": "task_poll(report_id)/project_context(cache)",
+      "consumer": "web_host",
+      "tests": [
+        "CT07",
+        "CT13",
+        "CT16",
+        "CT19",
+        "CT20"
+      ]
+    },
+    {
+      "field": "report.generated_at",
+      "producer": "report_repository+snapshot_validator",
+      "api": "task_poll(report_id)/project_context(cache)",
+      "consumer": "web_host",
+      "tests": [
+        "CT07",
+        "CT13",
+        "CT16",
+        "CT19",
+        "CT20"
+      ]
+    },
+    {
+      "field": "report.snapshot_id",
+      "producer": "report_repository+snapshot_validator",
+      "api": "task_poll(report_id)/project_context(cache)",
+      "consumer": "web_host",
+      "tests": [
+        "CT07",
+        "CT13",
+        "CT16",
+        "CT19",
+        "CT20"
+      ]
+    },
+    {
+      "field": "report.config_revision",
+      "producer": "report_repository+snapshot_validator",
+      "api": "task_poll(report_id)/project_context(cache)",
+      "consumer": "web_host",
+      "tests": [
+        "CT07",
+        "CT13",
+        "CT16",
+        "CT19",
+        "CT20"
+      ]
+    },
+    {
+      "field": "report.backend",
+      "producer": "report_repository+snapshot_validator",
+      "api": "task_poll(report_id)/project_context(cache)",
+      "consumer": "web_host",
+      "tests": [
+        "CT07",
+        "CT13",
+        "CT16",
+        "CT19",
+        "CT20"
+      ]
+    },
+    {
+      "field": "report.backend_version",
+      "producer": "report_repository+snapshot_validator",
+      "api": "task_poll(report_id)/project_context(cache)",
+      "consumer": "web_host",
+      "tests": [
+        "CT07",
+        "CT13",
+        "CT16",
+        "CT19",
+        "CT20"
+      ]
+    },
+    {
+      "field": "report.profile",
+      "producer": "report_repository+snapshot_validator",
+      "api": "task_poll(report_id)/project_context(cache)",
+      "consumer": "web_host",
+      "tests": [
+        "CT07",
+        "CT13",
+        "CT16",
+        "CT19",
+        "CT20"
+      ]
+    },
+    {
+      "field": "report.freshness",
+      "producer": "report_repository+snapshot_validator",
+      "api": "task_poll(report_id)/project_context(cache)",
+      "consumer": "web_host",
+      "tests": [
+        "CT07",
+        "CT13",
+        "CT16",
+        "CT19",
+        "CT20"
+      ]
+    },
+    {
+      "field": "report.summary",
+      "producer": "report_repository+snapshot_validator",
+      "api": "task_poll(report_id)/project_context(cache)",
+      "consumer": "web_host",
+      "tests": [
+        "CT07",
+        "CT13",
+        "CT16",
+        "CT19",
+        "CT20"
+      ]
+    },
+    {
+      "field": "report.sections",
+      "producer": "report_repository+snapshot_validator",
+      "api": "task_poll(report_id)/project_context(cache)",
+      "consumer": "web_host",
+      "tests": [
+        "CT07",
+        "CT13",
+        "CT16",
+        "CT19",
+        "CT20"
+      ]
+    },
+    {
+      "field": "report.completion",
+      "producer": "report_repository+snapshot_validator",
+      "api": "task_poll(report_id)/project_context(cache)",
+      "consumer": "web_host",
+      "tests": [
+        "CT07",
+        "CT13",
+        "CT16",
+        "CT19",
+        "CT20"
+      ]
+    },
+    {
+      "field": "report.verification",
+      "producer": "report_repository+snapshot_validator",
+      "api": "task_poll(report_id)/project_context(cache)",
+      "consumer": "web_host",
+      "tests": [
+        "CT07",
+        "CT13",
+        "CT16",
+        "CT19",
+        "CT20"
+      ]
+    },
+    {
+      "field": "page.section",
+      "producer": "report_paginator",
+      "api": "task_poll",
+      "consumer": "web_host",
+      "tests": [
+        "CT06",
+        "CT08",
+        "CT09"
+      ]
+    },
+    {
+      "field": "page.text",
+      "producer": "report_paginator",
+      "api": "task_poll",
+      "consumer": "web_host",
+      "tests": [
+        "CT06",
+        "CT08",
+        "CT09"
+      ]
+    },
+    {
+      "field": "page.format",
+      "producer": "report_paginator",
+      "api": "task_poll",
+      "consumer": "web_host",
+      "tests": [
+        "CT06",
+        "CT08",
+        "CT09"
+      ]
+    },
+    {
+      "field": "pagination.cursor",
+      "producer": "report_paginator",
+      "api": "all_new_mcp_tools",
+      "consumer": "web_host",
+      "tests": [
+        "CT06",
+        "CT09"
+      ]
+    },
+    {
+      "field": "pagination.next_cursor",
+      "producer": "report_paginator",
+      "api": "all_new_mcp_tools",
+      "consumer": "web_host",
+      "tests": [
+        "CT06",
+        "CT09"
+      ]
+    },
+    {
+      "field": "pagination.has_more",
+      "producer": "report_paginator",
+      "api": "all_new_mcp_tools",
+      "consumer": "web_host",
+      "tests": [
+        "CT06",
+        "CT09"
+      ]
+    },
+    {
+      "field": "pagination.returned_chars",
+      "producer": "report_paginator",
+      "api": "all_new_mcp_tools",
+      "consumer": "web_host",
+      "tests": [
+        "CT06",
+        "CT09"
+      ]
+    },
+    {
+      "field": "pagination.total_chars",
+      "producer": "report_paginator",
+      "api": "all_new_mcp_tools",
+      "consumer": "web_host",
+      "tests": [
+        "CT06",
+        "CT09"
+      ]
+    },
+    {
+      "field": "pagination.remaining_chars",
+      "producer": "report_paginator",
+      "api": "all_new_mcp_tools",
+      "consumer": "web_host",
+      "tests": [
+        "CT06",
+        "CT09"
+      ]
+    },
+    {
+      "field": "probe.backend",
+      "producer": "non_model_capability_probe",
+      "api": "POST /api/agent/probe",
+      "consumer": "vanilla_js_agent_panel",
+      "tests": [
+        "CT23"
+      ]
+    },
+    {
+      "field": "probe.availability",
+      "producer": "non_model_capability_probe",
+      "api": "POST /api/agent/probe",
+      "consumer": "vanilla_js_agent_panel",
+      "tests": [
+        "CT23"
+      ]
+    },
+    {
+      "field": "probe.version",
+      "producer": "non_model_capability_probe",
+      "api": "POST /api/agent/probe",
+      "consumer": "vanilla_js_agent_panel",
+      "tests": [
+        "CT23"
+      ]
+    },
+    {
+      "field": "probe.auth_state",
+      "producer": "non_model_capability_probe",
+      "api": "POST /api/agent/probe",
+      "consumer": "vanilla_js_agent_panel",
+      "tests": [
+        "CT23"
+      ]
+    },
+    {
+      "field": "probe.checked_at",
+      "producer": "non_model_capability_probe",
+      "api": "POST /api/agent/probe",
+      "consumer": "vanilla_js_agent_panel",
+      "tests": [
+        "CT23"
+      ]
+    },
+    {
+      "field": "probe.enforcement",
+      "producer": "non_model_capability_probe",
+      "api": "POST /api/agent/probe",
+      "consumer": "vanilla_js_agent_panel",
+      "tests": [
+        "CT23"
+      ]
+    },
+    {
+      "field": "probe.errors",
+      "producer": "non_model_capability_probe",
+      "api": "POST /api/agent/probe",
+      "consumer": "vanilla_js_agent_panel",
+      "tests": [
+        "CT23"
+      ]
+    },
+    {
+      "field": "probe.model_request_performed",
+      "producer": "non_model_capability_probe",
+      "api": "POST /api/agent/probe",
+      "consumer": "vanilla_js_agent_panel",
+      "tests": [
+        "CT23"
+      ]
+    },
+    {
+      "field": "capability.schema_version",
+      "producer": "config_acl+probe_cache",
+      "api": "project_info.agent_capabilities",
+      "consumer": "web_host",
+      "tests": [
+        "CT04",
+        "CT11",
+        "CT23"
+      ]
+    },
+    {
+      "field": "capability.context_enabled",
+      "producer": "config_acl+probe_cache",
+      "api": "project_info.agent_capabilities",
+      "consumer": "web_host",
+      "tests": [
+        "CT04",
+        "CT11",
+        "CT23"
+      ]
+    },
+    {
+      "field": "capability.profiles",
+      "producer": "config_acl+probe_cache",
+      "api": "project_info.agent_capabilities",
+      "consumer": "web_host",
+      "tests": [
+        "CT04",
+        "CT11",
+        "CT23"
+      ]
+    },
+    {
+      "field": "capability.backend",
+      "producer": "config_acl+probe_cache",
+      "api": "project_info.agent_capabilities",
+      "consumer": "web_host",
+      "tests": [
+        "CT04",
+        "CT11",
+        "CT23"
+      ]
+    },
+    {
+      "field": "capability.availability",
+      "producer": "config_acl+probe_cache",
+      "api": "project_info.agent_capabilities",
+      "consumer": "web_host",
+      "tests": [
+        "CT04",
+        "CT11",
+        "CT23"
+      ]
+    },
+    {
+      "field": "capability.reasons",
+      "producer": "config_acl+probe_cache",
+      "api": "project_info.agent_capabilities",
+      "consumer": "web_host",
+      "tests": [
+        "CT04",
+        "CT11",
+        "CT23"
+      ]
+    },
+    {
+      "field": "capability.checked_at",
+      "producer": "config_acl+probe_cache",
+      "api": "project_info.agent_capabilities",
+      "consumer": "web_host",
+      "tests": [
+        "CT04",
+        "CT11",
+        "CT23"
+      ]
+    },
+    {
+      "field": "capability.enforcement",
+      "producer": "config_acl+probe_cache",
+      "api": "project_info.agent_capabilities",
+      "consumer": "web_host",
+      "tests": [
+        "CT04",
+        "CT11",
+        "CT23"
+      ]
+    },
+    {
+      "field": "agent_status.backend",
+      "producer": "task_service+probe_cache",
+      "api": "GET /api/status.agent",
+      "consumer": "vanilla_js_renderStatus",
+      "tests": [
+        "CT23",
+        "CT24"
+      ]
+    },
+    {
+      "field": "agent_status.enabled",
+      "producer": "task_service+probe_cache",
+      "api": "GET /api/status.agent",
+      "consumer": "vanilla_js_renderStatus",
+      "tests": [
+        "CT23",
+        "CT24"
+      ]
+    },
+    {
+      "field": "agent_status.availability",
+      "producer": "task_service+probe_cache",
+      "api": "GET /api/status.agent",
+      "consumer": "vanilla_js_renderStatus",
+      "tests": [
+        "CT23",
+        "CT24"
+      ]
+    },
+    {
+      "field": "agent_status.version",
+      "producer": "task_service+probe_cache",
+      "api": "GET /api/status.agent",
+      "consumer": "vanilla_js_renderStatus",
+      "tests": [
+        "CT23",
+        "CT24"
+      ]
+    },
+    {
+      "field": "agent_status.auth_state",
+      "producer": "task_service+probe_cache",
+      "api": "GET /api/status.agent",
+      "consumer": "vanilla_js_renderStatus",
+      "tests": [
+        "CT23",
+        "CT24"
+      ]
+    },
+    {
+      "field": "agent_status.enforcement",
+      "producer": "task_service+probe_cache",
+      "api": "GET /api/status.agent",
+      "consumer": "vanilla_js_renderStatus",
+      "tests": [
+        "CT23",
+        "CT24"
+      ]
+    },
+    {
+      "field": "agent_status.checked_at",
+      "producer": "task_service+probe_cache",
+      "api": "GET /api/status.agent",
+      "consumer": "vanilla_js_renderStatus",
+      "tests": [
+        "CT23",
+        "CT24"
+      ]
+    },
+    {
+      "field": "agent_status.active_tasks",
+      "producer": "task_service+probe_cache",
+      "api": "GET /api/status.agent",
+      "consumer": "vanilla_js_renderStatus",
+      "tests": [
+        "CT23",
+        "CT24"
+      ]
+    },
+    {
+      "field": "agent_status.queued_tasks",
+      "producer": "task_service+probe_cache",
+      "api": "GET /api/status.agent",
+      "consumer": "vanilla_js_renderStatus",
+      "tests": [
+        "CT23",
+        "CT24"
+      ]
+    },
+    {
+      "field": "agent_status.last_error",
+      "producer": "task_service+probe_cache",
+      "api": "GET /api/status.agent",
+      "consumer": "vanilla_js_renderStatus",
+      "tests": [
+        "CT23",
+        "CT24"
+      ]
+    },
+    {
+      "field": "network_extension.reachability",
+      "producer": "network_auth_probe",
+      "api": "GET /api/status.local|public",
+      "consumer": "vanilla_js_renderStatus/renderHistory",
+      "tests": [
+        "CT27"
+      ]
+    },
+    {
+      "field": "network_extension.mcp",
+      "producer": "network_auth_probe",
+      "api": "GET /api/status.local|public",
+      "consumer": "vanilla_js_renderStatus/renderHistory",
+      "tests": [
+        "CT27"
+      ]
+    },
+    {
+      "field": "network_extension.auth",
+      "producer": "network_auth_probe",
+      "api": "GET /api/status.local|public",
+      "consumer": "vanilla_js_renderStatus/renderHistory",
+      "tests": [
+        "CT27"
+      ]
+    },
+    {
+      "field": "network_extension.checked_at",
+      "producer": "network_auth_probe",
+      "api": "GET /api/status.local|public",
+      "consumer": "vanilla_js_renderStatus/renderHistory",
+      "tests": [
+        "CT27"
+      ]
+    },
+    {
+      "field": "network_extension.http_status",
+      "producer": "network_auth_probe",
+      "api": "GET /api/status.local|public",
+      "consumer": "vanilla_js_renderStatus/renderHistory",
+      "tests": [
+        "CT27"
+      ]
+    },
+    {
+      "field": "auth_status.mode",
+      "producer": "auth_config+verified_connection_evidence",
+      "api": "GET /api/status.auth",
+      "consumer": "vanilla_js_connection_guide",
+      "tests": [
+        "CT29"
+      ]
+    },
+    {
+      "field": "auth_status.resource",
+      "producer": "auth_config+verified_connection_evidence",
+      "api": "GET /api/status.auth",
+      "consumer": "vanilla_js_connection_guide",
+      "tests": [
+        "CT29"
+      ]
+    },
+    {
+      "field": "auth_status.issuer",
+      "producer": "auth_config+verified_connection_evidence",
+      "api": "GET /api/status.auth",
+      "consumer": "vanilla_js_connection_guide",
+      "tests": [
+        "CT29"
+      ]
+    },
+    {
+      "field": "auth_status.discovery_state",
+      "producer": "auth_config+verified_connection_evidence",
+      "api": "GET /api/status.auth",
+      "consumer": "vanilla_js_connection_guide",
+      "tests": [
+        "CT29"
+      ]
+    },
+    {
+      "field": "auth_status.chatgpt_connection",
+      "producer": "auth_config+verified_connection_evidence",
+      "api": "GET /api/status.auth",
+      "consumer": "vanilla_js_connection_guide",
+      "tests": [
+        "CT29"
+      ]
+    },
+    {
+      "field": "auth_status.last_verified_at",
+      "producer": "auth_config+verified_connection_evidence",
+      "api": "GET /api/status.auth",
+      "consumer": "vanilla_js_connection_guide",
+      "tests": [
+        "CT29"
+      ]
+    },
+    {
+      "field": "applied_checks.config_loaded",
+      "producer": "runtime_private_verification",
+      "api": "PUT /api/config.applied.checks",
+      "consumer": "vanilla_js_saveConfig",
+      "tests": [
+        "CT26",
+        "CT27"
+      ]
+    },
+    {
+      "field": "applied_checks.local_health",
+      "producer": "runtime_private_verification",
+      "api": "PUT /api/config.applied.checks",
+      "consumer": "vanilla_js_saveConfig",
+      "tests": [
+        "CT26",
+        "CT27"
+      ]
+    },
+    {
+      "field": "applied_checks.auth_discovery",
+      "producer": "runtime_private_verification",
+      "api": "PUT /api/config.applied.checks",
+      "consumer": "vanilla_js_saveConfig",
+      "tests": [
+        "CT26",
+        "CT27"
+      ]
+    },
+    {
+      "field": "applied_checks.agent_capability",
+      "producer": "runtime_private_verification",
+      "api": "PUT /api/config.applied.checks",
+      "consumer": "vanilla_js_saveConfig",
+      "tests": [
+        "CT26",
+        "CT27"
+      ]
+    },
+    {
+      "field": "evidence.evidence_id",
+      "producer": "snapshot_bound_evidence_validator",
+      "api": "task_poll(section=evidence)",
+      "consumer": "web_host",
+      "tests": [
+        "CT21"
+      ]
+    },
+    {
+      "field": "evidence.path",
+      "producer": "snapshot_bound_evidence_validator",
+      "api": "task_poll(section=evidence)",
+      "consumer": "web_host",
+      "tests": [
+        "CT21"
+      ]
+    },
+    {
+      "field": "evidence.line_start",
+      "producer": "snapshot_bound_evidence_validator",
+      "api": "task_poll(section=evidence)",
+      "consumer": "web_host",
+      "tests": [
+        "CT21"
+      ]
+    },
+    {
+      "field": "evidence.line_end",
+      "producer": "snapshot_bound_evidence_validator",
+      "api": "task_poll(section=evidence)",
+      "consumer": "web_host",
+      "tests": [
+        "CT21"
+      ]
+    },
+    {
+      "field": "evidence.symbol",
+      "producer": "snapshot_bound_evidence_validator",
+      "api": "task_poll(section=evidence)",
+      "consumer": "web_host",
+      "tests": [
+        "CT21"
+      ]
+    },
+    {
+      "field": "evidence.content_sha256",
+      "producer": "snapshot_bound_evidence_validator",
+      "api": "task_poll(section=evidence)",
+      "consumer": "web_host",
+      "tests": [
+        "CT21"
+      ]
+    },
+    {
+      "field": "evidence.snapshot_id",
+      "producer": "snapshot_bound_evidence_validator",
+      "api": "task_poll(section=evidence)",
+      "consumer": "web_host",
+      "tests": [
+        "CT21"
+      ]
+    },
+    {
+      "field": "evidence.excerpt",
+      "producer": "snapshot_bound_evidence_validator",
+      "api": "task_poll(section=evidence)",
+      "consumer": "web_host",
+      "tests": [
+        "CT21"
+      ]
+    },
+    {
+      "field": "evidence.validation",
+      "producer": "snapshot_bound_evidence_validator",
+      "api": "task_poll(section=evidence)",
+      "consumer": "web_host",
+      "tests": [
+        "CT21"
+      ]
+    },
+    {
+      "field": "coverage.enumerated_files",
+      "producer": "independently_verified_read_audit",
+      "api": "task_poll(section=coverage)",
+      "consumer": "web_host",
+      "tests": [
+        "CT20",
+        "CT21"
+      ]
+    },
+    {
+      "field": "coverage.read_files",
+      "producer": "independently_verified_read_audit",
+      "api": "task_poll(section=coverage)",
+      "consumer": "web_host",
+      "tests": [
+        "CT20",
+        "CT21"
+      ]
+    },
+    {
+      "field": "coverage.excluded_paths",
+      "producer": "independently_verified_read_audit",
+      "api": "task_poll(section=coverage)",
+      "consumer": "web_host",
+      "tests": [
+        "CT20",
+        "CT21"
+      ]
+    },
+    {
+      "field": "coverage.scope",
+      "producer": "independently_verified_read_audit",
+      "api": "task_poll(section=coverage)",
+      "consumer": "web_host",
+      "tests": [
+        "CT20",
+        "CT21"
+      ]
+    },
+    {
+      "field": "coverage.execution_performed",
+      "producer": "independently_verified_read_audit",
+      "api": "task_poll(section=coverage)",
+      "consumer": "web_host",
+      "tests": [
+        "CT20",
+        "CT21"
+      ]
+    },
+    {
+      "field": "unknown.question",
+      "producer": "report_validator",
+      "api": "task_poll(section=unknowns)",
+      "consumer": "web_host",
+      "tests": [
+        "CT16"
+      ]
+    },
+    {
+      "field": "unknown.reason",
+      "producer": "report_validator",
+      "api": "task_poll(section=unknowns)",
+      "consumer": "web_host",
+      "tests": [
+        "CT16"
+      ]
+    },
+    {
+      "field": "unknown.next_step",
+      "producer": "report_validator",
+      "api": "task_poll(section=unknowns)",
+      "consumer": "web_host",
+      "tests": [
+        "CT16"
+      ]
+    },
+    {
+      "field": "setup_info_extension.ui_contract_version",
+      "producer": "release build metadata",
+      "api": "GET /api/info",
+      "consumer": "web/app.js start() compatibility guard",
+      "tests": [
+        "CT30"
+      ]
+    },
+    {
+      "field": "setup_info_extension.ui_asset_version",
+      "producer": "release build metadata",
+      "api": "GET /api/info",
+      "consumer": "web/app.js start() compatibility guard",
+      "tests": [
+        "CT30"
+      ]
+    },
+    {
+      "field": "execution_context.auth_mode",
+      "producer": "frozen identity + adapter evidence",
+      "api": "project_context/task_poll/report",
+      "consumer": "host provenance and billing display",
+      "tests": [
+        "CT32",
+        "CT36",
+        "CT37",
+        "CT39"
+      ]
+    },
+    {
+      "field": "execution_context.billing_source",
+      "producer": "frozen identity + adapter evidence",
+      "api": "project_context/task_poll/report",
+      "consumer": "host provenance and billing display",
+      "tests": [
+        "CT32",
+        "CT36",
+        "CT37",
+        "CT39"
+      ]
+    },
+    {
+      "field": "execution_context.provider",
+      "producer": "frozen identity + adapter evidence",
+      "api": "project_context/task_poll/report",
+      "consumer": "host provenance and billing display",
+      "tests": [
+        "CT32",
+        "CT36",
+        "CT37",
+        "CT39"
+      ]
+    },
+    {
+      "field": "execution_context.endpoint",
+      "producer": "frozen identity + adapter evidence",
+      "api": "project_context/task_poll/report",
+      "consumer": "host provenance and billing display",
+      "tests": [
+        "CT32",
+        "CT36",
+        "CT37",
+        "CT39"
+      ]
+    },
+    {
+      "field": "execution_context.credential_context_id",
+      "producer": "frozen identity + adapter evidence",
+      "api": "project_context/task_poll/report",
+      "consumer": "host provenance and billing display",
+      "tests": [
+        "CT32",
+        "CT36",
+        "CT37",
+        "CT39"
+      ]
+    },
+    {
+      "field": "execution_context.credential_revision",
+      "producer": "frozen identity + adapter evidence",
+      "api": "project_context/task_poll/report",
+      "consumer": "host provenance and billing display",
+      "tests": [
+        "CT32",
+        "CT36",
+        "CT37",
+        "CT39"
+      ]
+    },
+    {
+      "field": "execution_context.requested_reasoning_effort",
+      "producer": "frozen identity + adapter evidence",
+      "api": "project_context/task_poll/report",
+      "consumer": "host provenance and billing display",
+      "tests": [
+        "CT32",
+        "CT36",
+        "CT37",
+        "CT39"
+      ]
+    },
+    {
+      "field": "execution_context.resolved_reasoning_effort",
+      "producer": "frozen identity + adapter evidence",
+      "api": "project_context/task_poll/report",
+      "consumer": "host provenance and billing display",
+      "tests": [
+        "CT32",
+        "CT36",
+        "CT37",
+        "CT39"
+      ]
+    },
+    {
+      "field": "execution_context.requested_service_tier",
+      "producer": "frozen identity + adapter evidence",
+      "api": "project_context/task_poll/report",
+      "consumer": "host provenance and billing display",
+      "tests": [
+        "CT32",
+        "CT36",
+        "CT37",
+        "CT39"
+      ]
+    },
+    {
+      "field": "execution_context.resolved_service_tier",
+      "producer": "frozen identity + adapter evidence",
+      "api": "project_context/task_poll/report",
+      "consumer": "host provenance and billing display",
+      "tests": [
+        "CT32",
+        "CT36",
+        "CT37",
+        "CT39"
+      ]
+    },
+    {
+      "field": "execution_context.selection_fingerprint",
+      "producer": "frozen identity + adapter evidence",
+      "api": "project_context/task_poll/report",
+      "consumer": "host provenance and billing display",
+      "tests": [
+        "CT32",
+        "CT36",
+        "CT37",
+        "CT39"
+      ]
+    },
+    {
+      "field": "execution_context.effective_auth_verified",
+      "producer": "frozen identity + adapter evidence",
+      "api": "project_context/task_poll/report",
+      "consumer": "host provenance and billing display",
+      "tests": [
+        "CT32",
+        "CT36",
+        "CT37",
+        "CT39"
+      ]
+    },
+    {
+      "field": "credential_status.configured",
+      "producer": "CredentialStore nonsecret projection",
+      "api": "localhost credential/status",
+      "consumer": "Setup credentials controls",
+      "tests": [
+        "CT33",
+        "CT34"
+      ]
+    },
+    {
+      "field": "credential_status.credential_revision",
+      "producer": "CredentialStore nonsecret projection",
+      "api": "localhost credential/status",
+      "consumer": "Setup credentials controls",
+      "tests": [
+        "CT33",
+        "CT34"
+      ]
+    },
+    {
+      "field": "credential_status.storage",
+      "producer": "CredentialStore nonsecret projection",
+      "api": "localhost credential/status",
+      "consumer": "Setup credentials controls",
+      "tests": [
+        "CT33",
+        "CT34"
+      ]
+    },
+    {
+      "field": "credential_status.bound_endpoint",
+      "producer": "CredentialStore nonsecret projection",
+      "api": "localhost credential/status",
+      "consumer": "Setup credentials controls",
+      "tests": [
+        "CT33",
+        "CT34"
+      ]
+    },
+    {
+      "field": "credential_status.status",
+      "producer": "CredentialStore nonsecret projection",
+      "api": "localhost credential/status",
+      "consumer": "Setup credentials controls",
+      "tests": [
+        "CT33",
+        "CT34"
+      ]
+    },
+    {
+      "field": "credential_status.updated_at",
+      "producer": "CredentialStore nonsecret projection",
+      "api": "localhost credential/status",
+      "consumer": "Setup credentials controls",
+      "tests": [
+        "CT33",
+        "CT34"
+      ]
+    },
+    {
+      "field": "model_option.model_id",
+      "producer": "version-gated catalog + verification cache",
+      "api": "GET/POST /api/agent/models",
+      "consumer": "Setup model/reasoning picker",
+      "tests": [
+        "CT35",
+        "CT36",
+        "CT37"
+      ]
+    },
+    {
+      "field": "model_option.display_name",
+      "producer": "version-gated catalog + verification cache",
+      "api": "GET/POST /api/agent/models",
+      "consumer": "Setup model/reasoning picker",
+      "tests": [
+        "CT35",
+        "CT36",
+        "CT37"
+      ]
+    },
+    {
+      "field": "model_option.source",
+      "producer": "version-gated catalog + verification cache",
+      "api": "GET/POST /api/agent/models",
+      "consumer": "Setup model/reasoning picker",
+      "tests": [
+        "CT35",
+        "CT36",
+        "CT37"
+      ]
+    },
+    {
+      "field": "model_option.auth_mode",
+      "producer": "version-gated catalog + verification cache",
+      "api": "GET/POST /api/agent/models",
+      "consumer": "Setup model/reasoning picker",
+      "tests": [
+        "CT35",
+        "CT36",
+        "CT37"
+      ]
+    },
+    {
+      "field": "model_option.availability",
+      "producer": "version-gated catalog + verification cache",
+      "api": "GET/POST /api/agent/models",
+      "consumer": "Setup model/reasoning picker",
+      "tests": [
+        "CT35",
+        "CT36",
+        "CT37"
+      ]
+    },
+    {
+      "field": "model_option.compatibility",
+      "producer": "version-gated catalog + verification cache",
+      "api": "GET/POST /api/agent/models",
+      "consumer": "Setup model/reasoning picker",
+      "tests": [
+        "CT35",
+        "CT36",
+        "CT37"
+      ]
+    },
+    {
+      "field": "model_option.reasoning_efforts",
+      "producer": "version-gated catalog + verification cache",
+      "api": "GET/POST /api/agent/models",
+      "consumer": "Setup model/reasoning picker",
+      "tests": [
+        "CT35",
+        "CT36",
+        "CT37"
+      ]
+    },
+    {
+      "field": "model_option.reasoning_effort_status",
+      "producer": "version-gated catalog + verification cache",
+      "api": "GET/POST /api/agent/models",
+      "consumer": "Setup model/reasoning picker",
+      "tests": [
+        "CT35",
+        "CT36",
+        "CT37"
+      ]
+    },
+    {
+      "field": "model_option.default_reasoning_effort",
+      "producer": "version-gated catalog + verification cache",
+      "api": "GET/POST /api/agent/models",
+      "consumer": "Setup model/reasoning picker",
+      "tests": [
+        "CT35",
+        "CT36",
+        "CT37"
+      ]
+    },
+    {
+      "field": "model_option.service_tiers",
+      "producer": "version-gated catalog + verification cache",
+      "api": "GET/POST /api/agent/models",
+      "consumer": "Setup model/reasoning picker",
+      "tests": [
+        "CT35",
+        "CT36",
+        "CT37"
+      ]
+    },
+    {
+      "field": "model_option.parameter_source",
+      "producer": "version-gated catalog + verification cache",
+      "api": "GET/POST /api/agent/models",
+      "consumer": "Setup model/reasoning picker",
+      "tests": [
+        "CT35",
+        "CT36",
+        "CT37"
+      ]
+    },
+    {
+      "field": "model_option.verified_selection_fingerprint",
+      "producer": "version-gated catalog + verification cache",
+      "api": "GET/POST /api/agent/models",
+      "consumer": "Setup model/reasoning picker",
+      "tests": [
+        "CT35",
+        "CT36",
+        "CT37"
+      ]
+    },
+    {
+      "field": "model_option.checked_at",
+      "producer": "version-gated catalog + verification cache",
+      "api": "GET/POST /api/agent/models",
+      "consumer": "Setup model/reasoning picker",
+      "tests": [
+        "CT35",
+        "CT36",
+        "CT37"
+      ]
+    },
+    {
+      "field": "model_option.reason",
+      "producer": "version-gated catalog + verification cache",
+      "api": "GET/POST /api/agent/models",
+      "consumer": "Setup model/reasoning picker",
+      "tests": [
+        "CT35",
+        "CT36",
+        "CT37"
+      ]
+    },
+    {
+      "field": "model_option.cost_hint",
+      "producer": "version-gated catalog + verification cache",
+      "api": "GET/POST /api/agent/models",
+      "consumer": "Setup model/reasoning picker",
+      "tests": [
+        "CT35",
+        "CT36",
+        "CT37"
+      ]
+    },
+    {
+      "field": "model_option.cost_hint_basis",
+      "producer": "version-gated catalog + verification cache",
+      "api": "GET/POST /api/agent/models",
+      "consumer": "Setup model/reasoning picker",
+      "tests": [
+        "CT35",
+        "CT36",
+        "CT37"
+      ]
+    },
+    {
+      "field": "model_catalog.catalog_revision",
+      "producer": "version-gated catalog + verification cache",
+      "api": "GET/POST /api/agent/models",
+      "consumer": "Setup model/reasoning picker",
+      "tests": [
+        "CT35",
+        "CT36",
+        "CT37"
+      ]
+    },
+    {
+      "field": "model_catalog.config_revision",
+      "producer": "version-gated catalog + verification cache",
+      "api": "GET/POST /api/agent/models",
+      "consumer": "Setup model/reasoning picker",
+      "tests": [
+        "CT35",
+        "CT36",
+        "CT37"
+      ]
+    },
+    {
+      "field": "model_catalog.auth_mode",
+      "producer": "version-gated catalog + verification cache",
+      "api": "GET/POST /api/agent/models",
+      "consumer": "Setup model/reasoning picker",
+      "tests": [
+        "CT35",
+        "CT36",
+        "CT37"
+      ]
+    },
+    {
+      "field": "model_catalog.provider",
+      "producer": "version-gated catalog + verification cache",
+      "api": "GET/POST /api/agent/models",
+      "consumer": "Setup model/reasoning picker",
+      "tests": [
+        "CT35",
+        "CT36",
+        "CT37"
+      ]
+    },
+    {
+      "field": "model_catalog.credential_context_id",
+      "producer": "version-gated catalog + verification cache",
+      "api": "GET/POST /api/agent/models",
+      "consumer": "Setup model/reasoning picker",
+      "tests": [
+        "CT35",
+        "CT36",
+        "CT37"
+      ]
+    },
+    {
+      "field": "model_catalog.source",
+      "producer": "version-gated catalog + verification cache",
+      "api": "GET/POST /api/agent/models",
+      "consumer": "Setup model/reasoning picker",
+      "tests": [
+        "CT35",
+        "CT36",
+        "CT37"
+      ]
+    },
+    {
+      "field": "model_catalog.state",
+      "producer": "version-gated catalog + verification cache",
+      "api": "GET/POST /api/agent/models",
+      "consumer": "Setup model/reasoning picker",
+      "tests": [
+        "CT35",
+        "CT36",
+        "CT37"
+      ]
+    },
+    {
+      "field": "model_catalog.models",
+      "producer": "version-gated catalog + verification cache",
+      "api": "GET/POST /api/agent/models",
+      "consumer": "Setup model/reasoning picker",
+      "tests": [
+        "CT35",
+        "CT36",
+        "CT37"
+      ]
+    },
+    {
+      "field": "model_catalog.fetched_at",
+      "producer": "version-gated catalog + verification cache",
+      "api": "GET/POST /api/agent/models",
+      "consumer": "Setup model/reasoning picker",
+      "tests": [
+        "CT35",
+        "CT36",
+        "CT37"
+      ]
+    },
+    {
+      "field": "model_catalog.manual_entry_allowed",
+      "producer": "version-gated catalog + verification cache",
+      "api": "GET/POST /api/agent/models",
+      "consumer": "Setup model/reasoning picker",
+      "tests": [
+        "CT35",
+        "CT36",
+        "CT37"
+      ]
+    },
+    {
+      "field": "model_catalog.model_request_performed",
+      "producer": "version-gated catalog + verification cache",
+      "api": "GET/POST /api/agent/models",
+      "consumer": "Setup model/reasoning picker",
+      "tests": [
+        "CT35",
+        "CT36",
+        "CT37"
+      ]
+    },
+    {
+      "field": "model_catalog.warning",
+      "producer": "version-gated catalog + verification cache",
+      "api": "GET/POST /api/agent/models",
+      "consumer": "Setup model/reasoning picker",
+      "tests": [
+        "CT35",
+        "CT36",
+        "CT37"
+      ]
+    },
+    {
+      "field": "model_test_status.task_id",
+      "producer": "consented model-test task",
+      "api": "POST /api/agent/model-test; GET /api/status",
+      "consumer": "Setup test-result display",
+      "tests": [
+        "CT38",
+        "CT39"
+      ]
+    },
+    {
+      "field": "model_test_status.profile",
+      "producer": "consented model-test task",
+      "api": "POST /api/agent/model-test; GET /api/status",
+      "consumer": "Setup test-result display",
+      "tests": [
+        "CT38",
+        "CT39"
+      ]
+    },
+    {
+      "field": "model_test_status.model_id",
+      "producer": "consented model-test task",
+      "api": "POST /api/agent/model-test; GET /api/status",
+      "consumer": "Setup test-result display",
+      "tests": [
+        "CT38",
+        "CT39"
+      ]
+    },
+    {
+      "field": "model_test_status.selection_fingerprint",
+      "producer": "consented model-test task",
+      "api": "POST /api/agent/model-test; GET /api/status",
+      "consumer": "Setup test-result display",
+      "tests": [
+        "CT38",
+        "CT39"
+      ]
+    },
+    {
+      "field": "model_test_status.status",
+      "producer": "consented model-test task",
+      "api": "POST /api/agent/model-test; GET /api/status",
+      "consumer": "Setup test-result display",
+      "tests": [
+        "CT38",
+        "CT39"
+      ]
+    },
+    {
+      "field": "model_test_status.verification",
+      "producer": "consented model-test task",
+      "api": "POST /api/agent/model-test; GET /api/status",
+      "consumer": "Setup test-result display",
+      "tests": [
+        "CT38",
+        "CT39"
+      ]
+    },
+    {
+      "field": "model_test_status.billing_source",
+      "producer": "consented model-test task",
+      "api": "POST /api/agent/model-test; GET /api/status",
+      "consumer": "Setup test-result display",
+      "tests": [
+        "CT38",
+        "CT39"
+      ]
+    },
+    {
+      "field": "model_test_status.message",
+      "producer": "consented model-test task",
+      "api": "POST /api/agent/model-test; GET /api/status",
+      "consumer": "Setup test-result display",
+      "tests": [
+        "CT38",
+        "CT39"
+      ]
+    },
+    {
+      "field": "model_test_status.updated_at",
+      "producer": "consented model-test task",
+      "api": "POST /api/agent/model-test; GET /api/status",
+      "consumer": "Setup test-result display",
+      "tests": [
+        "CT38",
+        "CT39"
+      ]
+    },
+    {
+      "field": "model_test_status.model_request_performed",
+      "producer": "consented model-test task",
+      "api": "POST /api/agent/model-test; GET /api/status",
+      "consumer": "Setup test-result display",
+      "tests": [
+        "CT38",
+        "CT39"
+      ]
+    },
+    {
+      "field": "agent.schema_version",
+      "producer": "Setup controls",
+      "api": "GET/PUT /api/config",
+      "consumer": "config / frozen task / adapter",
+      "tests": [
+        "CT19",
+        "CT31"
+      ]
+    },
+    {
+      "field": "agent.codex.auth_mode",
+      "producer": "Setup controls",
+      "api": "GET/PUT /api/config",
+      "consumer": "config / frozen task / adapter",
+      "tests": [
+        "CT31",
+        "CT32",
+        "CT33"
+      ]
+    },
+    {
+      "field": "agent.codex.api_provider",
+      "producer": "Setup controls",
+      "api": "GET/PUT /api/config",
+      "consumer": "config / frozen task / adapter",
+      "tests": [
+        "CT32",
+        "CT34"
+      ]
+    },
+    {
+      "field": "agent.codex.api_base_url",
+      "producer": "Setup controls",
+      "api": "GET/PUT /api/config",
+      "consumer": "config / frozen task / adapter",
+      "tests": [
+        "CT34"
+      ]
+    },
+    {
+      "field": "agent.profiles.<id>.reasoning_effort",
+      "producer": "Setup controls",
+      "api": "GET/PUT /api/config",
+      "consumer": "config / frozen task / adapter",
+      "tests": [
+        "CT35",
+        "CT36"
+      ]
+    },
+    {
+      "field": "agent.profiles.<id>.service_tier",
+      "producer": "Setup controls",
+      "api": "GET/PUT /api/config",
+      "consumer": "config / frozen task / adapter",
+      "tests": [
+        "CT36"
+      ]
+    },
+    {
+      "field": "probe.auth_mode",
+      "producer": "configuration + identity + model verification cache",
+      "api": "Setup status/probe; project_info capability",
+      "consumer": "UI and host capability choice",
+      "tests": [
+        "CT31",
+        "CT32",
+        "CT35",
+        "CT37"
+      ]
+    },
+    {
+      "field": "probe.billing_source",
+      "producer": "configuration + identity + model verification cache",
+      "api": "Setup status/probe; project_info capability",
+      "consumer": "UI and host capability choice",
+      "tests": [
+        "CT31",
+        "CT32",
+        "CT35",
+        "CT37"
+      ]
+    },
+    {
+      "field": "probe.credential_status",
+      "producer": "configuration + identity + model verification cache",
+      "api": "Setup status/probe; project_info capability",
+      "consumer": "UI and host capability choice",
+      "tests": [
+        "CT31",
+        "CT32",
+        "CT35",
+        "CT37"
+      ]
+    },
+    {
+      "field": "probe.selected_profile",
+      "producer": "configuration + identity + model verification cache",
+      "api": "Setup status/probe; project_info capability",
+      "consumer": "UI and host capability choice",
+      "tests": [
+        "CT31",
+        "CT32",
+        "CT35",
+        "CT37"
+      ]
+    },
+    {
+      "field": "probe.requested_model",
+      "producer": "configuration + identity + model verification cache",
+      "api": "Setup status/probe; project_info capability",
+      "consumer": "UI and host capability choice",
+      "tests": [
+        "CT31",
+        "CT32",
+        "CT35",
+        "CT37"
+      ]
+    },
+    {
+      "field": "probe.requested_reasoning_effort",
+      "producer": "configuration + identity + model verification cache",
+      "api": "Setup status/probe; project_info capability",
+      "consumer": "UI and host capability choice",
+      "tests": [
+        "CT31",
+        "CT32",
+        "CT35",
+        "CT37"
+      ]
+    },
+    {
+      "field": "probe.requested_service_tier",
+      "producer": "configuration + identity + model verification cache",
+      "api": "Setup status/probe; project_info capability",
+      "consumer": "UI and host capability choice",
+      "tests": [
+        "CT31",
+        "CT32",
+        "CT35",
+        "CT37"
+      ]
+    },
+    {
+      "field": "probe.model_availability",
+      "producer": "configuration + identity + model verification cache",
+      "api": "Setup status/probe; project_info capability",
+      "consumer": "UI and host capability choice",
+      "tests": [
+        "CT31",
+        "CT32",
+        "CT35",
+        "CT37"
+      ]
+    },
+    {
+      "field": "probe.selection_fingerprint",
+      "producer": "configuration + identity + model verification cache",
+      "api": "Setup status/probe; project_info capability",
+      "consumer": "UI and host capability choice",
+      "tests": [
+        "CT31",
+        "CT32",
+        "CT35",
+        "CT37"
+      ]
+    },
+    {
+      "field": "agent_status.auth_mode",
+      "producer": "configuration + identity + model verification cache",
+      "api": "Setup status/probe; project_info capability",
+      "consumer": "UI and host capability choice",
+      "tests": [
+        "CT31",
+        "CT32",
+        "CT35",
+        "CT37"
+      ]
+    },
+    {
+      "field": "agent_status.billing_source",
+      "producer": "configuration + identity + model verification cache",
+      "api": "Setup status/probe; project_info capability",
+      "consumer": "UI and host capability choice",
+      "tests": [
+        "CT31",
+        "CT32",
+        "CT35",
+        "CT37"
+      ]
+    },
+    {
+      "field": "agent_status.credential_status",
+      "producer": "configuration + identity + model verification cache",
+      "api": "Setup status/probe; project_info capability",
+      "consumer": "UI and host capability choice",
+      "tests": [
+        "CT31",
+        "CT32",
+        "CT35",
+        "CT37"
+      ]
+    },
+    {
+      "field": "agent_status.selected_profile",
+      "producer": "configuration + identity + model verification cache",
+      "api": "Setup status/probe; project_info capability",
+      "consumer": "UI and host capability choice",
+      "tests": [
+        "CT31",
+        "CT32",
+        "CT35",
+        "CT37"
+      ]
+    },
+    {
+      "field": "agent_status.requested_model",
+      "producer": "configuration + identity + model verification cache",
+      "api": "Setup status/probe; project_info capability",
+      "consumer": "UI and host capability choice",
+      "tests": [
+        "CT31",
+        "CT32",
+        "CT35",
+        "CT37"
+      ]
+    },
+    {
+      "field": "agent_status.requested_reasoning_effort",
+      "producer": "configuration + identity + model verification cache",
+      "api": "Setup status/probe; project_info capability",
+      "consumer": "UI and host capability choice",
+      "tests": [
+        "CT31",
+        "CT32",
+        "CT35",
+        "CT37"
+      ]
+    },
+    {
+      "field": "agent_status.requested_service_tier",
+      "producer": "configuration + identity + model verification cache",
+      "api": "Setup status/probe; project_info capability",
+      "consumer": "UI and host capability choice",
+      "tests": [
+        "CT31",
+        "CT32",
+        "CT35",
+        "CT37"
+      ]
+    },
+    {
+      "field": "agent_status.model_availability",
+      "producer": "configuration + identity + model verification cache",
+      "api": "Setup status/probe; project_info capability",
+      "consumer": "UI and host capability choice",
+      "tests": [
+        "CT31",
+        "CT32",
+        "CT35",
+        "CT37"
+      ]
+    },
+    {
+      "field": "agent_status.selection_fingerprint",
+      "producer": "configuration + identity + model verification cache",
+      "api": "Setup status/probe; project_info capability",
+      "consumer": "UI and host capability choice",
+      "tests": [
+        "CT31",
+        "CT32",
+        "CT35",
+        "CT37"
+      ]
+    },
+    {
+      "field": "capability.auth_mode",
+      "producer": "configuration + identity + model verification cache",
+      "api": "Setup status/probe; project_info capability",
+      "consumer": "UI and host capability choice",
+      "tests": [
+        "CT31",
+        "CT32",
+        "CT35",
+        "CT37"
+      ]
+    },
+    {
+      "field": "capability.billing_source",
+      "producer": "configuration + identity + model verification cache",
+      "api": "Setup status/probe; project_info capability",
+      "consumer": "UI and host capability choice",
+      "tests": [
+        "CT31",
+        "CT32",
+        "CT35",
+        "CT37"
+      ]
+    },
+    {
+      "field": "capability.selected_profile",
+      "producer": "configuration + identity + model verification cache",
+      "api": "Setup status/probe; project_info capability",
+      "consumer": "UI and host capability choice",
+      "tests": [
+        "CT31",
+        "CT32",
+        "CT35",
+        "CT37"
+      ]
+    },
+    {
+      "field": "capability.requested_model",
+      "producer": "configuration + identity + model verification cache",
+      "api": "Setup status/probe; project_info capability",
+      "consumer": "UI and host capability choice",
+      "tests": [
+        "CT31",
+        "CT32",
+        "CT35",
+        "CT37"
+      ]
+    },
+    {
+      "field": "capability.requested_reasoning_effort",
+      "producer": "configuration + identity + model verification cache",
+      "api": "Setup status/probe; project_info capability",
+      "consumer": "UI and host capability choice",
+      "tests": [
+        "CT31",
+        "CT32",
+        "CT35",
+        "CT37"
+      ]
+    },
+    {
+      "field": "capability.requested_service_tier",
+      "producer": "configuration + identity + model verification cache",
+      "api": "Setup status/probe; project_info capability",
+      "consumer": "UI and host capability choice",
+      "tests": [
+        "CT31",
+        "CT32",
+        "CT35",
+        "CT37"
+      ]
+    },
+    {
+      "field": "capability.model_availability",
+      "producer": "configuration + identity + model verification cache",
+      "api": "Setup status/probe; project_info capability",
+      "consumer": "UI and host capability choice",
+      "tests": [
+        "CT31",
+        "CT32",
+        "CT35",
+        "CT37"
+      ]
+    },
+    {
+      "field": "capability.selection_fingerprint",
+      "producer": "configuration + identity + model verification cache",
+      "api": "Setup status/probe; project_info capability",
+      "consumer": "UI and host capability choice",
+      "tests": [
+        "CT31",
+        "CT32",
+        "CT35",
+        "CT37"
+      ]
+    },
+    {
+      "field": "setup_credential_put_request.api_key",
+      "producer": "localhost password input",
+      "api": "PUT /api/agent/credential",
+      "consumer": "protected CredentialStore; never normal config/logging",
+      "tests": [
+        "CT33",
+        "CT34"
+      ]
+    },
+    {
+      "field": "task.purpose",
+      "producer": "task acceptance service",
+      "api": "project_context / setup model-test / task_poll",
+      "consumer": "mode-specific status and validation",
+      "tests": [
+        "CT38"
+      ]
+    },
+    {
+      "field": "task.execution_context",
+      "producer": "frozen profile + AuthContext",
+      "api": "project_context/task_poll",
+      "consumer": "host source/parameter trace",
+      "tests": [
+        "CT32",
+        "CT36",
+        "CT37"
+      ]
+    },
+    {
+      "field": "report.execution_context",
+      "producer": "producer task snapshot",
+      "api": "report/task_poll",
+      "consumer": "historical provenance",
+      "tests": [
+        "CT37",
+        "CT39"
+      ]
+    },
+    {
+      "field": "capability.credential_state",
+      "producer": "sanitized active identity state",
+      "api": "project_info",
+      "consumer": "host capability choice",
+      "tests": [
+        "CT32",
+        "CT33"
+      ]
+    },
+    {
+      "field": "agent_status.last_model_test",
+      "producer": "same persistent task service",
+      "api": "GET /api/status",
+      "consumer": "Setup explicit model test result",
+      "tests": [
+        "CT38",
+        "CT39"
+      ]
+    }
+  ],
+  "semantic_invariants": [
+    "All request objects reject unknown keys; whitespace-only strings rejected in semantic validation.",
+    "project_context idempotency scope = verified owner_id + project_id + operation + request_id. Persist before starting a process.",
+    "Retries compare effective parameters against the first frozen defaults; max_chars is presentation-only and excluded from execution fingerprint.",
+    "Existing result binding is reused even after config change; expired result returns RESULT_EXPIRED and never restarts.",
+    "task_poll requires exactly one of task_id or report_id. report_id remains readable independently of CLI session availability.",
+    "Cursor binds object/version/section/start/page-budget; same cursor reproduces data and next_cursor; explicit conflicting section or max_chars rejected.",
+    "Recheck current caller/project/file authorization on every task/report/cancel/cache read. IDs and cursors are not bearer authorization.",
+    "No raw CLI session ID, global Windows identity, executable path, argv, env, credentials or unrestricted shell exposed to web MCP callers.",
+    "Model/usage/cost unknown values remain null or unknown, never invented zero; cumulative session usage not summed per task.",
+    "Schema validation alone does not prove byte/character limits. Enforce input UTF-8 <=65536 bytes, output business JSON <=min(request max_chars, configured limit,32000) Unicode codepoints and <=131072 UTF-8 bytes.",
+    "response_chars is the final compact ensure_ascii=false serialized business object character count including its own digits. returned_chars counts page.text only.",
+    "Default max_chars=12000; task status remains compact; wait_seconds default0 max20; report-mode wait must0.",
+    "Cancellation terminal states require process-tree exit confirmation; accepted cancellation cannot be overwritten by late success.",
+    "task completion/verification differ from process exit status. task error in successful poll does not make the poll an HTTP failure.",
+    "Disk revision uses TOML bytes hash; config_revision/applied.revision use normalized running config hash; do not compare them directly.",
+    "Missing CLI cannot block old 15 tools, Setup config save, MCP startup, or tunnel lifecycle.",
+    "OAuth401/403 are not network down; trusted health/config application, network reachability, protocol readiness, CLI readiness, and real ChatGPT authorization are separate.",
+    "X-Setup-Probe is not authentication and must not suppress business-task audit.",
+    "Existing public_verified retains actual MCP initialize/ping/list_projects verification semantics; protected reachable endpoint may instead report auth_required with public_verified=false.",
+    "No model request in setup_agent_probe or periodic status/probe; saved executable selection only.",
+    "Storage index/idempotency tombstones outlive expired report bodies.",
+    "Legacy Setup saves omitting new agent fields must preserve existing top-level agent and per-project agent for retained project IDs. Explicit disabled remains meaningful.",
+    "Configuration option defaults are not a claim of installed Codex version, model availability, cost ceiling, or enforced Windows sandbox.",
+    "overview returns kind=report only for a fresh cache; stale/no report triggers an explicitly requested budgeted reading task. Background freshness checks and task_poll never trigger a model request.",
+    "Enabled profiles require an explicit nonempty model. Empty model can be saved only while agent capability is disabled. Execution requires T02 installed-version and enforcement validation; no silent CLI default model fallback.",
+    "fresh_with_report reuse is mandatory in v1. native_resume is an optional internally gated verified optimization and adds no public tool input.",
+    "T03 ADR must freeze auth configuration field lineage, validation, persistence, API consumers, dedicated credential writes, reload/restart and rollback before T06 starts; provider-private fields are not permanently undefined.",
+    "GET /api/info adds ui_contract_version and ui_asset_version. Script declares compatible contract/build version. Verify old open tab + new backend and new script + old backend behavior, not just cache headers.",
+    "Taskpack sources contain original PRD and evidence manifest, not copied product source. Function anchors refer to the actual local project root.",
+    "requested_model is always the explicit nonempty frozen configured model for an accepted task; resolved_model may remain null.",
+    "Old already-open JS cannot execute newly added start() version guards. Test this explicitly; backend compatibility handling must never turn protected-endpoint401 into public_verified=true to satisfy an old UI. New-feature writes may require an explicit refresh error while safe legacy routes remain compatible.",
+    "New MCP tool annotations are listed in mcp_tools. Keep the old 15 tool annotations unchanged. Annotations are hints, not enforcement.",
+    "Successful Setup save requires both config_loaded and local_health true. ready tunnel requires actual MCP verification; auth_required requires reachable validated discovery and public_verified=false.",
+    "Enabled normalized profiles require a non-whitespace model, including when nested under Setup data.agent. verified enforcement requires nonempty mechanisms and tested_boundaries.",
+    "Capability default is OFF at global and project levels. Disabled status/probe/catalog reads launch zero Codex subprocesses and perform zero model requests. 18 tools remain stably registered; project_context returns CAPABILITY_DISABLED before scheduling.",
+    "auth_mode is unselected/chatgpt/api_key, independent from enabled. There is no disabled auth mode. Persist canonical singular agent.*, never parallel agents.* or codex_enabled fields.",
+    "A selected billing identity is never inferred from environment precedence. ChatGPT mode strips conflicting API credentials from the child; API mode uses only the selected endpoint-bound credential. No fallback between identities/providers/models.",
+    "forced_login_method may log out mismatched cached auth; never use it as a side-effect-free probe against the user shared Codex home.",
+    "Credential secrets never enter TOML, task/report storage, source control, logs, command line, stdout, project snapshots, normal project-bath backups or MCP responses. Protected secret storage is a separate localhost write-only surface.",
+    "cost_basis remains reported/estimated/unknown. Billing account source is execution_context.billing_source; api is not a valid cost_basis value.",
+    "Subscription and API profiles both expose model selection and supported reasoning/service controls. Catalog visibility is not proof of access; auth/key/provider/CLI/model/options changes invalidate verification.",
+    "No invented codex models --json command; feature-detect codex debug models (including --bundled) against the installed CLI, or retain manual model ID entry and an honestly labelled cache.",
+    "Model, reasoning effort and service tier are frozen at acceptance and explicitly passed using tested CLI wire mappings. Empty reasoning effort means disclosed model default after clearing inherited profile effort. standard must not inherit premium Fast Mode.",
+    "Explicit test action uses allow_model_request=true, request_id, saved config revision and credential revision. It shares the task manager and costs may occur. Save/status/dropdown/catalog refresh never imply a model trial.",
+    "Global OFF cancels queued tasks and requests owned-process cleanup for running tasks; no new process/model request is admitted. Previously completed reports remain readable only under current project/data access controls.",
+    "Production development target is the current live directory. Preserve active connection, canonical TOML, live assets and shared Codex config. No automatic restart, checkout/reset or cutover while @local is in use."
+  ],
+  "configuration_schema_scope": "Normalized agent_config adds schema_version 2.0.0; raw legacy fields remain optional and default to disabled/unselected. Validate saved syntax separately from CLI/auth/model readiness. Credentials are not config fields.",
+  "overlay_policy": {
+    "purpose": "Validate required increments for new FE/BE contract while preserving the legacy API baseline. Response overlays explicitly allow additionalProperties so they do not freeze or remove existing fields.",
+    "legacy_authority": [
+      "setup.py:SetupApplication.config_view/save/status",
+      "SetupHandler._guard/_json_body/_dispatch/_handle",
+      "config.py:validate_config/config_from_data/config_to_dict/ConfigStore.save",
+      "runtime.py:Runtime.apply/status",
+      "tests/integration/test_setup_e2e.py:test_http_hot_reload_restart_rollback_and_isolation"
+    ],
+    "request_compatibility": "PUT top-level revision/data is unchanged. Legacy body may omit all new agent fields. Normalization plus preservation merge occurs before canonical validation. Existing validators still reject legacy invalid values.",
+    "response_compatibility": "On the upgraded server agent fields and auth/network/UI increments are required by new overlays; old client can ignore these additions. Old server is detected by /api/info version check rather than incorrectly treated as compatible.",
+    "status_shape": "Existing local/public state/url/latency, history epoch timestamps, config revision fields, activity, startup, events and owner pid retain baseline structures. New timestamp fields use separate checked_at UTC strings.",
+    "transport_budget": "Setup _json_body 65536-byte limit remains; new MCP business output 32000-character cap is not retroactively imposed on existing Setup responses.",
+    "error_shape": "Setup error remains error.code/message/hint plus optional increments. Do not force MCP schema_version/recoverable/retriable/task_id onto legacy Setup errors."
+  },
+  "mcp_tools": [
+    {
+      "name": "project_context",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "task_poll",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "task_cancel",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    }
+  ],
+  "legacy_error_codes": [
+    "PROJECT_NOT_FOUND",
+    "INVALID_ARGUMENT",
+    "PATH_OUTSIDE_WORKSPACE",
+    "FILE_NOT_VISIBLE",
+    "FILE_NOT_FOUND",
+    "FILE_TOO_LARGE",
+    "BINARY_FILE_UNSUPPORTED",
+    "SEARCH_BACKEND_ERROR",
+    "GIT_ERROR",
+    "CONFIG_ERROR",
+    "INTERNAL_ERROR",
+    "WRITE_PATH_FORBIDDEN",
+    "REVISION_CONFLICT",
+    "FILE_ALREADY_EXISTS",
+    "WRITE_DISABLED",
+    "PAYLOAD_TOO_LARGE",
+    "LSP_UNAVAILABLE",
+    "EXTENSION_NOT_ALLOWED"
+  ]
+}

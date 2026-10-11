@@ -1,10 +1,5 @@
 @echo off
-rem 一键停止：MCP Server（按 server.pid 精确停止，不误伤其他 python）+ ngrok 隧道
+rem Stop CodeGPT through the local authenticated control plane, never by process name.
 chcp 65001 >nul
-cd /d "%~dp0"
-powershell -NoProfile -Command ^
-  "$spid = $null; if (Test-Path 'server.pid') { $spid = (Get-Content 'server.pid' -Raw).Trim() };" ^
-  "if ($spid) { Stop-Process -Id $spid -Force -ErrorAction SilentlyContinue; Remove-Item 'server.pid' -ErrorAction SilentlyContinue; Write-Host ('stopped server pid=' + $spid) }" ^
-  "Get-Process ngrok -ErrorAction SilentlyContinue | Stop-Process -Force; Write-Host 'stopped ngrok';" ^
-  "Get-CimInstance Win32_Process -Filter \"Name='python.exe'\" | Where-Object { $_.CommandLine -like '*server.py*config.runtime.yaml*' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force; Write-Host ('stopped leftover server pid=' + $_.ProcessId) }"
+powershell -NoProfile -Command "$u='http://127.0.0.1:8169';try{$i=Invoke-RestMethod ($u+'/api/info');$expected=[IO.Path]::GetFullPath('%~dp0config.toml');if($i.name-ne'local-codebase-mcp-setup'-or$i.config-ne$expected){throw 'Different Setup owner'};$s=Invoke-RestMethod ($u+'/api/session');Invoke-RestMethod -Method Post -Uri ($u+'/api/stop') -Headers @{'X-Setup-Token'=$s.token} -ContentType 'application/json' -Body '{}'|Out-Null;Write-Host 'CodeGPT: Stopped this Setup instance.'}catch{Write-Host 'CodeGPT Setup is not reachable on port 8169. Close its owner window or use its configured local port.'}"
 pause

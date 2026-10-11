@@ -7,7 +7,7 @@ project_id → registry → write_enabled? → root.resolve() → normalize → 
 → 长度预算 → per-project 锁内预检 + 原子写（tmp+os.replace，崩溃残留不破坏既有文件）。
 write_seq 为进程级 per-project 递增计数，重启归零可接受（sha256 才是权威新鲜度凭据）。
 v1.6 write_binary_file 安全链同源，差异仅：扩展名白名单 + base64 解码 + 解码后 10MB 预算 + 二进制原子写。
-v1.7 新增项目级 write_roots 可写目录白名单（config.yaml projects[].write_roots，默认 ["docs"]）。
+v1.7 新增项目级 write_roots 可写目录白名单（config.toml projects[].write_roots，默认 ["docs"]）。
 """
 from __future__ import annotations
 
@@ -92,7 +92,7 @@ def _write_root_whitelist(final_rel: str, write_roots: tuple[str, ...]) -> None:
     raise McpError(
         errors.WRITE_PATH_FORBIDDEN,
         f"目标不在项目可写目录白名单: {final_rel!r}（write_roots={list(write_roots)}）",
-        "放弃该写操作；可在 config.yaml 项目级 write_roots 扩展可写目录",
+        "放弃该写操作；可在 config.toml 项目级 write_roots 扩展可写目录",
     )
 
 
@@ -106,7 +106,7 @@ def write_file(config: Config, project_id: str, path: str, content: str,
         raise McpError(
             errors.WRITE_DISABLED,
             f"项目 '{p.id}' 未开启受控写（write_enabled=false，默认关闭）",
-            "告知用户在 config.yaml 该项目下加 write_enabled: true",
+            "告知用户在 config.toml 该项目下加 write_enabled: true",
         )
     _arg(isinstance(path, str) and bool(path), "path 必填且为非空字符串（可写目录下相对路径）")
     _arg(isinstance(content, str), "content 必须是字符串")
@@ -178,7 +178,7 @@ def write_binary_file(config: Config, project_id: str, path: str, content_b64: s
         raise McpError(
             errors.WRITE_DISABLED,
             f"项目 '{p.id}' 未开启受控写（write_enabled=false，默认关闭）",
-            "告知用户在 config.yaml 该项目下加 write_enabled: true",
+            "告知用户在 config.toml 该项目下加 write_enabled: true",
         )
     _arg(isinstance(path, str) and bool(path), "path 必填且为非空字符串（可写目录下相对路径）")
     _arg(isinstance(content_b64, str), "content_b64 必须是 base64 字符串")

@@ -1,0 +1,9 @@
+# Private runtime/workflow state and cold archives are not source discovery.
+.agent-archive/
+.setup/
+.setup-work/
+.venv/
+.pytest_cache/
+__pycache__/
+*.setup-owner.lock
+*.toml.lock
