@@ -1,0 +1,271 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "CodeGPT · 运行单元与数据存储",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "output": "site/diagrams/architecture-containers.html",
+    "legend": {
+      "entries": {
+        "backend": {
+          "label": "独立进程"
+        },
+        "database": {
+          "label": "文件存储"
+        },
+        "cloud": {
+          "label": "外部隧道服务"
+        },
+        "external": {
+          "label": "外部参与者"
+        },
+        "frontend": {
+          "label": "浏览器应用"
+        }
+      }
+    }
+  },
+  "components": [
+    {
+      "id": "owner",
+      "type": "external",
+      "label": "项目维护者",
+      "sublabel": "配置并观察本机状态",
+      "pos": [
+        297,
+        40
+      ],
+      "size": [
+        142,
+        72
+      ],
+      "tag": "人"
+    },
+    {
+      "id": "browser",
+      "type": "frontend",
+      "label": "本机配置页面",
+      "sublabel": "HTML / CSS / JavaScript",
+      "pos": [
+        297,
+        240
+      ],
+      "size": [
+        142,
+        72
+      ],
+      "tag": "浏览器应用"
+    },
+    {
+      "id": "setup",
+      "type": "backend",
+      "label": "Setup 配置服务",
+      "sublabel": "Python · ThreadingHTTPServer",
+      "pos": [
+        297,
+        450
+      ],
+      "size": [
+        142,
+        72
+      ],
+      "tag": "独立进程"
+    },
+    {
+      "id": "config",
+      "type": "database",
+      "label": "配置与恢复文件",
+      "sublabel": "TOML / last-good / pending",
+      "pos": [
+        554,
+        450
+      ],
+      "size": [
+        142,
+        72
+      ],
+      "tag": "本机数据存储"
+    },
+    {
+      "id": "mcp",
+      "type": "backend",
+      "label": "Local MCP",
+      "sublabel": "Python · FastMCP",
+      "pos": [
+        297,
+        660
+      ],
+      "size": [
+        142,
+        72
+      ],
+      "tag": "独立进程"
+    },
+    {
+      "id": "projects",
+      "type": "database",
+      "label": "本机项目文件",
+      "sublabel": "按目录、权限与版本受控访问",
+      "pos": [
+        554,
+        940
+      ],
+      "size": [
+        142,
+        72
+      ],
+      "tag": "外部文件存储"
+    },
+    {
+      "id": "tunnel",
+      "type": "backend",
+      "label": "隧道进程（可选）",
+      "sublabel": "cloudflared / ngrok",
+      "pos": [
+        40,
+        660
+      ],
+      "size": [
+        142,
+        72
+      ],
+      "tag": "独立进程"
+    },
+    {
+      "id": "provider",
+      "type": "cloud",
+      "label": "公网隧道服务",
+      "sublabel": "Cloudflare / ngrok",
+      "pos": [
+        40,
+        940
+      ],
+      "size": [
+        142,
+        72
+      ],
+      "tag": "外部软件系统"
+    },
+    {
+      "id": "client",
+      "type": "external",
+      "label": "MCP 客户端",
+      "sublabel": "兼容 Streamable HTTP",
+      "pos": [
+        297,
+        940
+      ],
+      "size": [
+        142,
+        72
+      ],
+      "tag": "外部软件系统"
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "CodeGPT · 浏览器应用、服务进程与配置存储",
+      "wraps": [
+        "browser",
+        "setup",
+        "config",
+        "mcp",
+        "tunnel"
+      ],
+      "pad": 24
+    }
+  ],
+  "connections": [
+    {
+      "id": "operate",
+      "from": "owner",
+      "to": "browser",
+      "label": "配置项目"
+    },
+    {
+      "id": "json-api",
+      "from": "browser",
+      "to": "setup",
+      "label": "配置与状态 / JSON HTTP"
+    },
+    {
+      "id": "config-transaction",
+      "from": "setup",
+      "to": "config",
+      "label": "读写并回退 / TOML"
+    },
+    {
+      "id": "lifecycle",
+      "from": "setup",
+      "to": "mcp",
+      "label": "启动、重载与验证"
+    },
+    {
+      "id": "load-config",
+      "from": "mcp",
+      "to": "config",
+      "label": "读取并监听 / TOML"
+    },
+    {
+      "id": "file-access",
+      "from": "mcp",
+      "to": "projects",
+      "label": "限目录读取；授权后写入"
+    },
+    {
+      "id": "start-tunnel",
+      "from": "setup",
+      "to": "tunnel",
+      "label": "启用时启动 / 子进程",
+      "variant": "dashed"
+    },
+    {
+      "id": "tunnel-forward",
+      "from": "tunnel",
+      "to": "mcp",
+      "label": "启用时代理 / HTTP",
+      "variant": "dashed",
+      "labelDy": 24
+    },
+    {
+      "id": "connect-provider",
+      "from": "tunnel",
+      "to": "provider",
+      "label": "启用时连接隧道服务",
+      "variant": "dashed"
+    },
+    {
+      "id": "remote-mcp",
+      "from": "client",
+      "to": "provider",
+      "label": "启用时访问 / HTTPS",
+      "variant": "dashed"
+    },
+    {
+      "id": "direct-mcp",
+      "from": "client",
+      "to": "mcp",
+      "label": "本机 MCP / HTTP"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "职责与技术",
+      "items": [
+        "浏览器页面调用 Setup 的 JSON API；Setup 持有配置事务与进程生命周期。",
+        "Local MCP 是独立 FastMCP 进程，读取同一份 TOML，调用受约束的文件工具。"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "持久化与隔离",
+      "items": [
+        "配置文件是数据存储，不是新增服务；失败回退 last-good 并重新验证后端。",
+        "隧道进程只指向 MCP；不存在隧道到 Setup 的访问边。可选公网能力不等于当前会话已经连接。"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+C4Context
+  title CodeGPT 系统上下文
+  Person(owner, "项目维护者", "登记本机目录与访问权限")
+  System_Ext(client, "MCP 客户端", "ChatGPT 等兼容客户端")
+  System(core, "CodeGPT", "发现项目、读取文件与受控写入")
+  System_Ext(tunnel, "公网隧道（可选）", "Cloudflare 或 ngrok；默认关闭")
+  SystemDb_Ext(files, "本机项目文件", "已登记目录中的原始文件")
+  Rel(owner, core, "本机配置", "HTTP")
+  Rel(client, core, "本机调用", "MCP / Streamable HTTP")
+  Rel(client, tunnel, "启用时访问", "HTTPS")
+  Rel(tunnel, core, "启用时仅代理 MCP", "HTTP")
+  Rel(core, files, "限目录读取；授权后写入", "文件 I/O")
+  UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")

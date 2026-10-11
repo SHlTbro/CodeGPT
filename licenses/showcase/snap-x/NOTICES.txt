@@ -1,0 +1,29 @@
+CodeGPT Hero — rendering and font notices
+
+Public asset: assets/codegpt-hero.png (1280 x 640, opaque PNG).
+Design, dependency closure and original font binaries remain private build material. The public PNG is a raster artwork, not a redistributable font or software runtime.
+
+Tool: Snap-X, copyright (c) 2026 Ravi Kovind, MIT.
+Upstream: https://github.com/ravikovind/snap-x
+Skill revision: 5755c1a1793c46e72180b5d2ee0863746f5ca1b1
+Runtime: @snap-x/cli 0.2.1 and @snap-x/core 0.7.0, exact locked closure.
+Original full tool license: LICENSE in this directory.
+
+Primary Latin font: Inter 400/700.
+Source: https://github.com/google/fonts/tree/main/ofl/inter
+License source: https://raw.githubusercontent.com/google/fonts/main/ofl/inter/OFL.txt
+Original full license: Inter-OFL.txt.
+
+Primary simplified Chinese font: Noto Sans SC 400/700.
+Source: https://github.com/google/fonts/tree/main/ofl/notosanssc
+License source: https://raw.githubusercontent.com/google/fonts/main/ofl/notosanssc/OFL.txt
+Original full license: NotoSansSC-OFL.txt.
+
+Native optional script fallback also loaded: Noto Sans JP 400/700.
+Source: https://github.com/google/fonts/tree/main/ofl/notosansjp
+License source: https://raw.githubusercontent.com/google/fonts/main/ofl/notosansjp/OFL.txt
+Original full license: NotoSansJP-OFL.txt.
+Noto Sans SC takes precedence over Japanese fallback in the final Chinese headline and support copy.
+
+All fonts are SIL Open Font License 1.1. Font files are not published. OFL permits using fonts to create raster graphics; the artwork does not acquire the OFL merely from font use. Official explanation: https://openfontlicense.org/ofl-faq/ (questions 1.1, 1.12, 1.13, 1.26).
+Brand wordmark and palette come from this project's web/index.html and web/style.css. No other marks, photos, stock media, generated illustrations or interface screenshots are used. These notices record tool and typeface attribution and do not imply their authors endorse CodeGPT.

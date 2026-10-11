@@ -7,3 +7,5 @@ CodeGPT 源码采用 [MIT](LICENSE)。许可证用于本公开分发副本，现
 页面截图来自本项目真实配置页。其余依赖见 [运行依赖](local-codebase-mcp/requirements.txt) 与 [开发依赖](local-codebase-mcp/requirements-dev.txt)，安装时取得各上游软件。本仓库不附带 Python、cloudflared、ngrok 或 ripgrep 二进制，不将这些上游程序重新许可为 MIT。
 
 交互流程图由已安装 Archify 生成（MIT），https://github.com/tt-a1i/archify 。查看器内保留生成器许可信息。
+
+本次项目主视觉由 Snap-X 生成，工具与字体的原始许可保留在 [主视觉许可目录](licenses/showcase/snap-x/NOTICES.txt)。制作环境不作为 CodeGPT 的运行依赖，也不随源码安装。

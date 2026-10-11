@@ -2,7 +2,7 @@ name: Publish interactive showcase
 on:
   push:
     branches: [main]
-    paths: ['site/**', '.github/workflows/pages.yml']
+    paths: ['site/**', 'assets/**', 'licenses/showcase/**', '.github/workflows/pages.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -20,6 +20,12 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: actions/configure-pages@v5
+      - name: Include verified static assets
+        run: |
+          mkdir -p site/assets
+          cp -R assets/. site/assets/
+          mkdir -p site/licenses
+          cp -R licenses/showcase site/licenses/
       - uses: actions/upload-pages-artifact@v4
         with:
           path: site

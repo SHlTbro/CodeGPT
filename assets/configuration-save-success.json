@@ -1,0 +1,159 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "CodeGPT · 成功保存并验证 MCP",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "output": "site/diagrams/configuration-save-success.html",
+    "legend": {
+      "entries": {
+        "backend": {
+          "label": "后端运行"
+        },
+        "security": {
+          "label": "校验与拒绝"
+        },
+        "database": {
+          "label": "配置与恢复文件"
+        },
+        "external": {
+          "label": "人工恢复"
+        }
+      }
+    }
+  },
+  "lanes": [
+    {
+      "id": "save",
+      "label": "保存事务"
+    }
+  ],
+  "mainPath": [
+    "draft",
+    "validate",
+    "cas",
+    "pending",
+    "verify",
+    "commit"
+  ],
+  "nodes": [
+    {
+      "id": "draft",
+      "lane": "save",
+      "col": 2,
+      "type": "frontend",
+      "label": "修改并提交",
+      "sublabel": "PUT /api/config + revision",
+      "width": 142,
+      "yOffset": -350.0
+    },
+    {
+      "id": "validate",
+      "lane": "save",
+      "col": 2,
+      "type": "security",
+      "label": "检查请求字段",
+      "sublabel": "对象、版本格式、端口",
+      "width": 142,
+      "yOffset": -210.0
+    },
+    {
+      "id": "cas",
+      "lane": "save",
+      "col": 2,
+      "type": "security",
+      "label": "核对版本与配置",
+      "sublabel": "先 CAS，再完整校验",
+      "width": 142,
+      "yOffset": -70.0
+    },
+    {
+      "id": "pending",
+      "lane": "save",
+      "col": 2,
+      "type": "database",
+      "label": "原子替换 TOML",
+      "sublabel": "保存 last-good 与 pending",
+      "width": 142,
+      "yOffset": 70.0
+    },
+    {
+      "id": "verify",
+      "lane": "save",
+      "col": 2,
+      "type": "backend",
+      "label": "应用并验证 MCP",
+      "sublabel": "进程归属、版本与项目列表",
+      "width": 142,
+      "yOffset": 210.0
+    },
+    {
+      "id": "commit",
+      "lane": "save",
+      "col": 2,
+      "type": "database",
+      "label": "确认保存成功",
+      "sublabel": "更新备份，清除 pending",
+      "width": 142,
+      "yOffset": 350.0
+    }
+  ],
+  "edges": [
+    {
+      "id": "submit",
+      "to": "validate",
+      "role": "main",
+      "from": "draft",
+      "label": "请求",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "validated",
+      "to": "cas",
+      "role": "main",
+      "from": "validate",
+      "label": "有效",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "revision-match",
+      "to": "pending",
+      "role": "main",
+      "from": "cas",
+      "label": "版本一致",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "apply",
+      "to": "verify",
+      "role": "main",
+      "from": "pending",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "verified",
+      "to": "commit",
+      "role": "main",
+      "from": "verify",
+      "label": "验证成功",
+      "fromSide": "bottom",
+      "toSide": "top"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "此场景的前置条件与结果",
+      "items": [
+        "仅展示请求有效、版本一致、完整配置校验通过，并且 MCP、Startup、Tunnel 生命周期操作均成功的保存场景。",
+        "MCP 验证检查进程归属、版本及真实项目列表；验证成功后更新 last-good 并清除 pending。",
+        "拒绝、冲突、应用失败及恢复失败见异常恢复场景与保留的完整流程图。本图的成功不承诺公网或 ChatGPT 会话已经连接。"
+      ]
+    }
+  ]
+}

@@ -6,7 +6,7 @@
 
 - `setup.bat`：本机配置页和统一生命周期。
 - `deploy.bat`：复用 Setup，兼容已有调用；没有第二套配置。
-- `stop-all.bat`：默认 Setup 地址的受控停止；独立端口实例在自己的页面停止，不按进程名批量结束。
+- `stop-all.bat`：默认 Setup 地址的受控停止；独立端口实例关闭自己的启动器窗口，不按进程名批量结束。
 - 页面登录启动：当前 Windows 用户登录后启动，默认关闭；保存后核验，不是系统服务。
 
 配置只认 `config.toml`。缺少 TOML 时可一次性迁移旧 YAML，后续 YAML 不生效。独立实例先创建配置并确认 canonical 和 last-good 的 host/port/tunnel/startup，再启动；命令行覆盖不是启动前的隔离措施。

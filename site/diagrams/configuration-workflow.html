@@ -4982,7 +4982,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
       </div>
     </div>
 
-    <script id="archify-source-evidence-data" type="application/json">{"schemaVersion":1,"verified":true,"repository":{"url":"https://github.com/SHlTbro/CodeGPT","revision":"3f8abbb42719a804d03f285e0fa4f414ded1d0c5","shortRevision":"3f8abbb","label":"SHlTbro/CodeGPT","linkMode":"local-only"},"referenceCount":15,"nodes":{"draft":[{"path":"web/app.js","line":367,"endLine":379,"label":"修改并提交"}],"validate":[{"path":"setup.py","line":179,"endLine":199,"label":"检查请求与配置"}],"cas":[{"path":"config.py","line":581,"endLine":590,"label":"核对当前版本"},{"path":"config.py","line":163,"endLine":188,"label":"目录与监听配置校验"}],"pending":[{"path":"config.py","line":591,"endLine":603,"label":"原子替换 TOML"}],"verify":[{"path":"runtime.py","line":465,"endLine":486,"label":"应用并验证 MCP"}],"commit":[{"path":"config.py","line":604,"endLine":630,"label":"确认保存成功"}],"invalid":[{"path":"setup.py","line":179,"endLine":194,"label":"校验拒绝"}],"conflict":[{"path":"web/app.js","line":370,"endLine":392,"label":"版本冲突"}],"rollback":[{"path":"config.py","line":611,"endLine":624,"label":"恢复 last-good"}],"recovered":[{"path":"config.py","line":620,"endLine":628,"label":"回退已验证"}],"manual":[{"path":"config.py","line":625,"endLine":628,"label":"后端恢复失败"}],"fix":[{"path":"web/app.js","line":389,"endLine":395,"label":"修正输入"}],"reload":[{"path":"web/app.js","line":380,"endLine":392,"label":"重读并合并"}],"restart":[{"path":"config.py","line":625,"endLine":628,"label":"修复并重启 Setup"}]}}</script>
+
     <script id="archify-i18n-data" type="application/json">{"locale":"zh-CN","messages":{"viewer.kind.frontend":"前端","viewer.kind.backend":"后端","viewer.kind.database":"数据库","viewer.kind.cloud":"云服务","viewer.kind.security":"安全","viewer.kind.messagebus":"消息总线","viewer.kind.external":"外部系统","viewer.kind.neutral":"中性","viewer.kind.node":"节点","viewer.kind.start":"开始","viewer.kind.active":"活动","viewer.kind.waiting":"等待","viewer.kind.decision":"决策","viewer.kind.success":"成功","viewer.kind.failure":"失败","viewer.toolbar.actions":"图表操作","viewer.theme.toggle.title":"切换主题（T）","viewer.theme.toggle":"切换颜色主题","viewer.theme.dark":"深色","viewer.theme.light":"浅色","viewer.preset.choose.title":"选择视觉风格（S 循环切换）","viewer.preset.choose":"选择视觉风格","viewer.preset.style":"风格","viewer.preset.menu":"视觉风格","viewer.preset.identity":"视觉表达","viewer.preset.cycles":"循环切换","viewer.preset.classic":"经典","viewer.preset.classic.short":"经典","viewer.preset.classic.hint":"稳定的技术默认风格","viewer.preset.flow":"信号流","viewer.preset.flow.short":"流动","viewer.preset.flow.hint":"突出动态流向","viewer.preset.blueprint":"蓝图","viewer.preset.blueprint.hint":"工程评审","viewer.preset.editorial":"编辑风格","viewer.preset.editorial.hint":"适合发布与上线说明","viewer.preset.badge.signalFlow":"信号流","viewer.preset.badge.blueprint":"蓝图 / 修订 01","viewer.preset.badge.editorial":"编辑风格 / 现场笔记","viewer.preset.badge.editorialPlate":"ARCHIFY / 图版 04","viewer.preset.current":"当前视觉风格：{style}。选择视觉风格","viewer.motion.live":"动态","viewer.motion.still":"静态","viewer.motion.pause":"暂停动效","viewer.motion.resume":"恢复动效","viewer.motion.reduced":"已根据减少动态效果偏好暂停动效","viewer.motion.hidden":"页面不可见时已暂停动效","viewer.motion.yielding":"暂停动效；当前让位于{owner}","viewer.motion.yielding.title":"动态预览已启用 · 正在让位于{owner}","viewer.owner.route":"路径探测","viewer.owner.lens":"语义透镜","viewer.owner.relationship":"关系预览","viewer.owner.intent":"意图追踪","viewer.owner.focus":"语义聚焦","viewer.owner.legend":"图例预览","viewer.owner.reader":"读者交互","viewer.present.enter":"进入演示模式","viewer.present.enter.title":"演示模式（F）","viewer.present.exit":"退出演示模式","viewer.present.exit.title":"退出演示模式（F 或 Escape）","viewer.present.present":"演示","viewer.present.exit.label":"退出","viewer.export.button":"导出","viewer.export.button.title":"导出图表（E）","viewer.export.diagram":"导出图表","viewer.export.menu":"导出","viewer.export.subtitle":"便携、整洁的输出","viewer.export.share":"分享","viewer.export.shareCard":"分享卡片","viewer.export.routeShareCard":"路径分享卡片","viewer.export.reachShareCard":"可达范围分享卡片","viewer.export.copyDiagram":"复制图表","viewer.export.clipboardPng":"复制 PNG 到剪贴板","viewer.export.raster":"位图","viewer.export.image":"图像","viewer.export.lossless":"无损图像","viewer.export.compact":"紧凑图像","viewer.export.modern":"现代图像格式","viewer.export.vectorMotion":"矢量与动效","viewer.export.vectorMotion.heading":"矢量与动效","viewer.export.editable":"可编辑矢量图","viewer.export.svg.auto":"SVG · 自动","viewer.export.svg.auto.hint":"匹配宿主主题","viewer.export.svg.light":"SVG · 浅色","viewer.export.svg.light.hint":"始终浅色","viewer.export.svg.dark":"SVG · 深色","viewer.export.svg.dark.hint":"始终深色","viewer.export.motion6s":"6 秒动效","viewer.export.unsupported":"当前浏览器不支持","viewer.export.clipboardUnsupported":"当前浏览器不支持写入图片剪贴板","viewer.export.clipboardUnsupported.short":"此浏览器不支持写入图片剪贴板。","viewer.export.motionUnavailable":"当前浏览器无法录制动效","viewer.export.webmUnavailable":"当前浏览器不支持 WebM","viewer.export.failed":"导出失败：{message}","viewer.export.unknownVariant":"未知的分享卡片类型：{variant}","viewer.export.routeRequired":"请先追踪路径，再导出路径分享卡片","viewer.export.reachRequired":"请先追踪编写可达范围，再导出可达范围分享卡片","viewer.export.unknown":"未知错误","viewer.export.routeFailed":"路径分享卡片导出失败：{message}","viewer.export.reachFailed":"可达范围分享卡片导出失败：{message}","viewer.export.copyFailed":"复制失败：{message}","viewer.export.copiedPng":"已将 PNG 复制到剪贴板","viewer.export.downloadedRoute":"已下载路径分享卡片","viewer.export.downloadedReach":"已下载可达范围分享卡片","viewer.export.downloadedWebm":"已下载 WebM","viewer.export.recording":"正在录制 6 秒动效…","viewer.export.card.routeSummary.one":"路径：{source} → {target} · {count} 步","viewer.export.card.routeSummary.other":"路径：{source} → {target} · {count} 步","viewer.export.card.reachSummary":"从{origin}开始的编写{direction} · {nodes} · {links} · 最深 {hops}","viewer.export.card.node.one":"{count} 个节点","viewer.export.card.node.other":"{count} 个节点","viewer.export.card.link.one":"{count} 条连接","viewer.export.card.link.other":"{count} 条连接","viewer.export.card.hop.one":"{count} 跳","viewer.export.card.hop.other":"{count} 跳","viewer.export.card.routeBadge":"ARCHIFY · 路径 · {hops}","viewer.export.card.reachBadge":"ARCHIFY · {direction}可达范围","viewer.export.direction.upstream":"上游","viewer.export.direction.downstream":"下游","viewer.export.error.canvasUnavailable":"无法为{label}使用画布","viewer.export.error.contextUnavailable":"无法为{label}创建二维画布上下文","viewer.export.error.toBlobUnavailable":"{label}无法使用 canvas.toBlob","viewer.export.error.toBlobNull":"{label}的 canvas.toBlob 未返回数据","viewer.export.error.variantsCombined":"无法同时组合多种分享卡片类型","viewer.export.error.viewerState":"分享卡片导出无法移除临时 Viewer 状态","viewer.export.error.routeState":"路径卡片导出无法安全保留已解析路径","viewer.export.error.reachState":"可达范围卡片导出无法安全保留编写的可达范围","viewer.export.error.webmRequirements":"WebM 动效导出需要追踪动画及浏览器 MediaRecorder 支持","viewer.export.error.mediaRecorder":"MediaRecorder 录制失败","viewer.export.error.emptyWebm":"MediaRecorder 生成了空的 WebM","viewer.export.error.webmBackground":"无法为 WebM 导出加载 SVG 背景","viewer.guide.title":"探索此系统","viewer.focus.selectedNodes":"已选择 {count} 个节点","viewer.guide.eyebrow":"图表指南","viewer.guide.close":"关闭图表指南","viewer.guide.inspecting":"正在检查已编译语义","viewer.guide.actions":"图表探索操作","viewer.guide.find":"查找任意节点","viewer.guide.find.hint":"搜索标签、职责、类型和稳定 ID。","viewer.guide.route":"追踪路径","viewer.guide.route.aria":"追踪有向路径","viewer.guide.route.hint":"查看两个语义节点如何按编写方向连接。","viewer.guide.map":"查看完整系统","viewer.guide.map.hint":"打开带实时视口和稳定节点的语义雷达。","viewer.guide.lens":"比较语义类型","viewer.guide.lens.hint":"统计角色、显示流量并比较直接编写的连接。","viewer.guide.present":"进入演示模式","viewer.guide.present.hint":"让实时图表占满视口，同时不改变导出。","viewer.guide.shortcuts":"其他键盘快捷键","viewer.guide.shortcut.export":"导出","viewer.guide.shortcut.theme":"主题","viewer.guide.shortcut.style":"风格","viewer.guide.shortcut.reset":"重置","viewer.guide.shortcut.zoomIn":"放大","viewer.guide.shortcut.zoomOut":"缩小","viewer.guide.shortcut.close":"关闭","viewer.guide.facts":"{nodes} · {relationships}","viewer.guide.fact.node.one":"{count} 个语义节点","viewer.guide.fact.node.other":"{count} 个语义节点","viewer.guide.fact.relationship.one":"{count} 条关系","viewer.guide.fact.relationship.other":"{count} 条关系","viewer.guide.open":"打开图表指南","viewer.finder.title":"查找节点","viewer.finder.close":"关闭节点查找器","viewer.finder.placeholder":"搜索标签或 ID","viewer.finder.search":"搜索图表节点","viewer.finder.results":"图表节点","viewer.finder.empty":"没有匹配的节点","viewer.finder.result.focus":"聚焦{label}","viewer.finder.result.routeStart":"选择{label}作为路径起点","viewer.finder.result.routeTarget":"选择{label}作为路径终点，{links}","viewer.finder.status.empty":"没有匹配的节点","viewer.finder.status.count.one":"{count} 个匹配节点","viewer.finder.status.count.other":"{count} 个匹配节点","viewer.finder.noun.nodes":"个节点","viewer.finder.link.one":"{count} 条连接","viewer.finder.link.other":"{count} 条连接","viewer.finder.result.focus.one":"聚焦{label}，{count} 条相关连接","viewer.finder.result.focus.other":"聚焦{label}，{count} 条相关连接","viewer.finder.status.filtered":"{visible}/{available} {noun}","viewer.finder.status.all":"{available} {noun}","viewer.passport.eyebrow":"语义护照","viewer.passport.metadata":"节点元数据","viewer.passport.evidence":"已验证的源代码证据","viewer.passport.verified":"已验证来源","viewer.passport.verificationScope":"已按固定修订版本验证本地 Git 证据，未检查远程访问权限。","viewer.passport.reach":"编写可达范围","viewer.passport.reach.trace":"追踪编写的可达性","viewer.passport.upstream":"上游","viewer.passport.downstream":"下游","viewer.passport.upstream.trace":"追踪上游编写可达性","viewer.passport.downstream.trace":"追踪下游编写可达性","viewer.passport.close":"关闭语义护照","viewer.passport.move":"移动语义护照。可拖动、使用方向键移动，或按 Home 恢复自动位置。","viewer.passport.copy":"复制链接","viewer.passport.copy.focus":"复制聚焦节点的链接","viewer.passport.relations":"关系","viewer.passport.relations.show":"显示关联关系","viewer.passport.relations.hide":"隐藏关联关系","viewer.passport.relations.list":"关联关系","viewer.passport.copyRelation":"复制关系","viewer.passport.copyNode":"复制节点","viewer.passport.copyPinned":"复制固定关系的链接","viewer.passport.copySource":"复制来源节点的链接","viewer.passport.copy.focused.success":"已复制聚焦节点链接","viewer.passport.copy.pinned.success":"已复制固定关系链接","viewer.passport.copy.focused.failed":"无法复制聚焦节点链接","viewer.passport.copy.pinned.failed":"无法复制固定关系链接","viewer.passport.relationship.none":"没有关联关系","viewer.passport.relationship.count.one":"{count} 条关系","viewer.passport.relationship.count.other":"{count} 条关系","viewer.passport.relationship.show.one":"显示 {count} 条关联关系","viewer.passport.relationship.show.other":"显示 {count} 条关联关系","viewer.passport.relationship.summary":"{out} 条出向 · {in} 条入向{loops}","viewer.passport.relationship.loops":" · {count} 条自环","viewer.passport.relationship.explorer":"直接关系浏览器","viewer.passport.relationship.help":"使用方向键浏览关系。按 Enter 或空格键固定详情；按 Escape 清除。","viewer.passport.relationship.loopsBack":"回环","viewer.passport.relationship.connectsTo":"连接到","viewer.passport.relationship.connectsFrom":"连接自","viewer.passport.relationship.pinned":"已固定关系 · {from} → {to} · {label}","viewer.passport.relationship.inspect":"检查第 {index}/{total} 条关系：{from} 到 {to}，{label}。按 Enter 查看详情。","viewer.passport.relationship.group.out":"出向","viewer.passport.relationship.group.in":"入向","viewer.passport.relationship.group.loop":"自环","viewer.passport.relationship.row":"{group}：{relationship}，{neighbor}","viewer.passport.relationship.direction.out":"出 →","viewer.passport.relationship.direction.in":"← 入","viewer.passport.relationship.direction.loop":"自环","viewer.passport.sourceCount.one":"{count} 个已验证来源引用","viewer.passport.sourceCount.other":"{count} 个已验证来源引用","viewer.passport.sourceMarker":"来源","viewer.passport.beacon.one":"{count} 个已验证来源；聚焦此节点以检查","viewer.passport.beacon.other":"{count} 个已验证来源；聚焦此节点以检查","viewer.passport.repository.open":"打开已验证的仓库修订版本 {revision}","viewer.passport.source.open":"打开修订版本 {revision} 中已验证的来源 {path}","viewer.passport.source.openLink":"打开 ↗","viewer.passport.reach.upstream.one":"追踪 {count} 个上游编写节点","viewer.passport.reach.upstream.other":"追踪 {count} 个上游编写节点","viewer.passport.reach.downstream.one":"追踪 {count} 个下游编写节点","viewer.passport.reach.downstream.other":"追踪 {count} 个下游编写节点","viewer.passport.reach.noUpstream":"没有上游编写节点","viewer.passport.reach.noDownstream":"没有下游编写节点","viewer.passport.reach.status":"{direction} · {nodes} 个节点 · {links} 条连接 · 最深 {hops} 跳","viewer.route.eyebrow":"路径","viewer.route.start":"点击路径的起点","viewer.route.start.find":"查找起点","viewer.route.start.find.aria":"查找路径起点","viewer.route.copy":"复制链接","viewer.route.copy.aria":"复制已追踪路径的链接","viewer.route.clear":"清除","viewer.route.clear.aria":"清除路径探测","viewer.route.traced":"路径","viewer.route.pickTwo":"在图上点两个节点","viewer.route.pickOne":"在图上点一个节点","viewer.route.controls":"路径旅程控制","viewer.route.previous":"上一个路径位置","viewer.route.play":"播放路径旅程","viewer.route.pause":"暂停路径旅程","viewer.route.replay":"重播路径旅程","viewer.route.next":"下一个路径位置","viewer.route.journey":"旅程","viewer.route.pause.label":"暂停","viewer.route.replay.label":"重播","viewer.route.overview":"总览","viewer.route.overview.aria":"显示完整路径总览","viewer.route.instructions":"先点起点，再点终点，沿箭头方向找路。","viewer.route.destination":"从{label}出发，走到哪里？","viewer.route.destination.find":"查找目标","viewer.route.destination.find.aria":"查找可达的路径目标","viewer.route.differentDestination":"选择其他目标","viewer.route.distinct":"请选两个不同的节点。","viewer.route.unreachable":"走不到{label}","viewer.route.unreachable.detail":"沿箭头方向，从{source}走不到{target}。请选一个高亮节点。","viewer.route.start.instructions":"接着选终点，能走到的节点会亮起。","viewer.route.copy.success":"已复制路径链接","viewer.route.copy.failed":"无法复制路径链接","viewer.route.position":"路径位置 {index}/{total}：{label}","viewer.route.step":"第 {index}/{total} 步 · {phase} · {label}","viewer.route.motionRequired":"自动旅程需要动态模式","viewer.route.trigger.clear":"清除已追踪路径","viewer.route.overview.status":"{nodes} · {hops} · 最短路径","viewer.route.overview.node.one":"{count} 个节点","viewer.route.overview.node.other":"{count} 个节点","viewer.route.overview.hop.one":"{count} 步","viewer.route.overview.hop.other":"{count} 步","viewer.route.phase.playing":"播放中","viewer.route.phase.complete":"已完成","viewer.route.phase.inspecting":"检查中","viewer.route.destination.count.one":"有 {count} 个能走到的节点已高亮，点一下。","viewer.route.destination.count.other":"有 {count} 个能走到的节点已高亮，点一个。","viewer.route.noOutgoing":"这个节点没有向外的箭头。清除后换一个起点。","viewer.route.result.title":"{source} 到 {target}","viewer.route.finder.source.title":"选择路径起点","viewer.route.finder.source.placeholder":"搜索路径来源","viewer.route.finder.source.empty":"没有匹配的路径来源","viewer.route.finder.source.results":"可作为路径起点的节点","viewer.route.finder.source.noun":"个路径来源","viewer.route.finder.source.badge":"起点","viewer.route.finder.target.title":"从{label}出发的目标","viewer.route.finder.target.placeholder":"搜索可达目标","viewer.route.finder.target.empty":"没有匹配的可达目标","viewer.route.finder.target.results":"可达路径目标","viewer.route.finder.target.noun":"个可达目标","viewer.route.hop.one":"{count} 跳","viewer.route.hop.other":"{count} 跳","viewer.lens.eyebrow":"语义透镜","viewer.lens.title":"比较系统角色","viewer.lens.close":"关闭语义透镜","viewer.lens.instruction":"最多选择两种语义类型。选择一种可显示其真实流量；选择两种只比较直接编写的关系。","viewer.lens.kinds":"语义类型","viewer.lens.choose":"选择一种类型以检查其节点和相连关系。","viewer.lens.copy":"复制语义透镜链接","viewer.lens.clear":"清除语义透镜","viewer.lens.open":"打开语义透镜","viewer.lens.openActive":"打开当前语义透镜","viewer.lens.legend":"语义图例","viewer.lens.legend.inspect.one":"检查{label}，{count} 个节点","viewer.lens.legend.inspect.other":"检查{label}，{count} 个节点","viewer.lens.kind.count.one":"{label}，{count} 个节点","viewer.lens.kind.count.other":"{label}，{count} 个节点","viewer.lens.compare.one":"{first} → {second}：{forward} · {second} → {first}：{reverse} · 共 {count} 条直接关系","viewer.lens.compare.other":"{first} → {second}：{forward} · {second} → {first}：{reverse} · 共 {count} 条直接关系","viewer.lens.single":"{nodes} · {relationships} · 已连接节点保持可见","viewer.lens.node.one":"{count} 个{label}节点","viewer.lens.node.other":"{count} 个{label}节点","viewer.lens.relationship.one":"{count} 条相连关系","viewer.lens.relationship.other":"{count} 条相连关系","viewer.radar.title":"语义雷达","viewer.radar.building":"正在构建总览","viewer.radar.openFull":"打开完整语义雷达","viewer.radar.open":"打开雷达","viewer.radar.close":"关闭语义雷达","viewer.radar.surface":"图表总览。点击节点进行聚焦，或使用方向键平移。","viewer.radar.click":"点击节点","viewer.radar.drag":"拖动平移","viewer.radar.space":"语义雷达需要更多地图可见空间。","viewer.radar.nodes":"语义图表雷达节点","viewer.radar.focus":"从语义雷达聚焦{label}","viewer.radar.status":"{count} 个节点 · {viewport}","viewer.radar.fullMap":"{count} 个节点 · 完整地图","viewer.radar.compacted":"已收紧雷达，避免遮挡语义护照或地图控件。","viewer.radar.cancelWaiting":"取消等待更多地图空间的语义雷达","viewer.radar.needsSpace":"语义雷达需要更多可见地图空间","viewer.radar.viewport.full":"完整地图","viewer.radar.viewport.width":"宽度 {percent}%","viewer.radar.viewport.scale":"视口 {percent}%","viewer.nav.controls":"图表视图控制","viewer.nav.route":"追踪有向路径","viewer.nav.route.title":"追踪路径（R）","viewer.nav.route.short":"路径","viewer.nav.radar":"打开语义雷达","viewer.nav.radar.title":"语义雷达（M）","viewer.nav.radar.short":"地图","viewer.nav.lens":"打开语义透镜","viewer.nav.lens.title":"语义透镜（L）","viewer.nav.lens.short":"透镜","viewer.nav.find":"查找节点","viewer.nav.find.title":"查找节点（/）","viewer.outline.title":"节点索引","viewer.rail.show":"要点与索引","viewer.rail.controls":"侧栏","viewer.rail.collapse":"收起侧栏","viewer.rail.bottom":"移到图下方","viewer.rail.right":"移到图右侧","viewer.nav.guide":"打开图表指南","viewer.nav.guide.title":"图表指南（?）","viewer.nav.zoomOut":"缩小","viewer.nav.zoomOut.title":"缩小（-）","viewer.nav.reset":"重置图表视图","viewer.nav.reset.title":"重置视图（0）","viewer.nav.read":"阅读","viewer.nav.zoomIn":"放大","viewer.nav.zoomIn.title":"放大（+）","viewer.nav.camera":"{hint}。重置图表视图","viewer.nav.camera.title":"{semantic}{hint} · 重置视图（0）","viewer.nav.camera.semantic":"语义相机已启用 · ","viewer.nav.level.map":"概览","viewer.nav.level.read":"阅读","viewer.nav.level.full":"完整","viewer.nav.level.auto":"自动","viewer.nav.detail.map":"放大以显示关系标签和节点上下文","viewer.nav.detail.read":"再次放大以显示标签和注释","viewer.nav.detail.full":"完整图表详情","viewer.intent.summary":"{label}。{out} 条出向，{in} 条入向{loops}。共 {total} 条连接。按 Enter 查看详情。","viewer.intent.loops":"，{count} 条自环","viewer.common.copied":"已复制","viewer.common.copyFailed":"复制失败","viewer.common.copyLink":"复制链接","viewer.common.clear":"清除","viewer.common.close":"关闭"}}</script>
     <!-- Main Diagram -->
     <div class="diagram-container" data-detail-level="read"
@@ -5067,7 +5067,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
             <circle cx="4.1" cy="4.8" r=".7" class="sigil-fill"/>
             <circle cx="6.3" cy="4.8" r=".7" class="sigil-fill"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="287.6" y="114" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">修改并提交</text>
+          <text data-node-label="" data-detail-anchor="" x="291.6" y="114" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">修改并提交</text>
           <text data-detail="context" x="291.6" y="131" class="t-muted" font-size="8" text-anchor="middle">PUT /api/config + revision</text>
         </g>
 
@@ -5079,7 +5079,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
             <path d="M8 2.2 13 4v3.5c0 3.1-1.8 5.4-5 6.5-3.2-1.1-5-3.4-5-6.5V4Z"/>
             <path d="m5.8 8 1.5 1.5 3-3"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="401" y="238" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">检查请求字段</text>
+          <text data-node-label="" data-detail-anchor="" x="411.6" y="238" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">检查请求字段</text>
           <text data-detail="context" x="411.6" y="255" class="t-muted" font-size="8" text-anchor="middle">对象、版本格式、端口</text>
         </g>
 
@@ -5091,8 +5091,8 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
             <path d="M8 2.2 13 4v3.5c0 3.1-1.8 5.4-5 6.5-3.2-1.1-5-3.4-5-6.5V4Z"/>
             <path d="m5.8 8 1.5 1.5 3-3"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="591.6" y="249" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">核对版本与配置</text>
-          <text data-detail="context" x="591.6" y="261.3" class="t-muted" font-size="8" text-anchor="middle">先 CAS，再完整校验</text>
+          <text data-node-label="" data-detail-anchor="" x="591.6" y="238" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">核对版本与配置</text>
+          <text data-detail="context" x="591.6" y="255" class="t-muted" font-size="8" text-anchor="middle">先 CAS，再完整校验</text>
         </g>
 
         <g id="node-pending" data-node-id="pending" data-node-label="原子替换 TOML" tabindex="0" role="button" aria-label="聚焦原子替换 TOML，保存 last-good 与 pending, 配置事务 · 文件锁与版本校验" aria-pressed="false" data-node-kind="database" data-node-sublabel="保存 last-good 与 pending" data-node-context="配置事务 · 文件锁与版本校验">
@@ -5103,8 +5103,8 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="790" y="249" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">原子替换 TOML</text>
-          <text data-detail="context" x="790" y="261.3" class="t-muted" font-size="8" text-anchor="middle">保存 last-good 与 pending</text>
+          <text data-node-label="" data-detail-anchor="" x="790" y="238" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">原子替换 TOML</text>
+          <text data-detail="context" x="790" y="255" class="t-muted" font-size="8" text-anchor="middle">保存 last-good 与 pending</text>
         </g>
 
         <g id="node-verify" data-node-id="verify" data-node-label="应用并验证 MCP" tabindex="0" role="button" aria-label="聚焦应用并验证 MCP，进程归属、版本与项目列表, 受控运行 · 同步验证后确认" aria-pressed="false" data-node-kind="backend" data-node-sublabel="进程归属、版本与项目列表" data-node-context="受控运行 · 同步验证后确认">
@@ -5114,8 +5114,8 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(725 347) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="790" y="373" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">应用并验证 MCP</text>
-          <text data-detail="context" x="790" y="385.3" class="t-muted" font-size="8" text-anchor="middle">进程归属、版本与项目列表</text>
+          <text data-node-label="" data-detail-anchor="" x="790" y="362" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">应用并验证 MCP</text>
+          <text data-detail="context" x="790" y="379" class="t-muted" font-size="8" text-anchor="middle">进程归属、版本与项目列表</text>
         </g>
 
         <g id="node-commit" data-node-id="commit" data-node-label="确认保存成功" tabindex="0" role="button" aria-label="聚焦确认保存成功，更新备份，清除 pending, 受控运行 · 同步验证后确认" aria-pressed="false" data-node-kind="database" data-node-sublabel="更新备份，清除 pending" data-node-context="受控运行 · 同步验证后确认">
@@ -5126,7 +5126,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="977.8" y="362" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">确认保存成功</text>
+          <text data-node-label="" data-detail-anchor="" x="988.4" y="362" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">确认保存成功</text>
           <text data-detail="context" x="988.4" y="379" class="t-muted" font-size="8" text-anchor="middle">更新备份，清除 pending</text>
         </g>
 
@@ -5162,8 +5162,8 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="790" y="497" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">恢复 last-good</text>
-          <text data-detail="context" x="790" y="509.3" class="t-muted" font-size="8" text-anchor="middle">恢复文件并重新应用后端</text>
+          <text data-node-label="" data-detail-anchor="" x="790" y="486" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">恢复 last-good</text>
+          <text data-detail="context" x="790" y="503" class="t-muted" font-size="8" text-anchor="middle">恢复文件并重新应用后端</text>
         </g>
 
         <g id="node-recovered" data-node-id="recovered" data-node-label="回退已验证" tabindex="0" role="button" aria-label="聚焦回退已验证，本次保存仍返回失败, 失败处理 · 保留输入与有效配置" aria-pressed="false" data-node-kind="backend" data-node-sublabel="本次保存仍返回失败" data-node-context="失败处理 · 保留输入与有效配置">
@@ -5173,7 +5173,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(923.4 471) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="984.4" y="486" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">回退已验证</text>
+          <text data-node-label="" data-detail-anchor="" x="988.4" y="486" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">回退已验证</text>
           <text data-detail="context" x="988.4" y="503" class="t-muted" font-size="8" text-anchor="middle">本次保存仍返回失败</text>
         </g>
 
@@ -5185,7 +5185,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
             <path d="M8 2.2 13 4v3.5c0 3.1-1.8 5.4-5 6.5-3.2-1.1-5-3.4-5-6.5V4Z"/>
             <path d="m5.8 8 1.5 1.5 3-3"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="1127.8000000000002" y="486" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">后端恢复失败</text>
+          <text data-node-label="" data-detail-anchor="" x="1138.4" y="486" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">后端恢复失败</text>
           <text data-detail="context" x="1138.4" y="503" class="t-muted" font-size="8" text-anchor="middle">检查端口、进程与权限</text>
         </g>
 
@@ -5213,7 +5213,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
             <circle cx="4.1" cy="4.8" r=".7" class="sigil-fill"/>
             <circle cx="6.3" cy="4.8" r=".7" class="sigil-fill"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="587.6" y="610" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">重读并合并</text>
+          <text data-node-label="" data-detail-anchor="" x="591.6" y="610" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">重读并合并</text>
           <text data-detail="context" x="591.6" y="627" class="t-muted" font-size="8" text-anchor="middle">先核对配置与 MCP 状态</text>
         </g>
 
@@ -5225,8 +5225,8 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
             <rect x="2.5" y="5" width="8.5" height="8" rx="1.5"/>
             <path d="M8 2.5h5.5V8M13.5 2.5 7.5 8.5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="1138.4" y="621" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">修复并重启 Setup</text>
-          <text data-detail="context" x="1138.4" y="633.3" class="t-muted" font-size="8" text-anchor="middle">人工排障后重读配置</text>
+          <text data-node-label="" data-detail-anchor="" x="1139.2" y="610" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">修复并重启 Setup</text>
+          <text data-detail="context" x="1138.4" y="627" class="t-muted" font-size="8" text-anchor="middle">人工排障后重读配置</text>
         </g>
 
         <!-- Edge labels -->
@@ -5307,21 +5307,21 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
             <rect x="20" y="688" width="14" height="9" rx="2" class="c-frontend" stroke-width="1"/>
             <text x="42" y="696" class="t-muted" font-size="7.5" font-weight="500">用户界面</text>
           </g>
-          <g data-legend-semantic-kind="backend" data-legend-kind="backend" data-legend-label="Agent 逻辑" data-legend-x="105" data-legend-baseline="696" data-legend-width="87">
+          <g data-legend-semantic-kind="backend" data-legend-kind="backend" data-legend-label="后端运行" data-legend-x="105" data-legend-baseline="696" data-legend-width="78">
             <rect x="105" y="688" width="14" height="9" rx="2" class="c-backend" stroke-width="1"/>
-            <text x="127" y="696" class="t-muted" font-size="7.5" font-weight="500">Agent 逻辑</text>
+            <text x="127" y="696" class="t-muted" font-size="7.5" font-weight="500">后端运行</text>
           </g>
-          <g data-legend-semantic-kind="security" data-legend-kind="security" data-legend-label="策略" data-legend-x="199" data-legend-baseline="696" data-legend-width="61">
-            <rect x="199" y="688" width="14" height="9" rx="2" class="c-security" stroke-width="1"/>
-            <text x="221" y="696" class="t-muted" font-size="7.5" font-weight="500">策略</text>
+          <g data-legend-semantic-kind="security" data-legend-kind="security" data-legend-label="校验与拒绝" data-legend-x="190" data-legend-baseline="696" data-legend-width="87">
+            <rect x="190" y="688" width="14" height="9" rx="2" class="c-security" stroke-width="1"/>
+            <text x="212" y="696" class="t-muted" font-size="7.5" font-weight="500">校验与拒绝</text>
           </g>
-          <g data-legend-semantic-kind="database" data-legend-kind="database" data-legend-label="上下文 / 追踪" data-legend-x="267" data-legend-baseline="696" data-legend-width="100">
-            <rect x="267" y="688" width="14" height="9" rx="2" class="c-database" stroke-width="1"/>
-            <text x="289" y="696" class="t-muted" font-size="7.5" font-weight="500">上下文 / 追踪</text>
+          <g data-legend-semantic-kind="database" data-legend-kind="database" data-legend-label="配置与恢复文件" data-legend-x="284" data-legend-baseline="696" data-legend-width="104">
+            <rect x="284" y="688" width="14" height="9" rx="2" class="c-database" stroke-width="1"/>
+            <text x="306" y="696" class="t-muted" font-size="7.5" font-weight="500">配置与恢复文件</text>
           </g>
-          <g data-legend-semantic-kind="external" data-legend-kind="external" data-legend-label="外部系统" data-legend-x="374" data-legend-baseline="696" data-legend-width="78">
-            <rect x="374" y="688" width="14" height="9" rx="2" class="c-external" stroke-width="1"/>
-            <text x="396" y="696" class="t-muted" font-size="7.5" font-weight="500">外部系统</text>
+          <g data-legend-semantic-kind="external" data-legend-kind="external" data-legend-label="人工恢复" data-legend-x="395" data-legend-baseline="696" data-legend-width="78">
+            <rect x="395" y="688" width="14" height="9" rx="2" class="c-external" stroke-width="1"/>
+            <text x="417" y="696" class="t-muted" font-size="7.5" font-weight="500">人工恢复</text>
           </g>
         </g>
       </svg>
@@ -5507,7 +5507,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         </div>
         <ul>
           <li>普通保存需要真实 MCP 验证，Startup 与 Tunnel 的生命周期操作必须成功；此流程不承诺公网或 ChatGPT 会话已连接。</li>
-          <li>源码基线 HEAD 3f8abbb；上述运行文件与发行基线 RC2 55a608c 相同。点击节点查看源码位置、上下游和深链接。</li>
+          <li>点击节点查看职责、上下游和深链接；搜索与路径追踪只遍历图中明确编写的关系。</li>
           <li>完整配置和目录校验在 CAS 版本核对后、事务落盘前执行。</li>
         </ul>
       </div>

@@ -1,0 +1,218 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "CodeGPT 应用失败后的配置恢复",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "output": "site/diagrams/configuration-recovery.html",
+    "views": [
+      {
+        "id": "rollback",
+        "label": "查看配置恢复",
+        "focus": [
+          "verify",
+          "rollback",
+          "recovered",
+          "manual",
+          "reload",
+          "restart"
+        ]
+      }
+    ],
+    "legend": {
+      "entries": {
+        "backend": {
+          "label": "后端运行"
+        },
+        "security": {
+          "label": "校验与拒绝"
+        },
+        "database": {
+          "label": "配置与恢复文件"
+        },
+        "external": {
+          "label": "人工恢复"
+        }
+      }
+    }
+  },
+  "lanes": [
+    {
+      "id": "apply",
+      "label": "应用与回退",
+      "variant": "exception"
+    },
+    {
+      "id": "result",
+      "label": "恢复结果",
+      "variant": "exception"
+    },
+    {
+      "id": "action",
+      "label": "用户确认",
+      "variant": "exception"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "verify",
+      "lane": "apply",
+      "col": 2,
+      "type": "backend",
+      "label": "应用并验证 MCP",
+      "sublabel": "进程归属、版本与项目列表",
+      "width": 142,
+      "yOffset": -70
+    },
+    {
+      "id": "rollback",
+      "lane": "apply",
+      "col": 2,
+      "type": "database",
+      "label": "恢复 last-good",
+      "sublabel": "恢复文件并重新应用后端",
+      "width": 142,
+      "yOffset": 70
+    },
+    {
+      "id": "recovered",
+      "lane": "result",
+      "col": 1,
+      "type": "backend",
+      "label": "回退已验证",
+      "sublabel": "本次保存仍返回失败",
+      "width": 142
+    },
+    {
+      "id": "manual",
+      "lane": "result",
+      "col": 3,
+      "type": "security",
+      "label": "后端恢复失败",
+      "sublabel": "检查端口、进程与权限",
+      "width": 142
+    },
+    {
+      "id": "reload",
+      "lane": "action",
+      "col": 1,
+      "type": "frontend",
+      "label": "重读并合并",
+      "sublabel": "先核对配置与 MCP 状态",
+      "width": 142
+    },
+    {
+      "id": "restart",
+      "lane": "action",
+      "col": 3,
+      "type": "external",
+      "label": "修复并重启 Setup",
+      "sublabel": "人工排障后重读配置",
+      "width": 142
+    }
+  ],
+  "edges": [
+    {
+      "id": "apply-failure",
+      "to": "rollback",
+      "role": "error",
+      "variant": "security",
+      "from": "verify",
+      "label": "应用失败"
+    },
+    {
+      "id": "restored",
+      "to": "recovered",
+      "from": "rollback",
+      "label": "验证成功"
+    },
+    {
+      "id": "restore-failure",
+      "to": "manual",
+      "role": "error",
+      "variant": "security",
+      "from": "rollback",
+      "label": "恢复失败"
+    },
+    {
+      "id": "review-rollback",
+      "to": "reload",
+      "role": "branch",
+      "from": "recovered",
+      "label": "确认状态"
+    },
+    {
+      "id": "manual-repair",
+      "to": "restart",
+      "role": "branch",
+      "from": "manual",
+      "label": "人工修复"
+    },
+    {
+      "id": "after-restart",
+      "to": "reload",
+      "role": "branch",
+      "from": "restart",
+      "label": "修复后重读"
+    }
+  ],
+  "semanticChecks": {
+    "allowedTerminals": [
+      "reload"
+    ],
+    "allowedRoots": [
+      "verify"
+    ],
+    "requiredPaths": [
+      {
+        "to": "reload",
+        "from": "verify"
+      }
+    ],
+    "requiredEdges": [
+      {
+        "to": "rollback",
+        "from": "verify"
+      },
+      {
+        "to": "recovered",
+        "from": "rollback"
+      },
+      {
+        "to": "manual",
+        "from": "rollback"
+      },
+      {
+        "to": "reload",
+        "from": "recovered"
+      },
+      {
+        "to": "restart",
+        "from": "manual"
+      },
+      {
+        "to": "reload",
+        "from": "restart"
+      }
+    ]
+  },
+  "cards": [
+    {
+      "dot": "rose",
+      "title": "恢复语义",
+      "items": [
+        "应用或验证失败会尝试恢复 last-good，并重新验证后端；恢复成功也不会把失败保存伪装为成功。",
+        "校验拒绝需修正；冲突需重读合并；回退需确认状态；恢复失败需人工修复后重读。所有重试都由用户重新提交。"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "本图范围",
+      "items": [
+        "本场景回答应用失败后如何恢复：恢复成功也仍返回失败；恢复失败由用户人工排障并重启后重读。",
+        "请求校验、版本冲突与重新提交仍保留在配置保存与失败恢复全图和正文；本场景不是全图分解。"
+      ]
+    }
+  ]
+}

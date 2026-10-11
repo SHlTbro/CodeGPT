@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "CodeGPT · 系统上下文",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "output": "site/diagrams/architecture-context.html",
+    "legend": {
+      "entries": {
+        "backend": {
+          "label": "软件系统"
+        },
+        "database": {
+          "label": "文件存储"
+        },
+        "cloud": {
+          "label": "可选隧道"
+        },
+        "external": {
+          "label": "外部参与者"
+        }
+      }
+    }
+  },
+  "components": [
+    {
+      "id": "owner",
+      "type": "external",
+      "label": "项目维护者",
+      "sublabel": "登记目录、配置访问权限",
+      "pos": [
+        40,
+        40
+      ],
+      "size": [
+        180,
+        72
+      ],
+      "tag": "人"
+    },
+    {
+      "id": "client",
+      "type": "external",
+      "label": "MCP 客户端",
+      "sublabel": "ChatGPT 等兼容客户端",
+      "pos": [
+        390,
+        40
+      ],
+      "size": [
+        180,
+        72
+      ],
+      "tag": "外部软件系统"
+    },
+    {
+      "id": "codegpt",
+      "type": "backend",
+      "label": "CodeGPT",
+      "sublabel": "项目发现、读取与受控写入",
+      "pos": [
+        40,
+        260
+      ],
+      "size": [
+        180,
+        72
+      ],
+      "tag": "软件系统"
+    },
+    {
+      "id": "tunnel",
+      "type": "cloud",
+      "label": "公网隧道（可选）",
+      "sublabel": "Cloudflare / ngrok",
+      "pos": [
+        390,
+        260
+      ],
+      "size": [
+        180,
+        72
+      ],
+      "tag": "外部软件系统"
+    },
+    {
+      "id": "projects",
+      "type": "database",
+      "label": "本机项目文件",
+      "sublabel": "已登记目录中的原始文件",
+      "pos": [
+        40,
+        480
+      ],
+      "size": [
+        180,
+        72
+      ],
+      "tag": "外部文件存储"
+    }
+  ],
+  "connections": [
+    {
+      "id": "configure",
+      "from": "owner",
+      "to": "codegpt",
+      "label": "本机配置 / HTTP"
+    },
+    {
+      "id": "local-call",
+      "from": "client",
+      "to": "codegpt",
+      "label": "本机调用 / MCP HTTP"
+    },
+    {
+      "id": "public-call",
+      "from": "client",
+      "to": "tunnel",
+      "label": "启用时访问 / HTTPS",
+      "variant": "dashed"
+    },
+    {
+      "id": "forward",
+      "from": "tunnel",
+      "to": "codegpt",
+      "label": "启用时仅代理 MCP",
+      "variant": "dashed"
+    },
+    {
+      "id": "scoped-io",
+      "from": "codegpt",
+      "to": "projects",
+      "label": "限目录读取；授权后写入"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "系统边界",
+      "items": [
+        "CodeGPT 在本机运行，客户端通过 MCP 发现项目、读取文件与搜索。",
+        "维护者使用本机页面登记目录与权限；项目文件保留在原目录。"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "可选公网与访问限制",
+      "items": [
+        "隧道默认关闭；启用时只转发 MCP，本机配置页面拒绝代理请求。",
+        "图中的受控写入受项目开关、可写目录与冲突检查约束；未启用 Agent 或模型请求。"
+      ]
+    }
+  ]
+}

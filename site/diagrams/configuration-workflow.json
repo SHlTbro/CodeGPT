@@ -5,12 +5,7 @@
     "title": "CodeGPT 配置保存与失败恢复",
     "locale": "zh-CN",
     "quality_profile": "showcase",
-    "output": "config-workflow.html",
-    "repository": {
-      "url": "https://github.com/SHlTbro/CodeGPT",
-      "revision": "3f8abbb42719a804d03f285e0fa4f414ded1d0c5",
-      "link_mode": "local-only"
-    },
+    "output": "site/diagrams/configuration-workflow.html",
     "views": [
       {
         "id": "save",
@@ -38,7 +33,23 @@
           "restart"
         ]
       }
-    ]
+    ],
+    "legend": {
+      "entries": {
+        "backend": {
+          "label": "后端运行"
+        },
+        "security": {
+          "label": "校验与拒绝"
+        },
+        "database": {
+          "label": "配置与恢复文件"
+        },
+        "external": {
+          "label": "人工恢复"
+        }
+      }
+    }
   },
   "lanes": [
     {
@@ -80,15 +91,7 @@
       "type": "frontend",
       "label": "修改并提交",
       "sublabel": "PUT /api/config + revision",
-      "width": 142,
-      "sources": [
-        {
-          "path": "web/app.js",
-          "line": 367,
-          "end_line": 379,
-          "label": "修改并提交"
-        }
-      ]
+      "width": 142
     },
     {
       "id": "validate",
@@ -97,15 +100,7 @@
       "type": "security",
       "label": "检查请求字段",
       "sublabel": "对象、版本格式、端口",
-      "width": 142,
-      "sources": [
-        {
-          "path": "setup.py",
-          "line": 179,
-          "end_line": 199,
-          "label": "检查请求与配置"
-        }
-      ]
+      "width": 142
     },
     {
       "id": "cas",
@@ -114,21 +109,7 @@
       "type": "security",
       "label": "核对版本与配置",
       "sublabel": "先 CAS，再完整校验",
-      "width": 142,
-      "sources": [
-        {
-          "path": "config.py",
-          "line": 581,
-          "end_line": 590,
-          "label": "核对当前版本"
-        },
-        {
-          "path": "config.py",
-          "line": 163,
-          "end_line": 188,
-          "label": "目录与监听配置校验"
-        }
-      ]
+      "width": 142
     },
     {
       "id": "pending",
@@ -137,15 +118,7 @@
       "type": "database",
       "label": "原子替换 TOML",
       "sublabel": "保存 last-good 与 pending",
-      "width": 142,
-      "sources": [
-        {
-          "path": "config.py",
-          "line": 591,
-          "end_line": 603,
-          "label": "原子替换 TOML"
-        }
-      ]
+      "width": 142
     },
     {
       "id": "verify",
@@ -154,15 +127,7 @@
       "type": "backend",
       "label": "应用并验证 MCP",
       "sublabel": "进程归属、版本与项目列表",
-      "width": 142,
-      "sources": [
-        {
-          "path": "runtime.py",
-          "line": 465,
-          "end_line": 486,
-          "label": "应用并验证 MCP"
-        }
-      ]
+      "width": 142
     },
     {
       "id": "commit",
@@ -171,15 +136,7 @@
       "type": "database",
       "label": "确认保存成功",
       "sublabel": "更新备份，清除 pending",
-      "width": 142,
-      "sources": [
-        {
-          "path": "config.py",
-          "line": 604,
-          "end_line": 630,
-          "label": "确认保存成功"
-        }
-      ]
+      "width": 142
     },
     {
       "id": "invalid",
@@ -188,15 +145,7 @@
       "type": "security",
       "label": "校验拒绝",
       "sublabel": "返回原因，修正后再保存",
-      "width": 142,
-      "sources": [
-        {
-          "path": "setup.py",
-          "line": 179,
-          "end_line": 194,
-          "label": "校验拒绝"
-        }
-      ]
+      "width": 142
     },
     {
       "id": "conflict",
@@ -205,15 +154,7 @@
       "type": "security",
       "label": "版本冲突",
       "sublabel": "保留当前输入，重读合并",
-      "width": 142,
-      "sources": [
-        {
-          "path": "web/app.js",
-          "line": 370,
-          "end_line": 392,
-          "label": "版本冲突"
-        }
-      ]
+      "width": 142
     },
     {
       "id": "rollback",
@@ -222,15 +163,7 @@
       "type": "database",
       "label": "恢复 last-good",
       "sublabel": "恢复文件并重新应用后端",
-      "width": 142,
-      "sources": [
-        {
-          "path": "config.py",
-          "line": 611,
-          "end_line": 624,
-          "label": "恢复 last-good"
-        }
-      ]
+      "width": 142
     },
     {
       "id": "recovered",
@@ -239,15 +172,7 @@
       "type": "backend",
       "label": "回退已验证",
       "sublabel": "本次保存仍返回失败",
-      "width": 142,
-      "sources": [
-        {
-          "path": "config.py",
-          "line": 620,
-          "end_line": 628,
-          "label": "回退已验证"
-        }
-      ]
+      "width": 142
     },
     {
       "id": "manual",
@@ -256,15 +181,7 @@
       "type": "security",
       "label": "后端恢复失败",
       "sublabel": "检查端口、进程与权限",
-      "width": 142,
-      "sources": [
-        {
-          "path": "config.py",
-          "line": 625,
-          "end_line": 628,
-          "label": "后端恢复失败"
-        }
-      ]
+      "width": 142
     },
     {
       "id": "fix",
@@ -273,15 +190,7 @@
       "type": "frontend",
       "label": "修正输入",
       "sublabel": "保留草稿，纠正无效字段",
-      "width": 142,
-      "sources": [
-        {
-          "path": "web/app.js",
-          "line": 389,
-          "end_line": 395,
-          "label": "修正输入"
-        }
-      ]
+      "width": 142
     },
     {
       "id": "reload",
@@ -290,15 +199,7 @@
       "type": "frontend",
       "label": "重读并合并",
       "sublabel": "先核对配置与 MCP 状态",
-      "width": 142,
-      "sources": [
-        {
-          "path": "web/app.js",
-          "line": 380,
-          "end_line": 392,
-          "label": "重读并合并"
-        }
-      ]
+      "width": 142
     },
     {
       "id": "restart",
@@ -307,15 +208,7 @@
       "type": "external",
       "label": "修复并重启 Setup",
       "sublabel": "人工排障后重读配置",
-      "width": 142,
-      "sources": [
-        {
-          "path": "config.py",
-          "line": 625,
-          "end_line": 628,
-          "label": "修复并重启 Setup"
-        }
-      ]
+      "width": 142
     }
   ],
   "edges": [
@@ -464,7 +357,7 @@
       "title": "成功条件",
       "items": [
         "普通保存需要真实 MCP 验证，Startup 与 Tunnel 的生命周期操作必须成功；此流程不承诺公网或 ChatGPT 会话已连接。",
-        "源码基线 HEAD 3f8abbb；上述运行文件与发行基线 RC2 55a608c 相同。点击节点查看源码位置、上下游和深链接。",
+        "点击节点查看职责、上下游和深链接；搜索与路径追踪只遍历图中明确编写的关系。",
         "完整配置和目录校验在 CAS 版本核对后、事务落盘前执行。"
       ]
     },

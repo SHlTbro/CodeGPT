@@ -1,0 +1,25 @@
+C4Container
+  title CodeGPT 运行单元与数据存储
+  Person(owner, "项目维护者", "配置并观察本机状态")
+  System_Ext(client, "MCP 客户端", "兼容 Streamable HTTP")
+  System_Ext(provider, "公网隧道服务", "Cloudflare 或 ngrok；可选")
+  SystemDb_Ext(files, "本机项目文件", "原始文件与项目可写目录")
+  System_Boundary(core, "CodeGPT") {
+    Container(page, "本机配置页面", "HTML / CSS / JavaScript", "浏览器应用，显示项目与连接状态")
+    Container(setup, "Setup 配置服务", "Python / ThreadingHTTPServer", "配置事务、进程管理与真实验证")
+    ContainerDb(config, "配置与恢复文件", "TOML / last-good / pending", "本机数据存储，不是独立服务")
+    Container(mcp, "Local MCP", "Python / FastMCP", "独立进程，注册项目与文件工具")
+    Container(tunnel, "隧道进程（可选）", "cloudflared / ngrok", "独立进程，只转发 MCP")
+  }
+  Rel(owner, page, "配置项目", "浏览器交互")
+  Rel(page, setup, "读取状态与保存配置", "JSON / HTTP")
+  Rel(setup, config, "读写并回退", "TOML / 文件 I/O")
+  Rel(setup, mcp, "启动、重载与验证", "子进程 / MCP")
+  Rel(mcp, config, "读取并监听", "TOML / 文件 I/O")
+  Rel(mcp, files, "限目录读取；授权后写入", "文件 I/O")
+  Rel(setup, tunnel, "启用时启动", "子进程")
+  Rel(tunnel, mcp, "启用时代理", "HTTP")
+  Rel(tunnel, provider, "启用时连接隧道服务", "cloudflared / ngrok")
+  Rel(client, provider, "启用时访问", "HTTPS")
+  Rel(client, mcp, "本机调用", "MCP / HTTP")
+  UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")

@@ -1,0 +1,3 @@
+* -text
+assets/*.json whitespace=cr-at-eol
+site/diagrams/*.json whitespace=cr-at-eol
