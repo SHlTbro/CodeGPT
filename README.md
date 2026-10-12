@@ -6,7 +6,7 @@
   <img src="assets/codegpt-hero.png" width="100%" alt="CodeGPT：让 ChatGPT 读懂当前代码，按授权范围读取本地项目">
 </p>
 
-项目还在改，上传的 ZIP 已经旧了。CodeGPT 在你的电脑上运行一个轻量 MCP 服务器，让支持 MCP 的客户端按需查看真实文件、搜索结果和 Git 状态。只登记需要开放的项目，第一次使用保持只读。
+CodeGPT 把本地项目接入 ChatGPT，让你在对话中查找文件、理解实现、查看 Git 改动。它在你的电脑上运行，按登记的项目和权限提供当前代码；连接和项目通过本机配置页管理，默认只读，需要写入时再单独授权。
 
 **模型负责思考，MCP 提供事实，用户掌握决策。** 原始文件留在本机；工具返回的代码片段会传给所连接的模型服务端。
 
@@ -14,7 +14,7 @@
 
 ## 本页导航
 
-[能做什么](#capabilities) · [工作流程](#workflow) · [系统架构与技术栈](#architecture) · [快速开始](#quick-start) · [连接 ChatGPT](#connect) · [权限与配置](#permissions) · [故障恢复](#recovery) · [验证与限制](#limits) · [许可与资源](#resources)
+[能做什么](#capabilities) · [配置页面](#interface) · [工作流程](#workflow) · [系统架构与技术栈](#architecture) · [快速开始](#quick-start) · [连接 ChatGPT](#connect) · [权限与配置](#permissions) · [故障恢复](#recovery) · [验证与限制](#limits) · [许可与资源](#resources)
 
 <a name="capabilities"></a>
 ## 能做什么
@@ -56,7 +56,42 @@ Core 不需要安装或登录 Codex。可选 Agent 默认为 OFF；其设置页�
 
 ![真实本机页面：合成项目为只读，支持添加本地项目与保存，Agent 未启用](assets/setup-projects.png)
 
-这是独立环境中实际运行的页面，不是 Mock。网页保存项目后会验证 MCP，GitHub 上的图片和展示页不会连接你的电脑或保存凭据。
+这是独立环境中实际运行的配置页。下面展开它的主要操作区域；GitHub 上的图片和展示页不会连接你的电脑或保存凭据。
+
+<a name="interface"></a>
+## 配置页面
+
+连接、项目和状态集中在同一个本机页面，不需要来回切换管理后台。以下截图使用合成只读项目，公网隧道和 Agent 均未启用。
+
+### 配置公网连接
+
+先选择连接通道，再跟着页面注册 ngrok、复制 authtoken、粘贴并启用。已有固定开发域名可在高级连接设置填写；Cloudflare 临时连接和本机直连也保留为备选。凭据只保存在本机，不会回显到页面。
+
+![真实连接配置：ngrok 注册、凭据获取和粘贴教程；示例没有填写凭据或启用隧道](assets/setup-tunnel-guide.png)
+
+### 接入 ChatGPT
+
+公网地址验证通过后复制到 ChatGPT，按页面指引创建连接，再调用 `list_projects` 验证。仅本机在线时，ChatGPT 网页仍无法访问 `127.0.0.1`；截图中的空地址表示尚未启用公网连接。
+
+![真实 ChatGPT 接入指引：公网 MCP 地址、配置入口和首次工具调用说明](assets/setup-connection.png)
+
+### 查看连接状态
+
+分别查看 Local MCP、Tunnel、Public URL 和实际 MCP 调用，定位故障发生在哪一层。最近五分钟视图来自真实探测采样；本次截图中本机 MCP 在线，隧道未启用，公网地址未配置，并记录了实际只读调用。
+
+![真实网络状态：本机在线、隧道未启用、公网未配置，以及探测历史和实际读取活动](assets/setup-network.png)
+
+### 编辑项目与权限
+
+展开项目，填写名称、唯一 ID 和已有目录，选择只读或受控写，再保存并确认生效。移除只取消登记，不删除文件；写权限须单独开启，工作区重命名的范围限制见下方权限说明。
+
+![真实项目编辑表单：合成项目目录、默认只读权限和独立的 Codex 项目授权](assets/setup-project-editor.png)
+
+### 配置可选 Codex
+
+可查看套餐或自备 API 的额度来源、阅读档案、模型 ID 和推理强度等选项。Agent 默认关闭，Core 可独立运行；设置界面已提供，真实 Codex 自动阅读仍待接线与验收，截图没有启用或调用模型。
+
+![真实 Codex 设置：Agent 关闭、额度尚未选择，展开模型和推理参数但未启动执行](assets/setup-codex-options.png)
 
 <a name="workflow"></a>
 ## 工作流程
