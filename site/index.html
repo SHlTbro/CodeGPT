@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CodeGPT · 让 ChatGPT 阅读当前代码</title><meta name="description" content="本机运行的轻量 MCP，按项目授权检索当前代码，提供配置与连接恢复。"><style>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CodeGPT · 连通 ChatGPT 与本地代码文件</title><meta name="description" content="本机运行的轻量 MCP，按项目授权检索当前代码，提供配置与连接恢复。"><style>
 :root{color-scheme:light dark;--bg:#fff;--fg:#1d1d1f;--muted:#61616a;--line:#e5e5ea;--soft:#f5f5f7;--link:#0066cc}
 *{box-sizing:border-box}html{scroll-behavior:auto}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.8 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif}
 header{border-bottom:1px solid var(--line);padding:14px max(24px,calc((100vw - 980px)/2));display:flex;justify-content:space-between;gap:16px;font-size:14px}header a{white-space:nowrap;text-decoration:none}header strong{letter-spacing:-.02em}
@@ -7,17 +7,27 @@ main{max-width:980px;margin:56px auto 80px;padding:0 28px}h1{font-size:42px;line
 table{border-collapse:collapse;width:100%;font-size:14px;margin:24px 0;display:block;overflow-x:auto}th{text-align:left;background:var(--soft)}td,th{padding:12px 16px;border:1px solid var(--line);vertical-align:top}th{white-space:nowrap}pre{overflow:auto;padding:20px 24px;background:var(--soft);border-radius:14px;font-size:13px;line-height:1.6}code{font-family:ui-monospace,Consolas,monospace}p code,td code{font-size:.88em;background:var(--soft);padding:2px 5px;border-radius:4px;overflow-wrap:anywhere}li{margin:8px 0}details{border-top:1px solid var(--line);margin-top:30px;padding-top:20px}summary{cursor:pointer;color:var(--muted)}footer{padding:28px;border-top:1px solid var(--line);text-align:center;font-size:13px;color:var(--muted)}
 @media(prefers-color-scheme:dark){:root{--bg:#161617;--fg:#f5f5f7;--muted:#a1a1a8;--line:#39393e;--soft:#232326;--link:#71b6ff}}
 @media(max-width:640px){main{margin-top:32px;padding:0 20px}h1{font-size:34px}h2{font-size:25px;margin-top:48px}h3{font-size:20px}header{padding:12px 20px}body{font-size:15px}td,th{padding:10px}pre{padding:16px;font-size:12px}img{border-radius:12px}}
+
+.real-cases{display:grid;grid-template-columns:1fr 1.5fr 1fr;gap:16px;margin:24px 0}.real-case{min-width:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--bg)}.real-case.featured{border-color:var(--link);background:var(--soft)}.real-case .case-copy{padding:18px 18px 12px}.real-case h3{margin:0 0 7px;font-size:17px;line-height:1.5}.real-case p{margin:0;color:var(--muted);font-size:13px;line-height:1.7}.case-kicker{font-size:11px;color:var(--link);font-weight:650;letter-spacing:.06em;margin-bottom:7px}.case-image{display:block;height:225px;overflow:hidden;border-top:1px solid var(--line);background:#fff}.real-case img{width:100%;height:100%;object-fit:cover;object-position:center 30%;border:0;border-radius:0;margin:0}.featured .case-image{height:275px}.featured img{object-position:center 57%;transform:scale(1.22);transform-origin:50% 55%}.case-note{font-size:13px;color:var(--muted)}
+@media(max-width:640px){.real-cases{grid-template-columns:1fr}.real-case.featured{order:-1}.case-image,.featured .case-image{height:260px}.real-case img{object-fit:cover;object-position:center 35%}.featured img{object-position:center 57%;transform:scale(1.22);transform-origin:50% 55%}}
 </style></head><body><header><strong>CodeGPT</strong><a href="https://github.com/SHlTbro/CodeGPT">GitHub 源码</a></header><main><h1 align="center">CodeGPT</h1>
-<p align="center">让 ChatGPT 按授权范围，检索和阅读你本地项目的当前代码。</p>
+<p align="center">连通 ChatGPT 与你的本地代码文件，按授权范围读写本地项目。</p>
 <p align="center">
-  <img src="assets/codegpt-hero.png" width="100%" alt="CodeGPT：让 ChatGPT 读懂当前代码，按授权范围读取本地项目">
+  <img src="assets/codegpt-hero.png" width="100%" alt="CodeGPT：连通ChatGPT与你的本地代码文件，按授权范围读写本地项目">
 </p>
 <p>CodeGPT 把本地项目接入 ChatGPT，让你在对话中查找文件、理解实现、查看 Git 改动。它在你的电脑上运行，按登记的项目和权限提供当前代码；连接和项目通过本机配置页管理，默认只读，需要写入时再单独授权。</p>
 <p><strong>模型负责思考，MCP 提供事实，用户掌握决策。</strong> 原始文件留在本机；工具返回的代码片段会传给所连接的模型服务端。</p>
 <p><strong>19 工具版发布预览：</strong> 版本范围为 15 个 Core 工具，加 4 个 Codex CLI 业务工具。当前安装包可运行的默认入口仍是 Core 15；新增四工具的统一接入正在完成，尚未作为可执行能力发布。以下逐项区分已可用与待接线。</p>
 <h2>本页导航</h2>
-<p><a href="#capabilities">能做什么</a> · <a href="#interface">配置页面</a> · <a href="#workflow">工作流程</a> · <a href="#architecture">系统架构与技术栈</a> · <a href="#quick-start">快速开始</a> · <a href="#connect">连接 ChatGPT</a> · <a href="#permissions">权限与配置</a> · <a href="#recovery">故障恢复</a> · <a href="#limits">验证与限制</a> · <a href="#resources">许可与资源</a></p>
-<p><a name="capabilities"></a></p>
+<p><a href="#real-world">实机效果</a> · <a href="#capabilities">能做什么</a> · <a href="#interface">配置页面</a> · <a href="#workflow">工作流程</a> · <a href="#architecture">系统架构与技术栈</a> · <a href="#quick-start">快速开始</a> · <a href="#connect">连接 ChatGPT</a> · <a href="#permissions">权限与配置</a> · <a href="#recovery">故障恢复</a> · <a href="#limits">验证与限制</a> · <a href="#resources">许可与资源</a></p>
+<p><a name="real-world"></a><h2>在 ChatGPT 网页版里，直接操作本地项目</h2>
+<p>用户提供的实机记录：从读取项目，到把修改写回本地。点击图片可放大查看原始记录。</p>
+<div class="real-cases">
+<article class="real-case"><div class="case-copy"><div class="case-kicker">理解项目</div><h3>读取代码，梳理架构</h3><p>一次提问，按需批量读取项目文件，为架构分析提供当前代码。</p></div><a class="case-image" href="assets/case-project-reading.png" aria-label="放大项目批量读取实机记录"><img src="assets/case-project-reading.png" alt="项目批量读取的真实返回记录" loading="lazy"></a></article>
+<article class="real-case featured"><div class="case-copy"><div class="case-kicker">重点案例 · 受控写入</div><h3>多文件修改，直接写回本机</h3><p>网页版 ChatGPT 按授权修改本地文件，文档与关联修改实际保存在项目目录。</p></div><a class="case-image" href="assets/case-local-writing.png" aria-label="放大多文件写入实机变更清单"><img src="assets/case-local-writing.png" alt="ChatGPT 网页版直接修改本地多个文件的实际变更清单" loading="lazy"></a></article>
+<article class="real-case"><div class="case-copy"><div class="case-kicker">推进工作</div><h3>在对话中推进本地项目</h3><p>结合本地资料分析需求，整理任务卡、依赖关系与交付文件。</p></div><a class="case-image" href="assets/case-project-interaction.png" aria-label="放大本地项目交互实机记录"><img src="assets/case-project-interaction.png" alt="网页对话中完成项目任务拆分与交付文件整理" loading="lazy"></a></article>
+</div><p class="case-note">读取规模与分析效果取决于项目、模型及预算；写入仍需逐项目授权并通过服务端校验。</p>
+<a name="capabilities"></a></p>
 <h2>能做什么</h2>
 <p>适合需要在对话中理解多个本地仓库、检查当前改动或整理项目文档的开发者。它不预先上传整仓，不建立代码索引数据库；模型问到哪里，工具读取到哪里。</p>
 <table>

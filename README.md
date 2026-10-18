@@ -1,9 +1,9 @@
 <h1 align="center">CodeGPT</h1>
 
-<p align="center">让 ChatGPT 按授权范围，检索和阅读你本地项目的当前代码。</p>
+<p align="center">连通 ChatGPT 与你的本地代码文件，按授权范围读写本地项目。</p>
 
 <p align="center">
-  <img src="assets/codegpt-hero.png" width="100%" alt="CodeGPT：让 ChatGPT 读懂当前代码，按授权范围读取本地项目">
+  <img src="assets/codegpt-hero.png" width="100%" alt="CodeGPT：连通ChatGPT与你的本地代码文件，按授权范围读写本地项目">
 </p>
 
 CodeGPT 把本地项目接入 ChatGPT，让你在对话中查找文件、理解实现、查看 Git 改动。它在你的电脑上运行，按登记的项目和权限提供当前代码；连接和项目通过本机配置页管理，默认只读，需要写入时再单独授权。
@@ -14,7 +14,22 @@ CodeGPT 把本地项目接入 ChatGPT，让你在对话中查找文件、理解�
 
 ## 本页导航
 
-[能做什么](#capabilities) · [配置页面](#interface) · [工作流程](#workflow) · [系统架构与技术栈](#architecture) · [快速开始](#quick-start) · [连接 ChatGPT](#connect) · [权限与配置](#permissions) · [故障恢复](#recovery) · [验证与限制](#limits) · [许可与资源](#resources)
+[实机效果](#real-world) · [能做什么](#capabilities) · [配置页面](#interface) · [工作流程](#workflow) · [系统架构与技术栈](#architecture) · [快速开始](#quick-start) · [连接 ChatGPT](#connect) · [权限与配置](#permissions) · [故障恢复](#recovery) · [验证与限制](#limits) · [许可与资源](#resources)
+
+<a name="real-world"></a>
+## 在 ChatGPT 网页版里，直接操作本地项目
+
+以下是用户提供的实机记录。**重点看中间：ChatGPT 将多文件修改直接写回本地项目。** 点击图片可放大查看原始记录。
+
+<table>
+<tr>
+<td width="27%" valign="top"><strong>读取代码，梳理架构</strong><br>一次提问，按需批量读取项目文件，为架构分析提供当前代码。<br><a href="assets/case-project-reading.png"><img src="assets/case-project-reading.png" width="240" alt="实机批量读取记录：项目文件、字符预算与返回结果"></a></td>
+<td width="46%" valign="top"><strong>多文件修改，直接写回本机</strong><br>网页版 ChatGPT 按授权修改本地文件；文档与关联修改实际保存在项目目录。<br><a href="assets/case-local-writing.png"><img src="assets/case-local-writing.png" width="410" alt="重点案例：ChatGPT 网页版修改本地多个文件后的实际变更清单"></a></td>
+<td width="27%" valign="top"><strong>在对话中推进本地项目</strong><br>结合本地资料分析需求，整理任务卡、依赖关系与交付文件。<br><a href="assets/case-project-interaction.png"><img src="assets/case-project-interaction.png" width="240" alt="实机项目交互：根据本地项目资料整理任务拆分与交付文件"></a></td>
+</tr>
+</table>
+
+读取规模与分析效果取决于项目、模型及预算；写入仍需逐项目授权并通过服务端校验。
 
 <a name="capabilities"></a>
 ## 能做什么
